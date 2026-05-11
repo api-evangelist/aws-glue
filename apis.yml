@@ -1,0 +1,77 @@
+aid: aws-glue
+name: AWS Glue
+description: >-
+  AWS Glue is a fully managed serverless extract, transform, and load (ETL)
+  service that makes it easy to discover, prepare, and combine data for
+  analytics, machine learning, and application development. It provides a
+  central data catalog, crawlers for automated metadata discovery, visual and
+  code-based job authoring, and data quality capabilities. The Glue API uses
+  AWS Signature Version 4 (SigV4) authentication and is accessed via SDKs, the
+  AWS CLI, or direct HTTPS calls to regional service endpoints.
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+tags:
+  - AWS
+  - Data
+  - Data Catalog
+  - ETL
+  - Analytics
+  - Serverless
+url: >-
+  https://raw.githubusercontent.com/api-evangelist/aws-glue/refs/heads/main/apis.yml
+created: '2026-05-11'
+modified: '2026-05-11'
+specificationVersion: '0.19'
+apis:
+  - aid: aws-glue:glue-api
+    name: AWS Glue API
+    description: >-
+      Programmatic interface for managing the Glue Data Catalog, crawlers, ETL
+      jobs, triggers, workflows, development endpoints, and data quality
+      rulesets. Requests are signed with AWS Signature Version 4 and sent to
+      regional Glue endpoints (glue.<region>.amazonaws.com).
+    humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
+    baseURL: https://glue.us-east-1.amazonaws.com
+    tags:
+      - AWS
+      - Data Catalog
+      - ETL
+      - Analytics
+      - Serverless
+    properties:
+      - type: Documentation
+        url: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
+      - type: Developer Guide
+        url: https://docs.aws.amazon.com/glue/latest/dg/
+      - type: OpenAPI
+        url: openapi/aws-glue-openapi.yml
+      - type: Getting Started
+        url: https://docs.aws.amazon.com/glue/latest/dg/start-console-overview.html
+
+common:
+  - type: Website
+    url: https://aws.amazon.com/glue/
+  - type: Documentation
+    url: https://docs.aws.amazon.com/glue/
+  - type: API Reference
+    url: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
+  - type: Pricing
+    url: https://aws.amazon.com/glue/pricing/
+  - type: Authentication
+    url: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html
+  - type: Endpoints
+    url: https://docs.aws.amazon.com/general/latest/gr/glue.html
+  - type: CLI
+    url: https://docs.aws.amazon.com/cli/latest/reference/glue/
+  - type: SDKs
+    url: https://aws.amazon.com/tools/
+  - type: GitHub Organization
+    url: https://github.com/aws
+  - type: Support
+    url: https://aws.amazon.com/premiumsupport/
+  - type: Status
+    url: https://health.aws.amazon.com/health/status
+
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
