@@ -1,0 +1,43 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "AWS Glue API",
+    "version": "2017-03-31"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "AWS Glue JSON RPC entry point",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://glue.{region}.amazonaws.com/",
+        "headers": [
+          {
+            "name": "X-Amz-Target",
+            "value": ""
+          },
+          {
+            "name": "Content-Type",
+            "value": ""
+          }
+        ],
+        "body": {
+          "type": "json",
+          "data": "{}"
+        }
+      },
+      "docs": "All AWS Glue operations are POST requests to the root path with the\noperation name in the `X-Amz-Target` header in the form\n`AWSGlue.<OperationName>`. The body is a JSON object containing\noperation input parameters. A representative subset of supported\noperations is enumerated below.\n"
+    }
+  ],
+  "bundled": true
+}
