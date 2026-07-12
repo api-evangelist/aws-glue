@@ -49,6 +49,14 @@ apis:
         url: https://docs.aws.amazon.com/glue/latest/dg/start-console-overview.html
 
 common:
+  - type: TrustCenter
+    url: security/aws-glue-trust-center.yml
+  - type: VulnerabilityDisclosure
+    url: security/aws-glue-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/aws-glue-domain-security.yml
+  - type: Authentication
+    url: authentication/aws-glue-authentication.yml
   - type: Website
     url: https://aws.amazon.com/glue/
   - type: Documentation
@@ -72,6 +80,8 @@ common:
   - type: StatusPage
     url: https://health.aws.amazon.com/health/status
 
+  - url: https://aws.amazon.com/blogs/big-data/feed/
+    type: Blog
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
