@@ -49,6 +49,8 @@ apis:
         url: https://docs.aws.amazon.com/glue/latest/dg/start-console-overview.html
 
 common:
+  - type: AgenticAccess
+    url: agentic-access/aws-glue-agentic-access.yml
   - type: TrustCenter
     url: security/aws-glue-trust-center.yml
   - type: VulnerabilityDisclosure
