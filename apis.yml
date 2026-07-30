@@ -9,7 +9,19 @@ description: >-
   AWS Signature Version 4 (SigV4) authentication and is accessed via SDKs, the
   AWS CLI, or direct HTTPS calls to regional service endpoints.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/aws-glue.png
 tags:
   - AWS
   - Data
@@ -23,31 +35,22 @@ created: '2026-05-11'
 modified: '2026-05-11'
 specificationVersion: '0.19'
 apis:
-  - aid: aws-glue:glue-api
-    name: AWS Glue API
-    description: >-
-      Programmatic interface for managing the Glue Data Catalog, crawlers, ETL
-      jobs, triggers, workflows, development endpoints, and data quality
-      rulesets. Requests are signed with AWS Signature Version 4 and sent to
-      regional Glue endpoints (glue.<region>.amazonaws.com).
-    humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
-    baseURL: https://glue.us-east-1.amazonaws.com
-    tags:
-      - AWS
-      - Data Catalog
-      - ETL
-      - Analytics
-      - Serverless
-    properties:
-      - type: Documentation
-        url: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
-      - type: Developer Guide
-        url: https://docs.aws.amazon.com/glue/latest/dg/
-      - type: OpenAPI
-        url: openapi/aws-glue-openapi.yml
-      - type: GettingStarted
-        url: https://docs.aws.amazon.com/glue/latest/dg/start-console-overview.html
-
+- aid: aws-glue:aws-glue-aws-glue-api-api
+  name: AWS Glue AWS Glue API API
+  description: The AWS Glue API API from AWS Glue — 1 operation(s) for aws glue api.
+  humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
+  baseURL: https://glue.us-east-1.amazonaws.com
+  tags:
+  - AWS Glue API
+  properties:
+  - type: OpenAPI
+    url: openapi/aws-glue-aws-glue-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
+  - type: Developer Guide
+    url: https://docs.aws.amazon.com/glue/latest/dg/
+  - type: GettingStarted
+    url: https://docs.aws.amazon.com/glue/latest/dg/start-console-overview.html
 common:
   - type: AgenticAccess
     url: agentic-access/aws-glue-agentic-access.yml
