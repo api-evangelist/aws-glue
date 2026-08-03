@@ -1,0 +1,14 @@
+{
+  "provider": "aws-glue",
+  "sources": [
+    "aws-glue-aws-glue-api-api-openapi.yml"
+  ],
+  "outputs": [
+    "aws-glue-aws-glue-api-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
