@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: AWS Glue AWS Glue API API
+  title: AWS Glue API
   version: '2017-03-31'
   description: 'AWS Glue is a fully managed serverless ETL service. The Glue API uses an
 
