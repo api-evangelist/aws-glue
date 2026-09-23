@@ -13,9 +13,7 @@ info:
     Version 4 (SigV4).
 
 
-    See https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
-
-    '
+    See https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html'
 servers:
 - url: https://glue.{region}.amazonaws.com
   description: AWS Glue regional endpoint
@@ -34,13 +32,11 @@ paths:
 
         operation name in the `X-Amz-Target` header in the form
 
-        `AWSGlue.<OperationName>`. The body is a JSON object containing
+        `AWSGlue.`. The body is a JSON object containing
 
         operation input parameters. A representative subset of supported
 
-        operations is enumerated below.
-
-        '
+        operations is enumerated below.'
       operationId: invokeAction
       parameters:
       - name: X-Amz-Target

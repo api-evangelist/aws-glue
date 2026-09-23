@@ -1,7 +1,7 @@
 {
   "provider": "aws-glue",
   "sources": [
-    "aws-glue-aws-glue-api-api-openapi.yml"
+    "_original/aws-glue-openapi.yml"
   ],
   "outputs": [
     "aws-glue-aws-glue-api-api-openapi.yml"
@@ -10,8 +10,13 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "aws-glue-aws-glue-api-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "aws-glue-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "aws-glue-openapi.yml: tagged paths POST / -> AWS Glue API",
+    "aws-glue-openapi.yml: declared missing tag: AWS Glue API",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "aws-glue-aws-glue-api-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
