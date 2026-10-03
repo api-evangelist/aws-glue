@@ -216,14 +216,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetBlueprint API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -240,30 +240,73 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
-    BlueprintParameterSpec:
+    GetBlueprintRequest:
+      type: object
+      required:
+      - Name
+      title: GetBlueprintRequest
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the blueprint.
+        IncludeBlueprint:
+          allOf:
+          - $ref: '#/components/schemas/NullableBoolean'
+          - description: Specifies whether or not to include the blueprint in the response.
+        IncludeParameterSpec:
+          allOf:
+          - $ref: '#/components/schemas/NullableBoolean'
+          - description: Specifies whether or not to include the parameter specification.
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+    EntityNotFoundException: {}
+    TimestampValue:
+      type: string
+      format: date-time
+    ErrorString:
+      type: string
+    NullableBoolean:
+      type: boolean
+    NameString:
       type: string
       minLength: 1
-      maxLength: 131072
-    ErrorString:
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    BlueprintStatus:
+      type: string
+      enum:
+      - CREATING
+      - ACTIVE
+      - UPDATING
+      - FAILED
+    Generic512CharString:
+      type: string
+      minLength: 1
+      maxLength: 512
+    GenericString:
       type: string
     LastActiveDefinition:
       type: object
@@ -289,14 +332,8 @@ components:
           - $ref: '#/components/schemas/GenericString'
           - description: Specifies a path in Amazon S3 where the blueprint is copied when you create or update the blueprint.
       description: When there are multiple versions of a blueprint and the latest version has some errors, this attribute indicates the last successful blueprint definition that is available with the service.
-    OperationTimeoutException: {}
-    InvalidInputException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     InternalServiceException: {}
+    InvalidInputException: {}
     Blueprint:
       type: object
       properties:
@@ -341,9 +378,6 @@ components:
           - $ref: '#/components/schemas/LastActiveDefinition'
           - description: When there are multiple versions of a blueprint and the latest version has some errors, this attribute indicates the last successful blueprint definition that is available with the service.
       description: The details of a blueprint.
-    TimestampValue:
-      type: string
-      format: date-time
     GetBlueprintResponse:
       type: object
       properties:
@@ -351,45 +385,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/Blueprint'
           - description: Returns a <code>Blueprint</code> object.
-    GenericString:
-      type: string
-    Generic512CharString:
+    BlueprintParameterSpec:
       type: string
       minLength: 1
-      maxLength: 512
-    EntityNotFoundException: {}
-    GetBlueprintRequest:
-      type: object
-      required:
-      - Name
-      title: GetBlueprintRequest
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the blueprint.
-        IncludeBlueprint:
-          allOf:
-          - $ref: '#/components/schemas/NullableBoolean'
-          - description: Specifies whether or not to include the blueprint in the response.
-        IncludeParameterSpec:
-          allOf:
-          - $ref: '#/components/schemas/NullableBoolean'
-          - description: Specifies whether or not to include the parameter specification.
-    NullableBoolean:
-      type: boolean
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
-    BlueprintStatus:
-      type: string
-      enum:
-      - CREATING
-      - ACTIVE
-      - UPDATING
-      - FAILED
+      maxLength: 131072
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

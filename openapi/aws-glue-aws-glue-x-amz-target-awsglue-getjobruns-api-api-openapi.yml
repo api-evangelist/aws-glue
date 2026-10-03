@@ -228,32 +228,31 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetJobRuns API'
 components:
   schemas:
-    Timeout:
+    JobRunList:
+      type: array
+      items:
+        $ref: '#/components/schemas/JobRun'
+    GenericMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    GlueVersionString:
+      type: string
+      pattern: ^\w+\.\w+$
+      minLength: 1
+      maxLength: 255
+    NullableInteger:
       type: integer
-      minimum: 1
-    WorkerType:
-      type: string
-      enum:
-      - Standard
-      - G.1X
-      - G.2X
-      - G.025X
-    ErrorString:
-      type: string
-    Predecessor:
+    ExecutionTime:
+      type: integer
+    NotificationProperty:
       type: object
       properties:
-        JobName:
+        NotifyDelayAfter:
           allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the job definition used by the predecessor job run.
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/IdString'
-          - description: The job-run ID of the predecessor job run.
-      description: A job run that was used in the predicate of a conditional trigger that triggered this job run.
-    AttemptCount:
-      type: integer
+          - $ref: '#/components/schemas/NotifyDelayAfter'
+          - description: After a job run starts, the number of minutes to wait before sending a job run delay notification.
+      description: Specifies configuration properties of a notification.
     JobRunState:
       type: string
       enum:
@@ -266,13 +265,27 @@ components:
       - TIMEOUT
       - ERROR
       - WAITING
-    OperationTimeoutException: {}
-    InvalidInputException: {}
-    NameString:
+    AttemptCount:
+      type: integer
+    EntityNotFoundException: {}
+    TimestampValue:
       type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+      format: date-time
+    ExecutionClass:
+      type: string
+      enum:
+      - FLEX
+      - STANDARD
+      maxLength: 16
+    NullableDouble:
+      type: number
+      format: double
+    ErrorString:
+      type: string
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
     GetJobRunsRequest:
       type: object
       required:
@@ -291,6 +304,63 @@ components:
           allOf:
           - $ref: '#/components/schemas/PageSize'
           - description: The maximum size of the response.
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    IntegerValue:
+      type: integer
+    Predecessor:
+      type: object
+      properties:
+        JobName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the job definition used by the predecessor job run.
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/IdString'
+          - description: The job-run ID of the predecessor job run.
+      description: A job run that was used in the predicate of a conditional trigger that triggered this job run.
+    WorkerType:
+      type: string
+      enum:
+      - Standard
+      - G.1X
+      - G.2X
+      - G.025X
+    NotifyDelayAfter:
+      type: integer
+      minimum: 1
+    GenericString:
+      type: string
+    InternalServiceException: {}
+    GetJobRunsResponse:
+      type: object
+      properties:
+        JobRuns:
+          allOf:
+          - $ref: '#/components/schemas/JobRunList'
+          - description: A list of job-run metadata objects.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/GenericString'
+          - description: A continuation token, if not all requested job runs have been returned.
+    InvalidInputException: {}
+    Timeout:
+      type: integer
+      minimum: 1
+    PredecessorList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Predecessor'
+    IdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    OperationTimeoutException: {}
     JobRun:
       type: object
       properties:
@@ -392,85 +462,15 @@ components:
           - $ref: '#/components/schemas/ExecutionClass'
           - description: <p>Indicates whether the job is run with a standard or flexible execution class. The standard execution-class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>
       description: Contains information about a job run.
-    GenericMap:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
-    InternalServiceException: {}
-    IntegerValue:
-      type: integer
-    PredecessorList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Predecessor'
-    GetJobRunsResponse:
-      type: object
-      properties:
-        JobRuns:
-          allOf:
-          - $ref: '#/components/schemas/JobRunList'
-          - description: A list of job-run metadata objects.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/GenericString'
-          - description: A continuation token, if not all requested job runs have been returned.
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
-    NotificationProperty:
-      type: object
-      properties:
-        NotifyDelayAfter:
-          allOf:
-          - $ref: '#/components/schemas/NotifyDelayAfter'
-          - description: After a job run starts, the number of minutes to wait before sending a job run delay notification.
-      description: Specifies configuration properties of a notification.
-    TimestampValue:
-      type: string
-      format: date-time
-    GlueVersionString:
-      type: string
-      pattern: ^\w+\.\w+$
-      minLength: 1
-      maxLength: 255
-    NotifyDelayAfter:
-      type: integer
-      minimum: 1
-    GenericString:
-      type: string
-    JobRunList:
-      type: array
-      items:
-        $ref: '#/components/schemas/JobRun'
-    NullableInteger:
-      type: integer
-    EntityNotFoundException: {}
-    ExecutionTime:
-      type: integer
-    NullableDouble:
-      type: number
-      format: double
-    IdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ExecutionClass:
-      type: string
-      enum:
-      - FLEX
-      - STANDARD
-      maxLength: 16
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -487,20 +487,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string

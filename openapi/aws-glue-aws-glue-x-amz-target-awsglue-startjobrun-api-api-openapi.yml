@@ -241,10 +241,81 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.StartJobRun API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    Timeout:
+    GenericMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    NullableInteger:
       type: integer
-      minimum: 1
+    NotificationProperty:
+      type: object
+      properties:
+        NotifyDelayAfter:
+          allOf:
+          - $ref: '#/components/schemas/NotifyDelayAfter'
+          - description: After a job run starts, the number of minutes to wait before sending a job run delay notification.
+      description: Specifies configuration properties of a notification.
+    EntityNotFoundException: {}
+    ExecutionClass:
+      type: string
+      enum:
+      - FLEX
+      - STANDARD
+      maxLength: 16
+    NullableDouble:
+      type: number
+      format: double
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    IntegerValue:
+      type: integer
     WorkerType:
       type: string
       enum:
@@ -252,7 +323,11 @@ components:
       - G.1X
       - G.2X
       - G.025X
-    ResourceNumberLimitExceededException: {}
+    NotifyDelayAfter:
+      type: integer
+      minimum: 1
+    GenericString:
+      type: string
     StartJobRunRequest:
       type: object
       required:
@@ -304,20 +379,13 @@ components:
           allOf:
           - $ref: '#/components/schemas/ExecutionClass'
           - description: <p>Indicates whether the job is run with a standard or flexible execution class. The standard execution-class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>
-    OperationTimeoutException: {}
-    InvalidInputException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     InternalServiceException: {}
-    GenericMap:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
-    IntegerValue:
+    ConcurrentRunsExceededException: {}
+    ResourceNumberLimitExceededException: {}
+    InvalidInputException: {}
+    Timeout:
       type: integer
+      minimum: 1
     StartJobRunResponse:
       type: object
       properties:
@@ -325,80 +393,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/IdString'
           - description: The ID assigned to this job run.
-    NotificationProperty:
-      type: object
-      properties:
-        NotifyDelayAfter:
-          allOf:
-          - $ref: '#/components/schemas/NotifyDelayAfter'
-          - description: After a job run starts, the number of minutes to wait before sending a job run delay notification.
-      description: Specifies configuration properties of a notification.
-    NotifyDelayAfter:
-      type: integer
-      minimum: 1
-    GenericString:
-      type: string
-    NullableInteger:
-      type: integer
-    EntityNotFoundException: {}
-    NullableDouble:
-      type: number
-      format: double
     IdString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ConcurrentRunsExceededException: {}
-    ExecutionClass:
-      type: string
-      enum:
-      - FLEX
-      - STANDARD
-      maxLength: 16
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

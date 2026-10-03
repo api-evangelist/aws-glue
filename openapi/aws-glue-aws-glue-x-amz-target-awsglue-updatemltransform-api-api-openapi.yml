@@ -231,81 +231,55 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateMLTransform API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    Timeout:
-      type: integer
-      minimum: 1
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    WorkerType:
-      type: string
-      enum:
-      - Standard
-      - G.1X
-      - G.2X
-      - G.025X
-    AccessDeniedException: {}
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    InvalidInputException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    RoleString:
-      type: string
-    InternalServiceException: {}
-    TransformParameters:
-      type: object
-      required:
-      - TransformType
-      properties:
-        TransformType:
-          allOf:
-          - $ref: '#/components/schemas/TransformType'
-          - description: <p>The type of machine learning transform.</p> <p>For information about the types of machine learning transforms, see <a href="https://docs.aws.amazon.com/glue/latest/dg/add-job-machine-learning-transform.html">Creating Machine Learning Transforms</a>.</p>
-        FindMatchesParameters:
-          allOf:
-          - $ref: '#/components/schemas/FindMatchesParameters'
-          - description: The parameters for the find matches algorithm.
-      description: The algorithm-specific parameters that are associated with the machine learning transform.
     GenericBoundedDouble:
       type: number
       format: double
       minimum: 0
       maximum: 1
-    TransformType:
-      type: string
-      enum:
-      - FIND_MATCHES
-    FindMatchesParameters:
-      type: object
-      properties:
-        PrimaryKeyColumnName:
-          allOf:
-          - $ref: '#/components/schemas/ColumnNameString'
-          - description: The name of a column that uniquely identifies rows in the source table. Used to help identify matching records.
-        PrecisionRecallTradeoff:
-          allOf:
-          - $ref: '#/components/schemas/GenericBoundedDouble'
-          - description: <p>The value selected when tuning your transform for a balance between precision and recall. A value of 0.5 means no preference; a value of 1.0 means a bias purely for precision, and a value of 0.0 means a bias for recall. Because this is a tradeoff, choosing values close to 1.0 means very low recall, and choosing values close to 0.0 results in very low precision.</p> <p>The precision metric indicates how often your model is correct when it predicts a match. </p> <p>The recall metric indicates that for an actual match, how often your model predicts the match.</p>
-        AccuracyCostTradeoff:
-          allOf:
-          - $ref: '#/components/schemas/GenericBoundedDouble'
-          - description: <p>The value that is selected when tuning your transform for a balance between accuracy and cost. A value of 0.5 means that the system balances accuracy and cost concerns. A value of 1.0 means a bias purely for accuracy, which typically results in a higher cost, sometimes substantially higher. A value of 0.0 means a bias purely for cost, which results in a less accurate <code>FindMatches</code> transform, sometimes with unacceptable accuracy.</p> <p>Accuracy measures how well the transform finds true positives and true negatives. Increasing accuracy requires more machine resources and cost. But it also results in increased recall. </p> <p>Cost measures how many compute resources, and thus money, are consumed to run the transform.</p>
-        EnforceProvidedLabels:
-          allOf:
-          - $ref: '#/components/schemas/NullableBoolean'
-          - description: <p>The value to switch on or off to force the output to match the provided labels from users. If the value is <code>True</code>, the <code>find matches</code> transform forces the output to match the provided labels. The results override the normal conflation results. If the value is <code>False</code>, the <code>find matches</code> transform does not ensure all the labels provided are respected, and the results rely on the trained model.</p> <p>Note that setting this value to true may increase the conflation execution time.</p>
-      description: The parameters to configure the find matches transform.
     GlueVersionString:
       type: string
       pattern: ^\w+\.\w+$
@@ -314,11 +288,58 @@ components:
     NullableInteger:
       type: integer
     EntityNotFoundException: {}
+    ColumnNameString:
+      type: string
+      minLength: 1
+      maxLength: 1024
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     NullableDouble:
       type: number
       format: double
     NullableBoolean:
       type: boolean
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    WorkerType:
+      type: string
+      enum:
+      - Standard
+      - G.1X
+      - G.2X
+      - G.025X
+    AccessDeniedException: {}
+    InternalServiceException: {}
+    UpdateMLTransformResponse:
+      type: object
+      properties:
+        TransformId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The unique identifier for the transform that was updated.
+    RoleString:
+      type: string
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    InvalidInputException: {}
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    TransformType:
+      type: string
+      enum:
+      - FIND_MATCHES
+    Timeout:
+      type: integer
+      minimum: 1
+    OperationTimeoutException: {}
     UpdateMLTransformRequest:
       type: object
       required:
@@ -369,61 +390,40 @@ components:
           allOf:
           - $ref: '#/components/schemas/NullableInteger'
           - description: The maximum number of times to retry a task for this transform after a task run fails.
-    UpdateMLTransformResponse:
+    FindMatchesParameters:
       type: object
       properties:
-        TransformId:
+        PrimaryKeyColumnName:
           allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The unique identifier for the transform that was updated.
-    ColumnNameString:
-      type: string
-      minLength: 1
-      maxLength: 1024
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+          - $ref: '#/components/schemas/ColumnNameString'
+          - description: The name of a column that uniquely identifies rows in the source table. Used to help identify matching records.
+        PrecisionRecallTradeoff:
+          allOf:
+          - $ref: '#/components/schemas/GenericBoundedDouble'
+          - description: <p>The value selected when tuning your transform for a balance between precision and recall. A value of 0.5 means no preference; a value of 1.0 means a bias purely for precision, and a value of 0.0 means a bias for recall. Because this is a tradeoff, choosing values close to 1.0 means very low recall, and choosing values close to 0.0 results in very low precision.</p> <p>The precision metric indicates how often your model is correct when it predicts a match. </p> <p>The recall metric indicates that for an actual match, how often your model predicts the match.</p>
+        AccuracyCostTradeoff:
+          allOf:
+          - $ref: '#/components/schemas/GenericBoundedDouble'
+          - description: <p>The value that is selected when tuning your transform for a balance between accuracy and cost. A value of 0.5 means that the system balances accuracy and cost concerns. A value of 1.0 means a bias purely for accuracy, which typically results in a higher cost, sometimes substantially higher. A value of 0.0 means a bias purely for cost, which results in a less accurate <code>FindMatches</code> transform, sometimes with unacceptable accuracy.</p> <p>Accuracy measures how well the transform finds true positives and true negatives. Increasing accuracy requires more machine resources and cost. But it also results in increased recall. </p> <p>Cost measures how many compute resources, and thus money, are consumed to run the transform.</p>
+        EnforceProvidedLabels:
+          allOf:
+          - $ref: '#/components/schemas/NullableBoolean'
+          - description: <p>The value to switch on or off to force the output to match the provided labels from users. If the value is <code>True</code>, the <code>find matches</code> transform forces the output to match the provided labels. The results override the normal conflation results. If the value is <code>False</code>, the <code>find matches</code> transform does not ensure all the labels provided are respected, and the results rely on the trained model.</p> <p>Note that setting this value to true may increase the conflation execution time.</p>
+      description: The parameters to configure the find matches transform.
+    TransformParameters:
+      type: object
+      required:
+      - TransformType
+      properties:
+        TransformType:
+          allOf:
+          - $ref: '#/components/schemas/TransformType'
+          - description: <p>The type of machine learning transform.</p> <p>For information about the types of machine learning transforms, see <a href="https://docs.aws.amazon.com/glue/latest/dg/add-job-machine-learning-transform.html">Creating Machine Learning Transforms</a>.</p>
+        FindMatchesParameters:
+          allOf:
+          - $ref: '#/components/schemas/FindMatchesParameters'
+          - description: The parameters for the find matches algorithm.
+      description: The algorithm-specific parameters that are associated with the machine learning transform.
   securitySchemes:
     hmac:
       type: apiKey

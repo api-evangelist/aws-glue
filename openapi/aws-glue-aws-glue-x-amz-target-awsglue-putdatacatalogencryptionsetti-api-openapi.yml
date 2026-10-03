@@ -203,14 +203,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.PutDataCatalogEncryptionSetti…'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -227,39 +227,55 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
-    PutDataCatalogEncryptionSettingsRequest:
+    Boolean:
+      type: boolean
+    CatalogEncryptionMode:
+      type: string
+      enum:
+      - DISABLED
+      - SSE-KMS
+    DataCatalogEncryptionSettings:
       type: object
-      required:
-      - DataCatalogEncryptionSettings
-      title: PutDataCatalogEncryptionSettingsRequest
       properties:
-        CatalogId:
+        EncryptionAtRest:
           allOf:
-          - $ref: '#/components/schemas/CatalogIdString'
-          - description: The ID of the Data Catalog to set the security configuration for. If none is provided, the Amazon Web Services account ID is used by default.
-        DataCatalogEncryptionSettings:
+          - $ref: '#/components/schemas/EncryptionAtRest'
+          - description: Specifies the encryption-at-rest configuration for the Data Catalog.
+        ConnectionPasswordEncryption:
           allOf:
-          - $ref: '#/components/schemas/DataCatalogEncryptionSettings'
-          - description: The security configuration to set.
+          - $ref: '#/components/schemas/ConnectionPasswordEncryption'
+          - description: When connection password protection is enabled, the Data Catalog uses a customer-provided key to encrypt the password as part of <code>CreateConnection</code> or <code>UpdateConnection</code> and store it in the <code>ENCRYPTED_PASSWORD</code> field in the connection properties. You can enable catalog encryption or only password encryption.
+      description: Contains configuration information for maintaining Data Catalog security.
+    CatalogIdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    InternalServiceException: {}
     EncryptionAtRest:
       type: object
       required:
@@ -274,36 +290,21 @@ components:
           - $ref: '#/components/schemas/NameString'
           - description: The ID of the KMS key to use for encryption at rest.
       description: Specifies the encryption-at-rest configuration for the Data Catalog.
-    CatalogIdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
     InvalidInputException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    Boolean:
-      type: boolean
-    InternalServiceException: {}
-    DataCatalogEncryptionSettings:
+    PutDataCatalogEncryptionSettingsRequest:
       type: object
+      required:
+      - DataCatalogEncryptionSettings
+      title: PutDataCatalogEncryptionSettingsRequest
       properties:
-        EncryptionAtRest:
+        CatalogId:
           allOf:
-          - $ref: '#/components/schemas/EncryptionAtRest'
-          - description: Specifies the encryption-at-rest configuration for the Data Catalog.
-        ConnectionPasswordEncryption:
+          - $ref: '#/components/schemas/CatalogIdString'
+          - description: The ID of the Data Catalog to set the security configuration for. If none is provided, the Amazon Web Services account ID is used by default.
+        DataCatalogEncryptionSettings:
           allOf:
-          - $ref: '#/components/schemas/ConnectionPasswordEncryption'
-          - description: When connection password protection is enabled, the Data Catalog uses a customer-provided key to encrypt the password as part of <code>CreateConnection</code> or <code>UpdateConnection</code> and store it in the <code>ENCRYPTED_PASSWORD</code> field in the connection properties. You can enable catalog encryption or only password encryption.
-      description: Contains configuration information for maintaining Data Catalog security.
-    PutDataCatalogEncryptionSettingsResponse:
-      type: object
-      properties: {}
+          - $ref: '#/components/schemas/DataCatalogEncryptionSettings'
+          - description: The security configuration to set.
     ConnectionPasswordEncryption:
       type: object
       required:
@@ -318,11 +319,10 @@ components:
           - $ref: '#/components/schemas/NameString'
           - description: <p>An KMS key that is used to encrypt the connection password. </p> <p>If connection password protection is enabled, the caller of <code>CreateConnection</code> and <code>UpdateConnection</code> needs at least <code>kms:Encrypt</code> permission on the specified KMS key, to encrypt passwords before storing them in the Data Catalog. </p> <p>You can set the decrypt permission to enable or restrict access on the password key according to your security requirements.</p>
       description: <p>The data structure used by the Data Catalog to encrypt the password as part of <code>CreateConnection</code> or <code>UpdateConnection</code> and store it in the <code>ENCRYPTED_PASSWORD</code> field in the connection properties. You can enable catalog encryption or only password encryption.</p> <p>When a <code>CreationConnection</code> request arrives containing a password, the Data Catalog first encrypts the password using your KMS key. It then encrypts the whole connection object again if catalog encryption is also enabled.</p> <p>This encryption requires that you set KMS key permissions to enable or restrict access on the password key according to your security requirements. For example, you might want only administrators to have decrypt permission on the password key.</p>
-    CatalogEncryptionMode:
-      type: string
-      enum:
-      - DISABLED
-      - SSE-KMS
+    PutDataCatalogEncryptionSettingsResponse:
+      type: object
+      properties: {}
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

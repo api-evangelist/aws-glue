@@ -229,21 +229,9 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateWorkflow API'
 components:
   schemas:
-    InvalidInputException: {}
-    NullableInteger:
-      type: integer
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     EntityNotFoundException: {}
-    WorkflowRunProperties:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
+    InvalidInputException: {}
     ConcurrentModificationException: {}
-    InternalServiceException: {}
     UpdateWorkflowResponse:
       type: object
       properties:
@@ -251,6 +239,21 @@ components:
           allOf:
           - $ref: '#/components/schemas/NameString'
           - description: The name of the workflow which was specified in input.
+    WorkflowRunProperties:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    NullableInteger:
+      type: integer
+    GenericString:
+      type: string
+    OperationTimeoutException: {}
+    InternalServiceException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     UpdateWorkflowRequest:
       type: object
       required:
@@ -273,12 +276,21 @@ components:
           allOf:
           - $ref: '#/components/schemas/NullableInteger'
           - description: You can use this parameter to prevent unwanted multiple updates to data, to control costs, or in some cases, to prevent exceeding the maximum number of concurrent runs of any of the component jobs. If you leave this parameter blank, there is no limit to the number of concurrent workflow runs.
-    GenericString:
-      type: string
-    OperationTimeoutException: {}
   parameters:
     X-Amz-SignedHeaders:
       name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
       in: header
       schema:
         type: string
@@ -297,18 +309,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
       in: header
       schema:
         type: string

@@ -202,20 +202,83 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.CreateScript API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    Integer:
-      type: integer
-    CreateScriptResponse:
+    CodeGenArgValue:
+      type: string
+    CodeGenIdentifier:
+      type: string
+      pattern: '[A-Za-z_][A-Za-z0-9_]*'
+      minLength: 1
+      maxLength: 255
+    Boolean:
+      type: boolean
+    Language:
+      type: string
+      enum:
+      - PYTHON
+      - SCALA
+    CodeGenEdge:
       type: object
+      required:
+      - Source
+      - Target
       properties:
-        PythonScript:
+        Source:
           allOf:
-          - $ref: '#/components/schemas/PythonScript'
-          - description: The Python script generated from the DAG.
-        ScalaCode:
+          - $ref: '#/components/schemas/CodeGenIdentifier'
+          - description: The ID of the node at which the edge starts.
+        Target:
           allOf:
-          - $ref: '#/components/schemas/ScalaCode'
-          - description: The Scala code generated from the DAG.
+          - $ref: '#/components/schemas/CodeGenIdentifier'
+          - description: The ID of the node at which the edge ends.
+        TargetParameter:
+          allOf:
+          - $ref: '#/components/schemas/CodeGenArgName'
+          - description: The target of the edge.
+      description: Represents a directional edge in a directed acyclic graph (DAG).
     CreateScriptRequest:
       type: object
       title: CreateScriptRequest
@@ -232,51 +295,17 @@ components:
           allOf:
           - $ref: '#/components/schemas/Language'
           - description: The programming language of the resulting code from the DAG.
-    DagNodes:
-      type: array
-      items:
-        $ref: '#/components/schemas/CodeGenNode'
-    OperationTimeoutException: {}
-    Language:
-      type: string
-      enum:
-      - PYTHON
-      - SCALA
-    InvalidInputException: {}
-    CodeGenNodeArg:
+    CreateScriptResponse:
       type: object
-      required:
-      - Name
-      - Value
       properties:
-        Name:
+        PythonScript:
           allOf:
-          - $ref: '#/components/schemas/CodeGenArgName'
-          - description: The name of the argument or property.
-        Value:
+          - $ref: '#/components/schemas/PythonScript'
+          - description: The Python script generated from the DAG.
+        ScalaCode:
           allOf:
-          - $ref: '#/components/schemas/CodeGenArgValue'
-          - description: The value of the argument or property.
-        Param:
-          allOf:
-          - $ref: '#/components/schemas/Boolean'
-          - description: True if the value is used as a parameter.
-      description: An argument or property of a node.
-    Boolean:
-      type: boolean
-    InternalServiceException: {}
-    ScalaCode:
-      type: string
-    CodeGenNodeArgs:
-      type: array
-      items:
-        $ref: '#/components/schemas/CodeGenNodeArg'
-      minItems: 0
-      maxItems: 50
-    CodeGenArgValue:
-      type: string
-    PythonScript:
-      type: string
+          - $ref: '#/components/schemas/ScalaCode'
+          - description: The Scala code generated from the DAG.
     CodeGenNode:
       type: object
       required:
@@ -301,81 +330,52 @@ components:
           - $ref: '#/components/schemas/Integer'
           - description: The line number of the node.
       description: Represents a node in a directed acyclic graph (DAG)
+    CodeGenNodeArgs:
+      type: array
+      items:
+        $ref: '#/components/schemas/CodeGenNodeArg'
+      minItems: 0
+      maxItems: 50
+    CodeGenNodeType:
+      type: string
+    PythonScript:
+      type: string
     CodeGenArgName:
+      type: string
+    InternalServiceException: {}
+    CodeGenNodeArg:
+      type: object
+      required:
+      - Name
+      - Value
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/CodeGenArgName'
+          - description: The name of the argument or property.
+        Value:
+          allOf:
+          - $ref: '#/components/schemas/CodeGenArgValue'
+          - description: The value of the argument or property.
+        Param:
+          allOf:
+          - $ref: '#/components/schemas/Boolean'
+          - description: True if the value is used as a parameter.
+      description: An argument or property of a node.
+    InvalidInputException: {}
+    ScalaCode:
       type: string
     DagEdges:
       type: array
       items:
         $ref: '#/components/schemas/CodeGenEdge'
-    CodeGenEdge:
-      type: object
-      required:
-      - Source
-      - Target
-      properties:
-        Source:
-          allOf:
-          - $ref: '#/components/schemas/CodeGenIdentifier'
-          - description: The ID of the node at which the edge starts.
-        Target:
-          allOf:
-          - $ref: '#/components/schemas/CodeGenIdentifier'
-          - description: The ID of the node at which the edge ends.
-        TargetParameter:
-          allOf:
-          - $ref: '#/components/schemas/CodeGenArgName'
-          - description: The target of the edge.
-      description: Represents a directional edge in a directed acyclic graph (DAG).
-    CodeGenNodeType:
-      type: string
-    CodeGenIdentifier:
-      type: string
-      pattern: '[A-Za-z_][A-Za-z0-9_]*'
-      minLength: 1
-      maxLength: 255
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+    DagNodes:
+      type: array
+      items:
+        $ref: '#/components/schemas/CodeGenNode'
+    OperationTimeoutException: {}
+    Integer:
+      type: integer
   securitySchemes:
     hmac:
       type: apiKey

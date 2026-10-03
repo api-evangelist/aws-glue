@@ -216,21 +216,7 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.UntagResource API'
 components:
   schemas:
-    InvalidInputException: {}
-    TagKey:
-      type: string
-      minLength: 1
-      maxLength: 128
     EntityNotFoundException: {}
-    UntagResourceResponse:
-      type: object
-      properties: {}
-    InternalServiceException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
     UntagResourceRequest:
       type: object
       required:
@@ -246,6 +232,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/TagKeysList'
           - description: Tags to remove from this resource.
+    InvalidInputException: {}
+    TagKey:
+      type: string
+      minLength: 1
+      maxLength: 128
     TagKeysList:
       type: array
       items:
@@ -253,7 +244,34 @@ components:
       minItems: 0
       maxItems: 50
     OperationTimeoutException: {}
+    InternalServiceException: {}
+    UntagResourceResponse:
+      type: object
+      properties: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
   parameters:
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-SignedHeaders:
       name: X-Amz-SignedHeaders
       in: header
@@ -268,24 +286,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
       in: header
       schema:
         type: string

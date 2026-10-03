@@ -247,37 +247,50 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.BatchDeleteTable API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    ErrorDetail:
-      type: object
-      properties:
-        ErrorCode:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The code associated with this error.
-        ErrorMessage:
-          allOf:
-          - $ref: '#/components/schemas/DescriptionString'
-          - description: A message describing the error.
-      description: Contains details about an error.
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    CatalogIdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    InvalidInputException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    InternalServiceException: {}
     BatchDeleteTableResponse:
       type: object
       properties:
@@ -297,6 +310,23 @@ components:
           - $ref: '#/components/schemas/ErrorDetail'
           - description: The details about the error.
       description: An error record for table operations.
+    EntityNotFoundException: {}
+    CatalogIdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    BatchDeleteTableNameList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 0
+      maxItems: 100
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     BatchDeleteTableRequest:
       type: object
       required:
@@ -320,67 +350,37 @@ components:
           allOf:
           - $ref: '#/components/schemas/TransactionIdString'
           - description: The transaction ID at which to delete the table contents.
+    ResourceNotReadyException: {}
+    ErrorDetail:
+      type: object
+      properties:
+        ErrorCode:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The code associated with this error.
+        ErrorMessage:
+          allOf:
+          - $ref: '#/components/schemas/DescriptionString'
+          - description: A message describing the error.
+      description: Contains details about an error.
+    InternalServiceException: {}
     GlueEncryptionException: {}
-    EntityNotFoundException: {}
-    TableErrors:
-      type: array
-      items:
-        $ref: '#/components/schemas/TableError'
-    BatchDeleteTableNameList:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 0
-      maxItems: 100
+    InvalidInputException: {}
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
     TransactionIdString:
       type: string
       pattern: '[\p{L}\p{N}\p{P}]*'
       minLength: 1
       maxLength: 255
-    ResourceNotReadyException: {}
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+    OperationTimeoutException: {}
+    TableErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/TableError'
   securitySchemes:
     hmac:
       type: apiKey

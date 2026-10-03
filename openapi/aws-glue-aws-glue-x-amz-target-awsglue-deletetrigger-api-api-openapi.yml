@@ -215,42 +215,21 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteTrigger API'
 components:
-  schemas:
-    InvalidInputException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    DeleteTriggerRequest:
-      type: object
-      required:
-      - Name
-      title: DeleteTriggerRequest
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the trigger to delete.
-    ConcurrentModificationException: {}
-    InternalServiceException: {}
-    DeleteTriggerResponse:
-      type: object
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the trigger that was deleted.
-    OperationTimeoutException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
       in: header
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Date:
+      name: X-Amz-Date
       in: header
       schema:
         type: string
@@ -273,18 +252,39 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
+  schemas:
+    InvalidInputException: {}
+    DeleteTriggerResponse:
+      type: object
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the trigger that was deleted.
+    DeleteTriggerRequest:
+      type: object
+      required:
+      - Name
+      title: DeleteTriggerRequest
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the trigger to delete.
+    ConcurrentModificationException: {}
+    OperationTimeoutException: {}
+    InternalServiceException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   securitySchemes:
     hmac:
       type: apiKey

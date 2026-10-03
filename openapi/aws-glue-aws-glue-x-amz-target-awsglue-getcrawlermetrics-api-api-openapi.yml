@@ -189,14 +189,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetCrawlerMetrics API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -213,46 +213,82 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
-    OperationTimeoutException: {}
+    Token:
+      type: string
+    Boolean:
+      type: boolean
+    CrawlerNameList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 0
+      maxItems: 100
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
+    CrawlerMetricsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/CrawlerMetrics'
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    Token:
-      type: string
-    Boolean:
-      type: boolean
     NonNegativeInteger:
       type: integer
       minimum: 0
+    GetCrawlerMetricsResponse:
+      type: object
+      properties:
+        CrawlerMetricsList:
+          allOf:
+          - $ref: '#/components/schemas/CrawlerMetricsList'
+          - description: A list of metrics for the specified crawler.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/Token'
+          - description: A continuation token, if the returned list does not contain the last metric available.
+    GetCrawlerMetricsRequest:
+      type: object
+      title: GetCrawlerMetricsRequest
+      properties:
+        CrawlerNameList:
+          allOf:
+          - $ref: '#/components/schemas/CrawlerNameList'
+          - description: A list of the names of crawlers about which to retrieve metrics.
+        MaxResults:
+          allOf:
+          - $ref: '#/components/schemas/PageSize'
+          - description: The maximum size of a list to return.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/Token'
+          - description: A continuation token, if this is a continuation call.
     NonNegativeDouble:
       type: number
       format: double
       minimum: 0
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
     CrawlerMetrics:
       type: object
       properties:
@@ -289,43 +325,7 @@ components:
           - $ref: '#/components/schemas/NonNegativeInteger'
           - description: The number of tables deleted by this crawler.
       description: Metrics for a specified crawler.
-    CrawlerNameList:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 0
-      maxItems: 100
-    CrawlerMetricsList:
-      type: array
-      items:
-        $ref: '#/components/schemas/CrawlerMetrics'
-    GetCrawlerMetricsResponse:
-      type: object
-      properties:
-        CrawlerMetricsList:
-          allOf:
-          - $ref: '#/components/schemas/CrawlerMetricsList'
-          - description: A list of metrics for the specified crawler.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/Token'
-          - description: A continuation token, if the returned list does not contain the last metric available.
-    GetCrawlerMetricsRequest:
-      type: object
-      title: GetCrawlerMetricsRequest
-      properties:
-        CrawlerNameList:
-          allOf:
-          - $ref: '#/components/schemas/CrawlerNameList'
-          - description: A list of the names of crawlers about which to retrieve metrics.
-        MaxResults:
-          allOf:
-          - $ref: '#/components/schemas/PageSize'
-          - description: The maximum size of a list to return.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/Token'
-          - description: A continuation token, if this is a continuation call.
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

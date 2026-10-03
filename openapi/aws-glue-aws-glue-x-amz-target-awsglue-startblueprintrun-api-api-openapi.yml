@@ -242,14 +242,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.StartBlueprintRun API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -266,57 +266,31 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
-    OrchestrationIAMRoleArn:
-      type: string
-      pattern: arn:aws[^:]*:iam::[0-9]*:role/.+
-      minLength: 1
-      maxLength: 1024
-    ResourceNumberLimitExceededException: {}
-    OperationTimeoutException: {}
-    InvalidInputException: {}
-    InternalServiceException: {}
-    BlueprintParameters:
-      type: string
-      minLength: 1
-      maxLength: 131072
-    IllegalBlueprintStateException: {}
-    StartBlueprintRunResponse:
-      type: object
-      properties:
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/IdString'
-          - description: The run ID for this blueprint run.
-    EntityNotFoundException: {}
     OrchestrationNameString:
       type: string
       pattern: '[\.\-_A-Za-z0-9]+'
       minLength: 1
       maxLength: 128
-    IdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    EntityNotFoundException: {}
     StartBlueprintRunRequest:
       type: object
       required:
@@ -336,6 +310,32 @@ components:
           allOf:
           - $ref: '#/components/schemas/OrchestrationIAMRoleArn'
           - description: Specifies the IAM role used to create the workflow.
+    StartBlueprintRunResponse:
+      type: object
+      properties:
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/IdString'
+          - description: The run ID for this blueprint run.
+    BlueprintParameters:
+      type: string
+      minLength: 1
+      maxLength: 131072
+    IllegalBlueprintStateException: {}
+    OrchestrationIAMRoleArn:
+      type: string
+      pattern: arn:aws[^:]*:iam::[0-9]*:role/.+
+      minLength: 1
+      maxLength: 1024
+    InternalServiceException: {}
+    ResourceNumberLimitExceededException: {}
+    InvalidInputException: {}
+    IdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

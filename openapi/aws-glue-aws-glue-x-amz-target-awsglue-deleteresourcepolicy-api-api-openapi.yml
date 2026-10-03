@@ -229,8 +229,8 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteResourcePolicy API'
 components:
   schemas:
-    InvalidInputException: {}
     EntityNotFoundException: {}
+    InvalidInputException: {}
     DeleteResourcePolicyRequest:
       type: object
       title: DeleteResourcePolicyRequest
@@ -245,29 +245,35 @@ components:
           - description: The ARN of the Glue resource for the resource policy to be deleted.
     ConditionCheckFailureException: {}
     InternalServiceException: {}
+    OperationTimeoutException: {}
+    DeleteResourcePolicyResponse:
+      type: object
+      properties: {}
     GlueResourceArn:
       type: string
       pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
       minLength: 1
       maxLength: 10240
-    DeleteResourcePolicyResponse:
-      type: object
-      properties: {}
     HashString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
       in: header
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Date:
+      name: X-Amz-Date
       in: header
       schema:
         type: string
@@ -286,12 +292,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
       in: header
       schema:
         type: string

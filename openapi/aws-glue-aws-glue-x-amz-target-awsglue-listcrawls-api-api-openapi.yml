@@ -217,17 +217,50 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.ListCrawls API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    MessagePrefix:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     CrawlerHistory:
       type: object
       properties:
@@ -272,48 +305,9 @@ components:
           - $ref: '#/components/schemas/NonNegativeDouble'
           - description: The number of data processing units (DPU) used in hours for the crawl.
       description: Contains the information for a run of a crawler.
-    LogStream:
-      type: string
-      pattern: '[^:*]*'
-      minLength: 1
-      maxLength: 512
-    CrawlerHistoryList:
-      type: array
-      items:
-        $ref: '#/components/schemas/CrawlerHistory'
-    OperationTimeoutException: {}
-    InvalidInputException: {}
     Token:
       type: string
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ListCrawlsResponse:
-      type: object
-      properties:
-        Crawls:
-          allOf:
-          - $ref: '#/components/schemas/CrawlerHistoryList'
-          - description: A list of <code>CrawlerHistory</code> objects representing the crawl runs that meet your criteria.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/Token'
-          - description: A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
-    LogGroup:
-      type: string
-      pattern: '[\.\-_/#A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 512
-    NonNegativeDouble:
-      type: number
-      format: double
-      minimum: 0
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
+    EntityNotFoundException: {}
     ListCrawlsRequest:
       type: object
       required:
@@ -336,18 +330,47 @@ components:
           allOf:
           - $ref: '#/components/schemas/Token'
           - description: A continuation token, if this is a continuation call.
-    GenericString:
-      type: string
-    CrawlerHistoryState:
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
+    FieldName:
       type: string
       enum:
-      - RUNNING
-      - COMPLETED
-      - FAILED
-      - STOPPED
-    Timestamp:
+      - CRAWL_ID
+      - STATE
+      - START_TIME
+      - END_TIME
+      - DPU_HOUR
+    ListCrawlsResponse:
+      type: object
+      properties:
+        Crawls:
+          allOf:
+          - $ref: '#/components/schemas/CrawlerHistoryList'
+          - description: A list of <code>CrawlerHistory</code> objects representing the crawl runs that meet your criteria.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/Token'
+          - description: A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
+    NameString:
       type: string
-      format: date-time
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    FilterOperator:
+      type: string
+      enum:
+      - GT
+      - GE
+      - LT
+      - LE
+      - EQ
+      - NE
+    CrawlerHistoryList:
+      type: array
+      items:
+        $ref: '#/components/schemas/CrawlerHistory'
     CrawlsFilter:
       type: object
       properties:
@@ -364,73 +387,50 @@ components:
           - $ref: '#/components/schemas/GenericString'
           - description: 'The value provided for comparison on the crawl field. '
       description: A list of fields, comparators and value that you can use to filter the crawler runs for a specified crawler.
-    EntityNotFoundException: {}
-    FieldName:
+    MessagePrefix:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    CrawlId:
+      type: string
+    GenericString:
+      type: string
+    LogStream:
+      type: string
+      pattern: '[^:*]*'
+      minLength: 1
+      maxLength: 512
+    LogGroup:
+      type: string
+      pattern: '[\.\-_/#A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 512
+    CrawlerHistoryState:
       type: string
       enum:
-      - CRAWL_ID
-      - STATE
-      - START_TIME
-      - END_TIME
-      - DPU_HOUR
+      - RUNNING
+      - COMPLETED
+      - FAILED
+      - STOPPED
+    InvalidInputException: {}
+    NonNegativeDouble:
+      type: number
+      format: double
+      minimum: 0
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
     CrawlsFilterList:
       type: array
       items:
         $ref: '#/components/schemas/CrawlsFilter'
-    FilterOperator:
+    Timestamp:
       type: string
-      enum:
-      - GT
-      - GE
-      - LT
-      - LE
-      - EQ
-      - NE
-    CrawlId:
-      type: string
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+      format: date-time
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

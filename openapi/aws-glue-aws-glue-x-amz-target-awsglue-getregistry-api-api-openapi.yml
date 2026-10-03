@@ -215,13 +215,50 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.GetRegistry API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    AccessDeniedException: {}
     GetRegistryResponse:
       type: object
       properties:
@@ -249,35 +286,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/UpdatedTimestamp'
           - description: The date and time the registry was updated.
-    InvalidInputException: {}
-    InternalServiceException: {}
-    UpdatedTimestamp:
-      type: string
-    CreatedTimestamp:
-      type: string
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    RegistryId:
-      type: object
-      properties:
-        RegistryName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: 'Name of the registry. Used only for lookup. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided. '
-        RegistryArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: Arn of the registry to be updated. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided.
-      description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
-    EntityNotFoundException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
     GetRegistryInput:
       type: object
       required:
@@ -293,49 +301,41 @@ components:
       enum:
       - AVAILABLE
       - DELETING
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+    EntityNotFoundException: {}
+    CreatedTimestamp:
+      type: string
+    UpdatedTimestamp:
+      type: string
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    AccessDeniedException: {}
+    InternalServiceException: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    InvalidInputException: {}
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    RegistryId:
+      type: object
+      properties:
+        RegistryName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: 'Name of the registry. Used only for lookup. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided. '
+        RegistryArn:
+          allOf:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: Arn of the registry to be updated. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided.
+      description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
   securitySchemes:
     hmac:
       type: apiKey

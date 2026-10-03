@@ -216,13 +216,33 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetWorkflowRunProperties API'
 components:
   schemas:
+    EntityNotFoundException: {}
     InvalidInputException: {}
+    GetWorkflowRunPropertiesResponse:
+      type: object
+      properties:
+        RunProperties:
+          allOf:
+          - $ref: '#/components/schemas/WorkflowRunProperties'
+          - description: The workflow run properties which were set during the specified run.
+    WorkflowRunProperties:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    GenericString:
+      type: string
+    IdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    OperationTimeoutException: {}
+    InternalServiceException: {}
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    EntityNotFoundException: {}
     GetWorkflowRunPropertiesRequest:
       type: object
       required:
@@ -238,35 +258,27 @@ components:
           allOf:
           - $ref: '#/components/schemas/IdString'
           - description: The ID of the workflow run whose run properties should be returned.
-    WorkflowRunProperties:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
-    InternalServiceException: {}
-    GetWorkflowRunPropertiesResponse:
-      type: object
-      properties:
-        RunProperties:
-          allOf:
-          - $ref: '#/components/schemas/WorkflowRunProperties'
-          - description: The workflow run properties which were set during the specified run.
-    IdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GenericString:
-      type: string
-    OperationTimeoutException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
       in: header
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -279,18 +291,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
       in: header
       schema:
         type: string

@@ -215,40 +215,22 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.ListBlueprints API'
 components:
   schemas:
-    InvalidInputException: {}
-    TagValue:
+    OrchestrationNameString:
       type: string
-      minLength: 0
-      maxLength: 256
-    ListBlueprintsResponse:
-      type: object
-      properties:
-        Blueprints:
-          allOf:
-          - $ref: '#/components/schemas/BlueprintNames'
-          - description: List of names of blueprints in the account.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/GenericString'
-          - description: A continuation token, if not all blueprint names have been returned.
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+    InvalidInputException: {}
     TagsMap:
       type: object
       minProperties: 0
       maxProperties: 50
       additionalProperties:
         $ref: '#/components/schemas/TagValue'
-    InternalServiceException: {}
     BlueprintNames:
       type: array
       items:
         $ref: '#/components/schemas/OrchestrationNameString'
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
-    GenericString:
-      type: string
     ListBlueprintsRequest:
       type: object
       title: ListBlueprintsRequest
@@ -265,20 +247,50 @@ components:
           allOf:
           - $ref: '#/components/schemas/TagsMap'
           - description: Filters the list by an Amazon Web Services resource tag.
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
+    GenericString:
+      type: string
     PageSize:
       type: integer
       minimum: 1
       maximum: 1000
     OperationTimeoutException: {}
+    InternalServiceException: {}
+    ListBlueprintsResponse:
+      type: object
+      properties:
+        Blueprints:
+          allOf:
+          - $ref: '#/components/schemas/BlueprintNames'
+          - description: List of names of blueprints in the account.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/GenericString'
+          - description: A continuation token, if not all blueprint names have been returned.
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
       in: header
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -291,18 +303,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
       in: header
       schema:
         type: string

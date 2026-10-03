@@ -268,14 +268,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.RunStatement API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -292,36 +292,47 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
-    AccessDeniedException: {}
-    ResourceNumberLimitExceededException: {}
-    OperationTimeoutException: {}
-    InvalidInputException: {}
+    RunStatementResponse:
+      type: object
+      properties:
+        Id:
+          allOf:
+          - $ref: '#/components/schemas/IntegerValue'
+          - description: Returns the Id of the statement that was run.
+    ValidationException: {}
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+    EntityNotFoundException: {}
+    IllegalSessionStateException: {}
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ValidationException: {}
-    InternalServiceException: {}
+    IntegerValue:
+      type: integer
     RunStatementRequest:
       type: object
       required:
@@ -341,25 +352,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/OrchestrationNameString'
           - description: The origin of the request.
-    IntegerValue:
-      type: integer
+    AccessDeniedException: {}
+    InternalServiceException: {}
+    ResourceNumberLimitExceededException: {}
+    InvalidInputException: {}
+    OperationTimeoutException: {}
     OrchestrationStatementCodeString:
       type: string
       maxLength: 68000
-    IllegalSessionStateException: {}
-    RunStatementResponse:
-      type: object
-      properties:
-        Id:
-          allOf:
-          - $ref: '#/components/schemas/IntegerValue'
-          - description: Returns the Id of the statement that was run.
-    EntityNotFoundException: {}
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
   securitySchemes:
     hmac:
       type: apiKey

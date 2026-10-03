@@ -238,8 +238,8 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.StartMLLabelingSetGenerationT…'
 components:
   schemas:
-    InvalidInputException: {}
     EntityNotFoundException: {}
+    InvalidInputException: {}
     StartMLLabelingSetGenerationTaskRunResponse:
       type: object
       properties:
@@ -247,7 +247,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/HashString'
           - description: The unique run identifier that is associated with this task run.
-    InternalServiceException: {}
+    UriString:
+      type: string
+    OperationTimeoutException: {}
     StartMLLabelingSetGenerationTaskRunRequest:
       type: object
       required:
@@ -263,24 +265,28 @@ components:
           allOf:
           - $ref: '#/components/schemas/UriString'
           - description: The Amazon Simple Storage Service (Amazon S3) path where you generate the labeling set.
-    UriString:
-      type: string
+    InternalServiceException: {}
+    ConcurrentRunsExceededException: {}
     HashString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ConcurrentRunsExceededException: {}
-    OperationTimeoutException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
       in: header
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Date:
+      name: X-Amz-Date
       in: header
       schema:
         type: string
@@ -299,12 +305,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
       in: header
       schema:
         type: string

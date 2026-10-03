@@ -216,62 +216,6 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetMLTransform API'
 components:
   schemas:
-    ColumnTypeString:
-      type: string
-      minLength: 0
-      maxLength: 131072
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    Timeout:
-      type: integer
-      minimum: 1
-    RecordsCount:
-      type: integer
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    WorkerType:
-      type: string
-      enum:
-      - Standard
-      - G.1X
-      - G.2X
-      - G.025X
-    ColumnImportance:
-      type: object
-      properties:
-        ColumnName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of a column.
-        Importance:
-          allOf:
-          - $ref: '#/components/schemas/GenericBoundedDouble'
-          - description: The column importance score for the column, as a decimal.
-      description: <p>A structure containing the column name and column importance score for a column. </p> <p>Column importance helps you understand how columns contribute to your model, by identifying which columns in your records are more important than others.</p>
-    SchemaColumn:
-      type: object
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/ColumnNameString'
-          - description: The name of the column.
-        DataType:
-          allOf:
-          - $ref: '#/components/schemas/ColumnTypeString'
-          - description: The type of data in the column.
-      description: A key-value pair representing a column and data type that this transform can run against. The <code>Schema</code> parameter of the <code>MLTransform</code> may contain up to 100 of these structures.
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    MLUserDataEncryptionModeString:
-      type: string
-      enum:
-      - DISABLED
-      - SSE-KMS
     EvaluationMetrics:
       type: object
       required:
@@ -286,114 +230,43 @@ components:
           - $ref: '#/components/schemas/FindMatchesMetrics'
           - description: The evaluation metrics for the find matches algorithm.
       description: Evaluation metrics provide an estimate of the quality of your machine learning transform.
-    OperationTimeoutException: {}
-    InvalidInputException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ConfusionMatrix:
+    TransformSchema:
+      type: array
+      items:
+        $ref: '#/components/schemas/SchemaColumn'
+      maxItems: 100
+    TransformEncryption:
       type: object
       properties:
-        NumTruePositives:
+        MlUserDataEncryption:
           allOf:
-          - $ref: '#/components/schemas/RecordsCount'
-          - description: The number of matches in the data that the transform correctly found, in the confusion matrix for your transform.
-        NumFalsePositives:
+          - $ref: '#/components/schemas/MLUserDataEncryption'
+          - description: An <code>MLUserDataEncryption</code> object containing the encryption mode and customer-provided KMS key ID.
+        TaskRunSecurityConfigurationName:
           allOf:
-          - $ref: '#/components/schemas/RecordsCount'
-          - description: The number of nonmatches in the data that the transform incorrectly classified as a match, in the confusion matrix for your transform.
-        NumTrueNegatives:
-          allOf:
-          - $ref: '#/components/schemas/RecordsCount'
-          - description: The number of nonmatches in the data that the transform correctly rejected, in the confusion matrix for your transform.
-        NumFalseNegatives:
-          allOf:
-          - $ref: '#/components/schemas/RecordsCount'
-          - description: The number of matches in the data that the transform didn't find, in the confusion matrix for your transform.
-      description: <p>The confusion matrix shows you what your transform is predicting accurately and what types of errors it is making.</p> <p>For more information, see <a href="https://en.wikipedia.org/wiki/Confusion_matrix">Confusion matrix</a> in Wikipedia.</p>
-    RoleString:
-      type: string
-    InternalServiceException: {}
-    TransformParameters:
-      type: object
-      required:
-      - TransformType
-      properties:
-        TransformType:
-          allOf:
-          - $ref: '#/components/schemas/TransformType'
-          - description: <p>The type of machine learning transform.</p> <p>For information about the types of machine learning transforms, see <a href="https://docs.aws.amazon.com/glue/latest/dg/add-job-machine-learning-transform.html">Creating Machine Learning Transforms</a>.</p>
-        FindMatchesParameters:
-          allOf:
-          - $ref: '#/components/schemas/FindMatchesParameters'
-          - description: The parameters for the find matches algorithm.
-      description: The algorithm-specific parameters that are associated with the machine learning transform.
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the security configuration.
+      description: <p>The encryption-at-rest settings of the transform that apply to accessing user data. Machine learning transforms can access user data encrypted in Amazon S3 using KMS.</p> <p>Additionally, imported labels and trained transforms can now be encrypted using a customer provided KMS key.</p>
     GenericBoundedDouble:
       type: number
       format: double
       minimum: 0
       maximum: 1
-    GetMLTransformRequest:
-      type: object
-      required:
-      - TransformId
-      title: GetMLTransformRequest
-      properties:
-        TransformId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The unique identifier of the transform, generated at the time that the transform was created.
-    MLUserDataEncryption:
-      type: object
-      required:
-      - MlUserDataEncryptionMode
-      properties:
-        MlUserDataEncryptionMode:
-          allOf:
-          - $ref: '#/components/schemas/MLUserDataEncryptionModeString'
-          - description: '<p>The encryption mode applied to user data. Valid values are:</p> <ul> <li> <p>DISABLED: encryption is disabled</p> </li> <li> <p>SSEKMS: use of server-side encryption with Key Management Service (SSE-KMS) for user data stored in Amazon S3.</p> </li> </ul>'
-        KmsKeyId:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The ID for the customer-provided KMS key.
-      description: The encryption-at-rest settings of the transform that apply to accessing user data.
-    GlueTableAdditionalOptions:
-      type: object
-      minProperties: 1
-      maxProperties: 10
-      additionalProperties:
-        $ref: '#/components/schemas/DescriptionString'
-    TransformType:
-      type: string
-      enum:
-      - FIND_MATCHES
-    FindMatchesParameters:
-      type: object
-      properties:
-        PrimaryKeyColumnName:
-          allOf:
-          - $ref: '#/components/schemas/ColumnNameString'
-          - description: The name of a column that uniquely identifies rows in the source table. Used to help identify matching records.
-        PrecisionRecallTradeoff:
-          allOf:
-          - $ref: '#/components/schemas/GenericBoundedDouble'
-          - description: <p>The value selected when tuning your transform for a balance between precision and recall. A value of 0.5 means no preference; a value of 1.0 means a bias purely for precision, and a value of 0.0 means a bias for recall. Because this is a tradeoff, choosing values close to 1.0 means very low recall, and choosing values close to 0.0 results in very low precision.</p> <p>The precision metric indicates how often your model is correct when it predicts a match. </p> <p>The recall metric indicates that for an actual match, how often your model predicts the match.</p>
-        AccuracyCostTradeoff:
-          allOf:
-          - $ref: '#/components/schemas/GenericBoundedDouble'
-          - description: <p>The value that is selected when tuning your transform for a balance between accuracy and cost. A value of 0.5 means that the system balances accuracy and cost concerns. A value of 1.0 means a bias purely for accuracy, which typically results in a higher cost, sometimes substantially higher. A value of 0.0 means a bias purely for cost, which results in a less accurate <code>FindMatches</code> transform, sometimes with unacceptable accuracy.</p> <p>Accuracy measures how well the transform finds true positives and true negatives. Increasing accuracy requires more machine resources and cost. But it also results in increased recall. </p> <p>Cost measures how many compute resources, and thus money, are consumed to run the transform.</p>
-        EnforceProvidedLabels:
-          allOf:
-          - $ref: '#/components/schemas/NullableBoolean'
-          - description: <p>The value to switch on or off to force the output to match the provided labels from users. If the value is <code>True</code>, the <code>find matches</code> transform forces the output to match the provided labels. The results override the normal conflation results. If the value is <code>False</code>, the <code>find matches</code> transform does not ensure all the labels provided are respected, and the results rely on the trained model.</p> <p>Note that setting this value to true may increase the conflation execution time.</p>
-      description: The parameters to configure the find matches transform.
+    LabelCount:
+      type: integer
     GlueVersionString:
       type: string
       pattern: ^\w+\.\w+$
       minLength: 1
       maxLength: 255
+    NullableInteger:
+      type: integer
+    GlueTables:
+      type: array
+      items:
+        $ref: '#/components/schemas/GlueTable'
+      minItems: 0
+      maxItems: 10
     FindMatchesMetrics:
       type: object
       properties:
@@ -422,79 +295,105 @@ components:
           - $ref: '#/components/schemas/ColumnImportanceList'
           - description: A list of <code>ColumnImportance</code> structures containing column importance metrics, sorted in order of descending importance.
       description: The evaluation metrics for the find matches algorithm. The quality of your machine learning transform is measured by getting your transform to predict some matches and comparing the results to known matches from the same dataset. The quality metrics are based on a subset of your data, so they are not precise.
-    GlueTable:
+    EntityNotFoundException: {}
+    GlueTableAdditionalOptions:
       type: object
-      required:
-      - DatabaseName
-      - TableName
-      properties:
-        DatabaseName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: A database name in the Glue Data Catalog.
-        TableName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: A table name in the Glue Data Catalog.
-        CatalogId:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: A unique identifier for the Glue Data Catalog.
-        ConnectionName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the connection to the Glue Data Catalog.
-        AdditionalOptions:
-          allOf:
-          - $ref: '#/components/schemas/GlueTableAdditionalOptions'
-          - description: '<p>Additional options for the table. Currently there are two keys supported:</p> <ul> <li> <p> <code>pushDownPredicate</code>: to filter on partitions without having to list and read all the files in your dataset.</p> </li> <li> <p> <code>catalogPartitionPredicate</code>: to use server-side partition pruning using partition indexes in the Glue Data Catalog.</p> </li> </ul>'
-      description: The database and table in the Glue Data Catalog that is used for input or output data.
-    Timestamp:
-      type: string
-      format: date-time
-    ColumnImportanceList:
-      type: array
-      items:
-        $ref: '#/components/schemas/ColumnImportance'
-      minItems: 0
-      maxItems: 100
-    NullableInteger:
-      type: integer
+      minProperties: 1
+      maxProperties: 10
+      additionalProperties:
+        $ref: '#/components/schemas/DescriptionString'
     TransformStatusType:
       type: string
       enum:
       - NOT_READY
       - READY
       - DELETING
-    EntityNotFoundException: {}
-    GlueTables:
-      type: array
-      items:
-        $ref: '#/components/schemas/GlueTable'
-      minItems: 0
-      maxItems: 10
-    TransformEncryption:
-      type: object
-      properties:
-        MlUserDataEncryption:
-          allOf:
-          - $ref: '#/components/schemas/MLUserDataEncryption'
-          - description: An <code>MLUserDataEncryption</code> object containing the encryption mode and customer-provided KMS key ID.
-        TaskRunSecurityConfigurationName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the security configuration.
-      description: <p>The encryption-at-rest settings of the transform that apply to accessing user data. Machine learning transforms can access user data encrypted in Amazon S3 using KMS.</p> <p>Additionally, imported labels and trained transforms can now be encrypted using a customer provided KMS key.</p>
+    ColumnNameString:
+      type: string
+      minLength: 1
+      maxLength: 1024
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     NullableDouble:
       type: number
       format: double
+    SchemaColumn:
+      type: object
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/ColumnNameString'
+          - description: The name of the column.
+        DataType:
+          allOf:
+          - $ref: '#/components/schemas/ColumnTypeString'
+          - description: The type of data in the column.
+      description: A key-value pair representing a column and data type that this transform can run against. The <code>Schema</code> parameter of the <code>MLTransform</code> may contain up to 100 of these structures.
     NullableBoolean:
       type: boolean
-    TransformSchema:
-      type: array
-      items:
-        $ref: '#/components/schemas/SchemaColumn'
-      maxItems: 100
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    GetMLTransformRequest:
+      type: object
+      required:
+      - TransformId
+      title: GetMLTransformRequest
+      properties:
+        TransformId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The unique identifier of the transform, generated at the time that the transform was created.
+    MLUserDataEncryption:
+      type: object
+      required:
+      - MlUserDataEncryptionMode
+      properties:
+        MlUserDataEncryptionMode:
+          allOf:
+          - $ref: '#/components/schemas/MLUserDataEncryptionModeString'
+          - description: '<p>The encryption mode applied to user data. Valid values are:</p> <ul> <li> <p>DISABLED: encryption is disabled</p> </li> <li> <p>SSEKMS: use of server-side encryption with Key Management Service (SSE-KMS) for user data stored in Amazon S3.</p> </li> </ul>'
+        KmsKeyId:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The ID for the customer-provided KMS key.
+      description: The encryption-at-rest settings of the transform that apply to accessing user data.
+    ConfusionMatrix:
+      type: object
+      properties:
+        NumTruePositives:
+          allOf:
+          - $ref: '#/components/schemas/RecordsCount'
+          - description: The number of matches in the data that the transform correctly found, in the confusion matrix for your transform.
+        NumFalsePositives:
+          allOf:
+          - $ref: '#/components/schemas/RecordsCount'
+          - description: The number of nonmatches in the data that the transform incorrectly classified as a match, in the confusion matrix for your transform.
+        NumTrueNegatives:
+          allOf:
+          - $ref: '#/components/schemas/RecordsCount'
+          - description: The number of nonmatches in the data that the transform correctly rejected, in the confusion matrix for your transform.
+        NumFalseNegatives:
+          allOf:
+          - $ref: '#/components/schemas/RecordsCount'
+          - description: The number of matches in the data that the transform didn't find, in the confusion matrix for your transform.
+      description: <p>The confusion matrix shows you what your transform is predicting accurately and what types of errors it is making.</p> <p>For more information, see <a href="https://en.wikipedia.org/wiki/Confusion_matrix">Confusion matrix</a> in Wikipedia.</p>
+    WorkerType:
+      type: string
+      enum:
+      - Standard
+      - G.1X
+      - G.2X
+      - G.025X
+    RecordsCount:
+      type: integer
+    InternalServiceException: {}
+    ColumnTypeString:
+      type: string
+      minLength: 0
+      maxLength: 131072
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     GetMLTransformResponse:
       type: object
       properties:
@@ -574,22 +473,123 @@ components:
           allOf:
           - $ref: '#/components/schemas/TransformEncryption'
           - description: The encryption-at-rest settings of the transform that apply to accessing user data. Machine learning transforms can access user data encrypted in Amazon S3 using KMS.
-    LabelCount:
-      type: integer
-    ColumnNameString:
+    RoleString:
+      type: string
+    HashString:
       type: string
       minLength: 1
-      maxLength: 1024
+      maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    ColumnImportanceList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ColumnImportance'
+      minItems: 0
+      maxItems: 100
+    MLUserDataEncryptionModeString:
+      type: string
+      enum:
+      - DISABLED
+      - SSE-KMS
+    InvalidInputException: {}
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    GlueTable:
+      type: object
+      required:
+      - DatabaseName
+      - TableName
+      properties:
+        DatabaseName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: A database name in the Glue Data Catalog.
+        TableName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: A table name in the Glue Data Catalog.
+        CatalogId:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: A unique identifier for the Glue Data Catalog.
+        ConnectionName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the connection to the Glue Data Catalog.
+        AdditionalOptions:
+          allOf:
+          - $ref: '#/components/schemas/GlueTableAdditionalOptions'
+          - description: '<p>Additional options for the table. Currently there are two keys supported:</p> <ul> <li> <p> <code>pushDownPredicate</code>: to filter on partitions without having to list and read all the files in your dataset.</p> </li> <li> <p> <code>catalogPartitionPredicate</code>: to use server-side partition pruning using partition indexes in the Glue Data Catalog.</p> </li> </ul>'
+      description: The database and table in the Glue Data Catalog that is used for input or output data.
+    TransformType:
+      type: string
+      enum:
+      - FIND_MATCHES
+    Timeout:
+      type: integer
+      minimum: 1
+    ColumnImportance:
+      type: object
+      properties:
+        ColumnName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of a column.
+        Importance:
+          allOf:
+          - $ref: '#/components/schemas/GenericBoundedDouble'
+          - description: The column importance score for the column, as a decimal.
+      description: <p>A structure containing the column name and column importance score for a column. </p> <p>Column importance helps you understand how columns contribute to your model, by identifying which columns in your records are more important than others.</p>
+    Timestamp:
+      type: string
+      format: date-time
+    OperationTimeoutException: {}
+    FindMatchesParameters:
+      type: object
+      properties:
+        PrimaryKeyColumnName:
+          allOf:
+          - $ref: '#/components/schemas/ColumnNameString'
+          - description: The name of a column that uniquely identifies rows in the source table. Used to help identify matching records.
+        PrecisionRecallTradeoff:
+          allOf:
+          - $ref: '#/components/schemas/GenericBoundedDouble'
+          - description: <p>The value selected when tuning your transform for a balance between precision and recall. A value of 0.5 means no preference; a value of 1.0 means a bias purely for precision, and a value of 0.0 means a bias for recall. Because this is a tradeoff, choosing values close to 1.0 means very low recall, and choosing values close to 0.0 results in very low precision.</p> <p>The precision metric indicates how often your model is correct when it predicts a match. </p> <p>The recall metric indicates that for an actual match, how often your model predicts the match.</p>
+        AccuracyCostTradeoff:
+          allOf:
+          - $ref: '#/components/schemas/GenericBoundedDouble'
+          - description: <p>The value that is selected when tuning your transform for a balance between accuracy and cost. A value of 0.5 means that the system balances accuracy and cost concerns. A value of 1.0 means a bias purely for accuracy, which typically results in a higher cost, sometimes substantially higher. A value of 0.0 means a bias purely for cost, which results in a less accurate <code>FindMatches</code> transform, sometimes with unacceptable accuracy.</p> <p>Accuracy measures how well the transform finds true positives and true negatives. Increasing accuracy requires more machine resources and cost. But it also results in increased recall. </p> <p>Cost measures how many compute resources, and thus money, are consumed to run the transform.</p>
+        EnforceProvidedLabels:
+          allOf:
+          - $ref: '#/components/schemas/NullableBoolean'
+          - description: <p>The value to switch on or off to force the output to match the provided labels from users. If the value is <code>True</code>, the <code>find matches</code> transform forces the output to match the provided labels. The results override the normal conflation results. If the value is <code>False</code>, the <code>find matches</code> transform does not ensure all the labels provided are respected, and the results rely on the trained model.</p> <p>Note that setting this value to true may increase the conflation execution time.</p>
+      description: The parameters to configure the find matches transform.
+    TransformParameters:
+      type: object
+      required:
+      - TransformType
+      properties:
+        TransformType:
+          allOf:
+          - $ref: '#/components/schemas/TransformType'
+          - description: <p>The type of machine learning transform.</p> <p>For information about the types of machine learning transforms, see <a href="https://docs.aws.amazon.com/glue/latest/dg/add-job-machine-learning-transform.html">Creating Machine Learning Transforms</a>.</p>
+        FindMatchesParameters:
+          allOf:
+          - $ref: '#/components/schemas/FindMatchesParameters'
+          - description: The parameters for the find matches algorithm.
+      description: The algorithm-specific parameters that are associated with the machine learning transform.
   parameters:
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -606,20 +606,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string

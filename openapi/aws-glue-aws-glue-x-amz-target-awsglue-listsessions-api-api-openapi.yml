@@ -228,84 +228,16 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.ListSessions API'
 components:
   schemas:
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    SessionStatus:
-      type: string
-      enum:
-      - PROVISIONING
-      - READY
-      - FAILED
-      - TIMEOUT
-      - STOPPING
-      - STOPPED
-    AccessDeniedException: {}
-    OrchestrationRoleArn:
-      type: string
-      pattern: arn:aws[^:]*:iam::[0-9]*:role/.+
-      minLength: 20
-      maxLength: 2048
-    ListSessionsRequest:
-      type: object
-      title: ListSessionsRequest
-      properties:
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/OrchestrationToken'
-          - description: 'The token for the next set of results, or null if there are no more result. '
-        MaxResults:
-          allOf:
-          - $ref: '#/components/schemas/PageSize'
-          - description: 'The maximum number of results. '
-        Tags:
-          allOf:
-          - $ref: '#/components/schemas/TagsMap'
-          - description: 'Tags belonging to the session. '
-        RequestOrigin:
-          allOf:
-          - $ref: '#/components/schemas/OrchestrationNameString'
-          - description: 'The origin of the request. '
-    OperationTimeoutException: {}
-    SessionCommand:
-      type: object
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: Specifies the name of the SessionCommand. Can be 'glueetl' or 'gluestreaming'.
-        PythonVersion:
-          allOf:
-          - $ref: '#/components/schemas/PythonVersionString'
-          - description: Specifies the Python version. The Python version indicates the version supported for jobs of type Spark.
-      description: The <code>SessionCommand</code> that runs the job.
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
-    InvalidInputException: {}
+    SessionList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Session'
     TagsMap:
       type: object
       minProperties: 0
       maxProperties: 50
       additionalProperties:
         $ref: '#/components/schemas/TagValue'
-    ConnectionsList:
-      type: object
-      properties:
-        Connections:
-          allOf:
-          - $ref: '#/components/schemas/OrchestrationStringList'
-          - description: A list of connections used by the job.
-      description: Specifies the connections used by a job.
-    InternalServiceException: {}
     ListSessionsResponse:
       type: object
       properties:
@@ -321,19 +253,30 @@ components:
           allOf:
           - $ref: '#/components/schemas/OrchestrationToken'
           - description: 'The token for the next set of results, or null if there are no more result. '
-    OrchestrationArgumentsValue:
+    GlueVersionString:
       type: string
-      minLength: 0
-      maxLength: 4096
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
-    OrchestrationStringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/GenericString'
+      pattern: ^\w+\.\w+$
+      minLength: 1
+      maxLength: 255
+    OrchestrationRoleArn:
+      type: string
+      pattern: arn:aws[^:]*:iam::[0-9]*:role/.+
+      minLength: 20
+      maxLength: 2048
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+    SessionStatus:
+      type: string
+      enum:
+      - PROVISIONING
+      - READY
+      - FAILED
+      - TIMEOUT
+      - STOPPING
+      - STOPPED
     TimestampValue:
       type: string
       format: date-time
@@ -341,23 +284,13 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/NameString'
-    GlueVersionString:
-      type: string
-      pattern: ^\w+\.\w+$
-      minLength: 1
-      maxLength: 255
-    GenericString:
-      type: string
-    PythonVersionString:
-      type: string
-      pattern: ^([2-3]|3[.]9)$
-    SessionList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Session'
-    OrchestrationToken:
-      type: string
-      maxLength: 400000
+    NullableDouble:
+      type: number
+      format: double
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
     Session:
       type: object
       properties:
@@ -414,32 +347,99 @@ components:
           - $ref: '#/components/schemas/GlueVersionString'
           - description: The Glue version determines the versions of Apache Spark and Python that Glue supports. The GlueVersion must be greater than 2.0.
       description: The period in which a remote Spark runtime environment is running.
-    DoubleValue:
-      type: number
-      format: double
-    NullableDouble:
-      type: number
-      format: double
-    OrchestrationNameString:
+    SessionCommand:
+      type: object
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: Specifies the name of the SessionCommand. Can be 'glueetl' or 'gluestreaming'.
+        PythonVersion:
+          allOf:
+          - $ref: '#/components/schemas/PythonVersionString'
+          - description: Specifies the Python version. The Python version indicates the version supported for jobs of type Spark.
+      description: The <code>SessionCommand</code> that runs the job.
+    NameString:
       type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
       minLength: 1
-      maxLength: 128
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     OrchestrationArgumentsMap:
       type: object
       minProperties: 0
       maxProperties: 75
       additionalProperties:
         $ref: '#/components/schemas/OrchestrationArgumentsValue'
+    ListSessionsRequest:
+      type: object
+      title: ListSessionsRequest
+      properties:
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/OrchestrationToken'
+          - description: 'The token for the next set of results, or null if there are no more result. '
+        MaxResults:
+          allOf:
+          - $ref: '#/components/schemas/PageSize'
+          - description: 'The maximum number of results. '
+        Tags:
+          allOf:
+          - $ref: '#/components/schemas/TagsMap'
+          - description: 'Tags belonging to the session. '
+        RequestOrigin:
+          allOf:
+          - $ref: '#/components/schemas/OrchestrationNameString'
+          - description: 'The origin of the request. '
+    GenericString:
+      type: string
+    OrchestrationArgumentsValue:
+      type: string
+      minLength: 0
+      maxLength: 4096
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    AccessDeniedException: {}
+    InternalServiceException: {}
+    ConnectionsList:
+      type: object
+      properties:
+        Connections:
+          allOf:
+          - $ref: '#/components/schemas/OrchestrationStringList'
+          - description: A list of connections used by the job.
+      description: Specifies the connections used by a job.
+    InvalidInputException: {}
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    OrchestrationToken:
+      type: string
+      maxLength: 400000
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
+    OrchestrationStringList:
+      type: array
+      items:
+        $ref: '#/components/schemas/GenericString'
+    PythonVersionString:
+      type: string
+      pattern: ^([2-3]|3[.]9)$
+    OperationTimeoutException: {}
+    DoubleValue:
+      type: number
+      format: double
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -456,20 +456,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string

@@ -260,75 +260,108 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.CreateMLTransform API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    Timeout:
-      type: integer
-      minimum: 1
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    WorkerType:
-      type: string
-      enum:
-      - Standard
-      - G.1X
-      - G.2X
-      - G.025X
-    AccessDeniedException: {}
-    AlreadyExistsException: {}
-    ResourceNumberLimitExceededException: {}
-    IdempotentParameterMismatchException: {}
-    MLUserDataEncryptionModeString:
-      type: string
-      enum:
-      - DISABLED
-      - SSE-KMS
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    InvalidInputException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
     TagsMap:
       type: object
       minProperties: 0
       maxProperties: 50
       additionalProperties:
         $ref: '#/components/schemas/TagValue'
-    RoleString:
-      type: string
-    InternalServiceException: {}
-    TransformParameters:
+    TransformEncryption:
       type: object
-      required:
-      - TransformType
       properties:
-        TransformType:
+        MlUserDataEncryption:
           allOf:
-          - $ref: '#/components/schemas/TransformType'
-          - description: <p>The type of machine learning transform.</p> <p>For information about the types of machine learning transforms, see <a href="https://docs.aws.amazon.com/glue/latest/dg/add-job-machine-learning-transform.html">Creating Machine Learning Transforms</a>.</p>
-        FindMatchesParameters:
+          - $ref: '#/components/schemas/MLUserDataEncryption'
+          - description: An <code>MLUserDataEncryption</code> object containing the encryption mode and customer-provided KMS key ID.
+        TaskRunSecurityConfigurationName:
           allOf:
-          - $ref: '#/components/schemas/FindMatchesParameters'
-          - description: The parameters for the find matches algorithm.
-      description: The algorithm-specific parameters that are associated with the machine learning transform.
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the security configuration.
+      description: <p>The encryption-at-rest settings of the transform that apply to accessing user data. Machine learning transforms can access user data encrypted in Amazon S3 using KMS.</p> <p>Additionally, imported labels and trained transforms can now be encrypted using a customer provided KMS key.</p>
     GenericBoundedDouble:
       type: number
       format: double
       minimum: 0
       maximum: 1
+    GlueVersionString:
+      type: string
+      pattern: ^\w+\.\w+$
+      minLength: 1
+      maxLength: 255
+    NullableInteger:
+      type: integer
+    GlueTables:
+      type: array
+      items:
+        $ref: '#/components/schemas/GlueTable'
+      minItems: 0
+      maxItems: 10
+    AlreadyExistsException: {}
+    GlueTableAdditionalOptions:
+      type: object
+      minProperties: 1
+      maxProperties: 10
+      additionalProperties:
+        $ref: '#/components/schemas/DescriptionString'
+    ColumnNameString:
+      type: string
+      minLength: 1
+      maxLength: 1024
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    NullableDouble:
+      type: number
+      format: double
+    NullableBoolean:
+      type: boolean
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     MLUserDataEncryption:
       type: object
       required:
@@ -343,6 +376,63 @@ components:
           - $ref: '#/components/schemas/NameString'
           - description: The ID for the customer-provided KMS key.
       description: The encryption-at-rest settings of the transform that apply to accessing user data.
+    WorkerType:
+      type: string
+      enum:
+      - Standard
+      - G.1X
+      - G.2X
+      - G.025X
+    AccessDeniedException: {}
+    InternalServiceException: {}
+    CreateMLTransformResponse:
+      type: object
+      properties:
+        TransformId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: A unique identifier that is generated for the transform.
+    RoleString:
+      type: string
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    ResourceNumberLimitExceededException: {}
+    MLUserDataEncryptionModeString:
+      type: string
+      enum:
+      - DISABLED
+      - SSE-KMS
+    InvalidInputException: {}
+    GlueTable:
+      type: object
+      required:
+      - DatabaseName
+      - TableName
+      properties:
+        DatabaseName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: A database name in the Glue Data Catalog.
+        TableName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: A table name in the Glue Data Catalog.
+        CatalogId:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: A unique identifier for the Glue Data Catalog.
+        ConnectionName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the connection to the Glue Data Catalog.
+        AdditionalOptions:
+          allOf:
+          - $ref: '#/components/schemas/GlueTableAdditionalOptions'
+          - description: '<p>Additional options for the table. Currently there are two keys supported:</p> <ul> <li> <p> <code>pushDownPredicate</code>: to filter on partitions without having to list and read all the files in your dataset.</p> </li> <li> <p> <code>catalogPartitionPredicate</code>: to use server-side partition pruning using partition indexes in the Glue Data Catalog.</p> </li> </ul>'
+      description: The database and table in the Glue Data Catalog that is used for input or output data.
     CreateMLTransformRequest:
       type: object
       required:
@@ -404,16 +494,24 @@ components:
           allOf:
           - $ref: '#/components/schemas/TransformEncryption'
           - description: The encryption-at-rest settings of the transform that apply to accessing user data. Machine learning transforms can access user data encrypted in Amazon S3 using KMS.
-    GlueTableAdditionalOptions:
-      type: object
-      minProperties: 1
-      maxProperties: 10
-      additionalProperties:
-        $ref: '#/components/schemas/DescriptionString'
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
     TransformType:
       type: string
       enum:
       - FIND_MATCHES
+    Timeout:
+      type: integer
+      minimum: 1
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
+    IdempotentParameterMismatchException: {}
+    OperationTimeoutException: {}
     FindMatchesParameters:
       type: object
       properties:
@@ -434,118 +532,20 @@ components:
           - $ref: '#/components/schemas/NullableBoolean'
           - description: <p>The value to switch on or off to force the output to match the provided labels from users. If the value is <code>True</code>, the <code>find matches</code> transform forces the output to match the provided labels. The results override the normal conflation results. If the value is <code>False</code>, the <code>find matches</code> transform does not ensure all the labels provided are respected, and the results rely on the trained model.</p> <p>Note that setting this value to true may increase the conflation execution time.</p>
       description: The parameters to configure the find matches transform.
-    GlueVersionString:
-      type: string
-      pattern: ^\w+\.\w+$
-      minLength: 1
-      maxLength: 255
-    CreateMLTransformResponse:
-      type: object
-      properties:
-        TransformId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: A unique identifier that is generated for the transform.
-    GlueTable:
+    TransformParameters:
       type: object
       required:
-      - DatabaseName
-      - TableName
+      - TransformType
       properties:
-        DatabaseName:
+        TransformType:
           allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: A database name in the Glue Data Catalog.
-        TableName:
+          - $ref: '#/components/schemas/TransformType'
+          - description: <p>The type of machine learning transform.</p> <p>For information about the types of machine learning transforms, see <a href="https://docs.aws.amazon.com/glue/latest/dg/add-job-machine-learning-transform.html">Creating Machine Learning Transforms</a>.</p>
+        FindMatchesParameters:
           allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: A table name in the Glue Data Catalog.
-        CatalogId:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: A unique identifier for the Glue Data Catalog.
-        ConnectionName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the connection to the Glue Data Catalog.
-        AdditionalOptions:
-          allOf:
-          - $ref: '#/components/schemas/GlueTableAdditionalOptions'
-          - description: '<p>Additional options for the table. Currently there are two keys supported:</p> <ul> <li> <p> <code>pushDownPredicate</code>: to filter on partitions without having to list and read all the files in your dataset.</p> </li> <li> <p> <code>catalogPartitionPredicate</code>: to use server-side partition pruning using partition indexes in the Glue Data Catalog.</p> </li> </ul>'
-      description: The database and table in the Glue Data Catalog that is used for input or output data.
-    NullableInteger:
-      type: integer
-    GlueTables:
-      type: array
-      items:
-        $ref: '#/components/schemas/GlueTable'
-      minItems: 0
-      maxItems: 10
-    TransformEncryption:
-      type: object
-      properties:
-        MlUserDataEncryption:
-          allOf:
-          - $ref: '#/components/schemas/MLUserDataEncryption'
-          - description: An <code>MLUserDataEncryption</code> object containing the encryption mode and customer-provided KMS key ID.
-        TaskRunSecurityConfigurationName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the security configuration.
-      description: <p>The encryption-at-rest settings of the transform that apply to accessing user data. Machine learning transforms can access user data encrypted in Amazon S3 using KMS.</p> <p>Additionally, imported labels and trained transforms can now be encrypted using a customer provided KMS key.</p>
-    NullableDouble:
-      type: number
-      format: double
-    NullableBoolean:
-      type: boolean
-    ColumnNameString:
-      type: string
-      minLength: 1
-      maxLength: 1024
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+          - $ref: '#/components/schemas/FindMatchesParameters'
+          - description: The parameters for the find matches algorithm.
+      description: The algorithm-specific parameters that are associated with the machine learning transform.
   securitySchemes:
     hmac:
       type: apiKey

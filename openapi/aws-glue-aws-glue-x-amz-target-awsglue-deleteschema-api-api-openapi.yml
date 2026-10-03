@@ -216,26 +216,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteSchema API'
 components:
   schemas:
-    InvalidInputException: {}
     EntityNotFoundException: {}
-    SchemaStatus:
-      type: string
-      enum:
-      - AVAILABLE
-      - PENDING
-      - DELETING
-    AccessDeniedException: {}
+    InvalidInputException: {}
+    ConcurrentModificationException: {}
     SchemaRegistryNameString:
       type: string
       pattern: '[a-zA-Z0-9-_$#.]+'
       minLength: 1
       maxLength: 255
-    ConcurrentModificationException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
     DeleteSchemaInput:
       type: object
       required:
@@ -246,6 +234,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaId'
           - description: This is a wrapper structure that may contain the schema name and Amazon Resource Name (ARN).
+    SchemaStatus:
+      type: string
+      enum:
+      - AVAILABLE
+      - PENDING
+      - DELETING
     DeleteSchemaResponse:
       type: object
       properties:
@@ -261,6 +255,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaStatus'
           - description: The status of the schema.
+    AccessDeniedException: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
     SchemaId:
       type: object
       properties:
@@ -278,26 +278,14 @@ components:
           - description: The name of the schema registry that contains the schema.
       description: The unique ID of the schema in the Glue schema registry.
   parameters:
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-SignedHeaders:
       name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -310,6 +298,18 @@ components:
       required: false
     X-Amz-Algorithm:
       name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
       in: header
       schema:
         type: string

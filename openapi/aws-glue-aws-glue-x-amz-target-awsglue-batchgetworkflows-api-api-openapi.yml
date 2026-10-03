@@ -203,181 +203,27 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.BatchGetWorkflows API'
 components:
   schemas:
-    Timeout:
-      type: integer
-      minimum: 1
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    WorkerType:
-      type: string
-      enum:
-      - Standard
-      - G.1X
-      - G.2X
-      - G.025X
-    NodeType:
-      type: string
-      enum:
-      - CRAWLER
-      - JOB
-      - TRIGGER
-    WorkflowRunStatistics:
+    JobRunList:
+      type: array
+      items:
+        $ref: '#/components/schemas/JobRun'
+    NodeList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Node'
+    GenericMap:
       type: object
-      properties:
-        TotalActions:
-          allOf:
-          - $ref: '#/components/schemas/IntegerValue'
-          - description: Total number of Actions in the workflow run.
-        TimeoutActions:
-          allOf:
-          - $ref: '#/components/schemas/IntegerValue'
-          - description: Total number of Actions that timed out.
-        FailedActions:
-          allOf:
-          - $ref: '#/components/schemas/IntegerValue'
-          - description: Total number of Actions that have failed.
-        StoppedActions:
-          allOf:
-          - $ref: '#/components/schemas/IntegerValue'
-          - description: Total number of Actions that have stopped.
-        SucceededActions:
-          allOf:
-          - $ref: '#/components/schemas/IntegerValue'
-          - description: Total number of Actions that have succeeded.
-        RunningActions:
-          allOf:
-          - $ref: '#/components/schemas/IntegerValue'
-          - description: Total number Actions in running state.
-        ErroredActions:
-          allOf:
-          - $ref: '#/components/schemas/IntegerValue'
-          - description: Indicates the count of job runs in the ERROR state in the workflow run.
-        WaitingActions:
-          allOf:
-          - $ref: '#/components/schemas/IntegerValue'
-          - description: Indicates the count of job runs in WAITING state in the workflow run.
-      description: Workflow run statistics provides statistics about the workflow run.
-    ErrorString:
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    GlueVersionString:
       type: string
-    Node:
-      type: object
-      properties:
-        Type:
-          allOf:
-          - $ref: '#/components/schemas/NodeType'
-          - description: The type of Glue component represented by the node.
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the Glue component represented by the node.
-        UniqueId:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The unique Id assigned to the node within the workflow.
-        TriggerDetails:
-          allOf:
-          - $ref: '#/components/schemas/TriggerNodeDetails'
-          - description: Details of the Trigger when the node represents a Trigger.
-        JobDetails:
-          allOf:
-          - $ref: '#/components/schemas/JobNodeDetails'
-          - description: Details of the Job when the node represents a Job.
-        CrawlerDetails:
-          allOf:
-          - $ref: '#/components/schemas/CrawlerNodeDetails'
-          - description: Details of the crawler when the node represents a crawler.
-      description: A node represents an Glue component (trigger, crawler, or job) on a workflow graph.
-    WorkflowGraph:
-      type: object
-      properties:
-        Nodes:
-          allOf:
-          - $ref: '#/components/schemas/NodeList'
-          - description: A list of the the Glue components belong to the workflow represented as nodes.
-        Edges:
-          allOf:
-          - $ref: '#/components/schemas/EdgeList'
-          - description: A list of all the directed connections between the nodes belonging to the workflow.
-      description: A workflow graph represents the complete workflow containing all the Glue components present in the workflow and all the directed connections between them.
-    Predecessor:
-      type: object
-      properties:
-        JobName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the job definition used by the predecessor job run.
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/IdString'
-          - description: The job-run ID of the predecessor job run.
-      description: A job run that was used in the predicate of a conditional trigger that triggered this job run.
-    AttemptCount:
-      type: integer
-    JobRunState:
-      type: string
-      enum:
-      - STARTING
-      - RUNNING
-      - STOPPING
-      - STOPPED
-      - SUCCEEDED
-      - FAILED
-      - TIMEOUT
-      - ERROR
-      - WAITING
-    Condition:
-      type: object
-      properties:
-        LogicalOperator:
-          allOf:
-          - $ref: '#/components/schemas/LogicalOperator'
-          - description: A logical operator.
-        JobName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the job whose <code>JobRuns</code> this condition applies to, and on which this trigger waits.
-        State:
-          allOf:
-          - $ref: '#/components/schemas/JobRunState'
-          - description: The condition state. Currently, the only job states that a trigger can listen for are <code>SUCCEEDED</code>, <code>STOPPED</code>, <code>FAILED</code>, and <code>TIMEOUT</code>. The only crawler states that a trigger can listen for are <code>SUCCEEDED</code>, <code>FAILED</code>, and <code>CANCELLED</code>.
-        CrawlerName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the crawler to which this condition applies.
-        CrawlState:
-          allOf:
-          - $ref: '#/components/schemas/CrawlState'
-          - description: The state of the crawler to which this condition applies.
-      description: Defines a condition under which a trigger fires.
-    LogStream:
-      type: string
-      pattern: '[^:*]*'
-      minLength: 1
-      maxLength: 512
-    TriggerType:
-      type: string
-      enum:
-      - SCHEDULED
-      - CONDITIONAL
-      - ON_DEMAND
-      - EVENT
-    CrawlerNodeDetails:
-      type: object
-      properties:
-        Crawls:
-          allOf:
-          - $ref: '#/components/schemas/CrawlList'
-          - description: A list of crawls represented by the crawl node.
-      description: The details of a Crawler node present in the workflow.
-    OperationTimeoutException: {}
-    NameString:
-      type: string
+      pattern: ^\w+\.\w+$
       minLength: 1
       maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    NullableInteger:
+      type: integer
+    ExecutionTime:
+      type: integer
     Trigger:
       type: object
       properties:
@@ -422,6 +268,112 @@ components:
           - $ref: '#/components/schemas/EventBatchingCondition'
           - description: Batch condition that must be met (specified number of events received or batch time window expired) before EventBridge event trigger fires.
       description: Information about a specific trigger.
+    TriggerNodeDetails:
+      type: object
+      properties:
+        Trigger:
+          allOf:
+          - $ref: '#/components/schemas/Trigger'
+          - description: The information of the trigger represented by the trigger node.
+      description: The details of a Trigger node present in the workflow.
+    NotificationProperty:
+      type: object
+      properties:
+        NotifyDelayAfter:
+          allOf:
+          - $ref: '#/components/schemas/NotifyDelayAfter'
+          - description: After a job run starts, the number of minutes to wait before sending a job run delay notification.
+      description: Specifies configuration properties of a notification.
+    ConditionList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Condition'
+    WorkflowRunStatus:
+      type: string
+      enum:
+      - RUNNING
+      - COMPLETED
+      - STOPPING
+      - STOPPED
+      - ERROR
+    WorkflowGraph:
+      type: object
+      properties:
+        Nodes:
+          allOf:
+          - $ref: '#/components/schemas/NodeList'
+          - description: A list of the the Glue components belong to the workflow represented as nodes.
+        Edges:
+          allOf:
+          - $ref: '#/components/schemas/EdgeList'
+          - description: A list of all the directed connections between the nodes belonging to the workflow.
+      description: A workflow graph represents the complete workflow containing all the Glue components present in the workflow and all the directed connections between them.
+    JobRunState:
+      type: string
+      enum:
+      - STARTING
+      - RUNNING
+      - STOPPING
+      - STOPPED
+      - SUCCEEDED
+      - FAILED
+      - TIMEOUT
+      - ERROR
+      - WAITING
+    JobNodeDetails:
+      type: object
+      properties:
+        JobRuns:
+          allOf:
+          - $ref: '#/components/schemas/JobRunList'
+          - description: The information for the job runs represented by the job node.
+      description: The details of a Job node present in the workflow.
+    TriggerState:
+      type: string
+      enum:
+      - CREATING
+      - CREATED
+      - ACTIVATING
+      - ACTIVATED
+      - DEACTIVATING
+      - DEACTIVATED
+      - DELETING
+      - UPDATING
+    AttemptCount:
+      type: integer
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+    Node:
+      type: object
+      properties:
+        Type:
+          allOf:
+          - $ref: '#/components/schemas/NodeType'
+          - description: The type of Glue component represented by the node.
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the Glue component represented by the node.
+        UniqueId:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The unique Id assigned to the node within the workflow.
+        TriggerDetails:
+          allOf:
+          - $ref: '#/components/schemas/TriggerNodeDetails'
+          - description: Details of the Trigger when the node represents a Trigger.
+        JobDetails:
+          allOf:
+          - $ref: '#/components/schemas/JobNodeDetails'
+          - description: Details of the Job when the node represents a Job.
+        CrawlerDetails:
+          allOf:
+          - $ref: '#/components/schemas/CrawlerNodeDetails'
+          - description: Details of the crawler when the node represents a crawler.
+      description: A node represents an Glue component (trigger, crawler, or job) on a workflow graph.
     Edge:
       type: object
       properties:
@@ -434,6 +386,112 @@ components:
           - $ref: '#/components/schemas/NameString'
           - description: The unique of the node within the workflow where the edge ends.
       description: An edge represents a directed connection between two Glue components that are part of the workflow the edge belongs to.
+    TimestampValue:
+      type: string
+      format: date-time
+    ExecutionClass:
+      type: string
+      enum:
+      - FLEX
+      - STANDARD
+      maxLength: 16
+    CrawlState:
+      type: string
+      enum:
+      - RUNNING
+      - CANCELLING
+      - CANCELLED
+      - SUCCEEDED
+      - FAILED
+      - ERROR
+    WorkflowRunStatistics:
+      type: object
+      properties:
+        TotalActions:
+          allOf:
+          - $ref: '#/components/schemas/IntegerValue'
+          - description: Total number of Actions in the workflow run.
+        TimeoutActions:
+          allOf:
+          - $ref: '#/components/schemas/IntegerValue'
+          - description: Total number of Actions that timed out.
+        FailedActions:
+          allOf:
+          - $ref: '#/components/schemas/IntegerValue'
+          - description: Total number of Actions that have failed.
+        StoppedActions:
+          allOf:
+          - $ref: '#/components/schemas/IntegerValue'
+          - description: Total number of Actions that have stopped.
+        SucceededActions:
+          allOf:
+          - $ref: '#/components/schemas/IntegerValue'
+          - description: Total number of Actions that have succeeded.
+        RunningActions:
+          allOf:
+          - $ref: '#/components/schemas/IntegerValue'
+          - description: Total number Actions in running state.
+        ErroredActions:
+          allOf:
+          - $ref: '#/components/schemas/IntegerValue'
+          - description: Indicates the count of job runs in the ERROR state in the workflow run.
+        WaitingActions:
+          allOf:
+          - $ref: '#/components/schemas/IntegerValue'
+          - description: Indicates the count of job runs in WAITING state in the workflow run.
+      description: Workflow run statistics provides statistics about the workflow run.
+    NullableDouble:
+      type: number
+      format: double
+    ErrorString:
+      type: string
+    Logical:
+      type: string
+      enum:
+      - AND
+      - ANY
+    BatchWindow:
+      type: integer
+      minimum: 1
+      maximum: 900
+    NullableBoolean:
+      type: boolean
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    BatchSize:
+      type: integer
+      minimum: 1
+      maximum: 100
+    IntegerValue:
+      type: integer
+    EventBatchingCondition:
+      type: object
+      required:
+      - BatchSize
+      properties:
+        BatchSize:
+          allOf:
+          - $ref: '#/components/schemas/BatchSize'
+          - description: Number of events that must be received from Amazon EventBridge before EventBridge event trigger fires.
+        BatchWindow:
+          allOf:
+          - $ref: '#/components/schemas/BatchWindow'
+          - description: Window of time in seconds after which EventBridge event trigger fires. Window starts when first event is received.
+      description: Batch condition that must be met (specified number of events received or batch time window expired) before EventBridge event trigger fires.
+    BatchGetWorkflowsResponse:
+      type: object
+      properties:
+        Workflows:
+          allOf:
+          - $ref: '#/components/schemas/Workflows'
+          - description: A list of workflow resource metadata.
+        MissingWorkflows:
+          allOf:
+          - $ref: '#/components/schemas/WorkflowNames'
+          - description: A list of names of workflows not found.
     StartingEventBatchCondition:
       type: object
       properties:
@@ -460,12 +518,210 @@ components:
           allOf:
           - $ref: '#/components/schemas/NullableBoolean'
           - description: Specifies whether to include a graph when returning the workflow resource metadata.
-    InvalidInputException: {}
+    Predecessor:
+      type: object
+      properties:
+        JobName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the job definition used by the predecessor job run.
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/IdString'
+          - description: The job-run ID of the predecessor job run.
+      description: A job run that was used in the predicate of a conditional trigger that triggered this job run.
+    ActionList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Action'
+    WorkflowRunProperties:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    WorkflowNames:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 1
+      maxItems: 25
+    WorkerType:
+      type: string
+      enum:
+      - Standard
+      - G.1X
+      - G.2X
+      - G.025X
+    Workflow:
+      type: object
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the workflow.
+        Description:
+          allOf:
+          - $ref: '#/components/schemas/GenericString'
+          - description: A description of the workflow.
+        DefaultRunProperties:
+          allOf:
+          - $ref: '#/components/schemas/WorkflowRunProperties'
+          - description: A collection of properties to be used as part of each execution of the workflow. The run properties are made available to each job in the workflow. A job can modify the properties for the next jobs in the flow.
+        CreatedOn:
+          allOf:
+          - $ref: '#/components/schemas/TimestampValue'
+          - description: The date and time when the workflow was created.
+        LastModifiedOn:
+          allOf:
+          - $ref: '#/components/schemas/TimestampValue'
+          - description: The date and time when the workflow was last modified.
+        LastRun:
+          allOf:
+          - $ref: '#/components/schemas/WorkflowRun'
+          - description: The information about the last execution of the workflow.
+        Graph:
+          allOf:
+          - $ref: '#/components/schemas/WorkflowGraph'
+          - description: The graph representing all the Glue components that belong to the workflow as nodes and directed connections between them as edges.
+        MaxConcurrentRuns:
+          allOf:
+          - $ref: '#/components/schemas/NullableInteger'
+          - description: You can use this parameter to prevent unwanted multiple updates to data, to control costs, or in some cases, to prevent exceeding the maximum number of concurrent runs of any of the component jobs. If you leave this parameter blank, there is no limit to the number of concurrent workflow runs.
+        BlueprintDetails:
+          allOf:
+          - $ref: '#/components/schemas/BlueprintDetails'
+          - description: This structure indicates the details of the blueprint that this particular workflow is created from.
+      description: A workflow is a collection of multiple dependent Glue jobs and crawlers that are run to complete a complex ETL task. A workflow manages the execution and monitoring of all its jobs and crawlers.
+    NotifyDelayAfter:
+      type: integer
+      minimum: 1
+    CrawlList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Crawl'
+    GenericString:
+      type: string
+    Condition:
+      type: object
+      properties:
+        LogicalOperator:
+          allOf:
+          - $ref: '#/components/schemas/LogicalOperator'
+          - description: A logical operator.
+        JobName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the job whose <code>JobRuns</code> this condition applies to, and on which this trigger waits.
+        State:
+          allOf:
+          - $ref: '#/components/schemas/JobRunState'
+          - description: The condition state. Currently, the only job states that a trigger can listen for are <code>SUCCEEDED</code>, <code>STOPPED</code>, <code>FAILED</code>, and <code>TIMEOUT</code>. The only crawler states that a trigger can listen for are <code>SUCCEEDED</code>, <code>FAILED</code>, and <code>CANCELLED</code>.
+        CrawlerName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the crawler to which this condition applies.
+        CrawlState:
+          allOf:
+          - $ref: '#/components/schemas/CrawlState'
+          - description: The state of the crawler to which this condition applies.
+      description: Defines a condition under which a trigger fires.
+    LogicalOperator:
+      type: string
+      enum:
+      - EQUALS
+    WorkflowRun:
+      type: object
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: Name of the workflow that was run.
+        WorkflowRunId:
+          allOf:
+          - $ref: '#/components/schemas/IdString'
+          - description: The ID of this workflow run.
+        PreviousRunId:
+          allOf:
+          - $ref: '#/components/schemas/IdString'
+          - description: The ID of the previous workflow run.
+        WorkflowRunProperties:
+          allOf:
+          - $ref: '#/components/schemas/WorkflowRunProperties'
+          - description: The workflow run properties which were set during the run.
+        StartedOn:
+          allOf:
+          - $ref: '#/components/schemas/TimestampValue'
+          - description: The date and time when the workflow run was started.
+        CompletedOn:
+          allOf:
+          - $ref: '#/components/schemas/TimestampValue'
+          - description: The date and time when the workflow run completed.
+        Status:
+          allOf:
+          - $ref: '#/components/schemas/WorkflowRunStatus'
+          - description: The status of the workflow run.
+        ErrorMessage:
+          allOf:
+          - $ref: '#/components/schemas/ErrorString'
+          - description: 'This error message describes any error that may have occurred in starting the workflow run. Currently the only error message is "Concurrent runs exceeded for workflow: <code>foo</code>."'
+        Statistics:
+          allOf:
+          - $ref: '#/components/schemas/WorkflowRunStatistics'
+          - description: The statistics of the run.
+        Graph:
+          allOf:
+          - $ref: '#/components/schemas/WorkflowGraph'
+          - description: The graph representing all the Glue components that belong to the workflow as nodes and directed connections between them as edges.
+        StartingEventBatchCondition:
+          allOf:
+          - $ref: '#/components/schemas/StartingEventBatchCondition'
+          - description: The batch condition that started the workflow run.
+      description: A workflow run is an execution of a workflow providing all the runtime information.
+    LogStream:
+      type: string
+      pattern: '[^:*]*'
+      minLength: 1
+      maxLength: 512
+    InternalServiceException: {}
     LogGroup:
       type: string
       pattern: '[\.\-_/#A-Za-z0-9]+'
       minLength: 1
       maxLength: 512
+    Crawl:
+      type: object
+      properties:
+        State:
+          allOf:
+          - $ref: '#/components/schemas/CrawlState'
+          - description: The state of the crawler.
+        StartedOn:
+          allOf:
+          - $ref: '#/components/schemas/TimestampValue'
+          - description: The date and time on which the crawl started.
+        CompletedOn:
+          allOf:
+          - $ref: '#/components/schemas/TimestampValue'
+          - description: The date and time on which the crawl completed.
+        ErrorMessage:
+          allOf:
+          - $ref: '#/components/schemas/DescriptionString'
+          - description: The error message associated with the crawl.
+        LogGroup:
+          allOf:
+          - $ref: '#/components/schemas/LogGroup'
+          - description: The log group associated with the crawl.
+        LogStream:
+          allOf:
+          - $ref: '#/components/schemas/LogStream'
+          - description: The log stream associated with the crawl.
+      description: The details of a crawl in the workflow.
+    TriggerType:
+      type: string
+      enum:
+      - SCHEDULED
+      - CONDITIONAL
+      - ON_DEMAND
+      - EVENT
     Action:
       type: object
       properties:
@@ -494,36 +750,67 @@ components:
           - $ref: '#/components/schemas/NameString'
           - description: The name of the crawler to be used with this action.
       description: Defines an action to be initiated by a trigger.
-    WorkflowRunStatus:
-      type: string
-      enum:
-      - RUNNING
-      - COMPLETED
-      - STOPPING
-      - STOPPED
-      - ERROR
-    InternalServiceException: {}
-    CrawlList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Crawl'
-    Logical:
-      type: string
-      enum:
-      - AND
-      - ANY
-    GenericMap:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
-    JobNodeDetails:
+    BlueprintDetails:
       type: object
       properties:
-        JobRuns:
+        BlueprintName:
           allOf:
-          - $ref: '#/components/schemas/JobRunList'
-          - description: The information for the job runs represented by the job node.
-      description: The details of a Job node present in the workflow.
+          - $ref: '#/components/schemas/OrchestrationNameString'
+          - description: The name of the blueprint.
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/IdString'
+          - description: The run ID for this blueprint.
+      description: The details of a blueprint.
+    Workflows:
+      type: array
+      items:
+        $ref: '#/components/schemas/Workflow'
+      minItems: 1
+      maxItems: 25
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    InvalidInputException: {}
+    Timeout:
+      type: integer
+      minimum: 1
+    PredecessorList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Predecessor'
+    IdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    CrawlerNodeDetails:
+      type: object
+      properties:
+        Crawls:
+          allOf:
+          - $ref: '#/components/schemas/CrawlList'
+          - description: A list of crawls represented by the crawl node.
+      description: The details of a Crawler node present in the workflow.
+    OperationTimeoutException: {}
+    EdgeList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Edge'
+    Predicate:
+      type: object
+      properties:
+        Logical:
+          allOf:
+          - $ref: '#/components/schemas/Logical'
+          - description: An optional field if only one condition is listed. If multiple conditions are listed, then this field is required.
+        Conditions:
+          allOf:
+          - $ref: '#/components/schemas/ConditionList'
+          - description: A list of the conditions that determine when the trigger will fire.
+      description: Defines the predicate of the trigger, which determines when it fires.
     JobRun:
       type: object
       properties:
@@ -625,308 +912,21 @@ components:
           - $ref: '#/components/schemas/ExecutionClass'
           - description: <p>Indicates whether the job is run with a standard or flexible execution class. The standard execution-class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>
       description: Contains information about a job run.
-    Workflows:
-      type: array
-      items:
-        $ref: '#/components/schemas/Workflow'
-      minItems: 1
-      maxItems: 25
-    CrawlState:
+    NodeType:
       type: string
       enum:
-      - RUNNING
-      - CANCELLING
-      - CANCELLED
-      - SUCCEEDED
-      - FAILED
-      - ERROR
-    IntegerValue:
-      type: integer
-    PredecessorList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Predecessor'
-    ActionList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Action'
-    NotificationProperty:
-      type: object
-      properties:
-        NotifyDelayAfter:
-          allOf:
-          - $ref: '#/components/schemas/NotifyDelayAfter'
-          - description: After a job run starts, the number of minutes to wait before sending a job run delay notification.
-      description: Specifies configuration properties of a notification.
-    TimestampValue:
-      type: string
-      format: date-time
-    GlueVersionString:
-      type: string
-      pattern: ^\w+\.\w+$
-      minLength: 1
-      maxLength: 255
-    NotifyDelayAfter:
-      type: integer
-      minimum: 1
-    TriggerState:
-      type: string
-      enum:
-      - CREATING
-      - CREATED
-      - ACTIVATING
-      - ACTIVATED
-      - DEACTIVATING
-      - DEACTIVATED
-      - DELETING
-      - UPDATING
-    WorkflowNames:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 1
-      maxItems: 25
-    BlueprintDetails:
-      type: object
-      properties:
-        BlueprintName:
-          allOf:
-          - $ref: '#/components/schemas/OrchestrationNameString'
-          - description: The name of the blueprint.
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/IdString'
-          - description: The run ID for this blueprint.
-      description: The details of a blueprint.
-    NodeList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Node'
-    TriggerNodeDetails:
-      type: object
-      properties:
-        Trigger:
-          allOf:
-          - $ref: '#/components/schemas/Trigger'
-          - description: The information of the trigger represented by the trigger node.
-      description: The details of a Trigger node present in the workflow.
-    BatchWindow:
-      type: integer
-      minimum: 1
-      maximum: 900
-    GenericString:
-      type: string
-    Crawl:
-      type: object
-      properties:
-        State:
-          allOf:
-          - $ref: '#/components/schemas/CrawlState'
-          - description: The state of the crawler.
-        StartedOn:
-          allOf:
-          - $ref: '#/components/schemas/TimestampValue'
-          - description: The date and time on which the crawl started.
-        CompletedOn:
-          allOf:
-          - $ref: '#/components/schemas/TimestampValue'
-          - description: The date and time on which the crawl completed.
-        ErrorMessage:
-          allOf:
-          - $ref: '#/components/schemas/DescriptionString'
-          - description: The error message associated with the crawl.
-        LogGroup:
-          allOf:
-          - $ref: '#/components/schemas/LogGroup'
-          - description: The log group associated with the crawl.
-        LogStream:
-          allOf:
-          - $ref: '#/components/schemas/LogStream'
-          - description: The log stream associated with the crawl.
-      description: The details of a crawl in the workflow.
-    Workflow:
-      type: object
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the workflow.
-        Description:
-          allOf:
-          - $ref: '#/components/schemas/GenericString'
-          - description: A description of the workflow.
-        DefaultRunProperties:
-          allOf:
-          - $ref: '#/components/schemas/WorkflowRunProperties'
-          - description: A collection of properties to be used as part of each execution of the workflow. The run properties are made available to each job in the workflow. A job can modify the properties for the next jobs in the flow.
-        CreatedOn:
-          allOf:
-          - $ref: '#/components/schemas/TimestampValue'
-          - description: The date and time when the workflow was created.
-        LastModifiedOn:
-          allOf:
-          - $ref: '#/components/schemas/TimestampValue'
-          - description: The date and time when the workflow was last modified.
-        LastRun:
-          allOf:
-          - $ref: '#/components/schemas/WorkflowRun'
-          - description: The information about the last execution of the workflow.
-        Graph:
-          allOf:
-          - $ref: '#/components/schemas/WorkflowGraph'
-          - description: The graph representing all the Glue components that belong to the workflow as nodes and directed connections between them as edges.
-        MaxConcurrentRuns:
-          allOf:
-          - $ref: '#/components/schemas/NullableInteger'
-          - description: You can use this parameter to prevent unwanted multiple updates to data, to control costs, or in some cases, to prevent exceeding the maximum number of concurrent runs of any of the component jobs. If you leave this parameter blank, there is no limit to the number of concurrent workflow runs.
-        BlueprintDetails:
-          allOf:
-          - $ref: '#/components/schemas/BlueprintDetails'
-          - description: This structure indicates the details of the blueprint that this particular workflow is created from.
-      description: A workflow is a collection of multiple dependent Glue jobs and crawlers that are run to complete a complex ETL task. A workflow manages the execution and monitoring of all its jobs and crawlers.
-    JobRunList:
-      type: array
-      items:
-        $ref: '#/components/schemas/JobRun'
-    ConditionList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Condition'
-    NullableInteger:
-      type: integer
-    EdgeList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Edge'
-    ExecutionTime:
-      type: integer
-    WorkflowRun:
-      type: object
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: Name of the workflow that was run.
-        WorkflowRunId:
-          allOf:
-          - $ref: '#/components/schemas/IdString'
-          - description: The ID of this workflow run.
-        PreviousRunId:
-          allOf:
-          - $ref: '#/components/schemas/IdString'
-          - description: The ID of the previous workflow run.
-        WorkflowRunProperties:
-          allOf:
-          - $ref: '#/components/schemas/WorkflowRunProperties'
-          - description: The workflow run properties which were set during the run.
-        StartedOn:
-          allOf:
-          - $ref: '#/components/schemas/TimestampValue'
-          - description: The date and time when the workflow run was started.
-        CompletedOn:
-          allOf:
-          - $ref: '#/components/schemas/TimestampValue'
-          - description: The date and time when the workflow run completed.
-        Status:
-          allOf:
-          - $ref: '#/components/schemas/WorkflowRunStatus'
-          - description: The status of the workflow run.
-        ErrorMessage:
-          allOf:
-          - $ref: '#/components/schemas/ErrorString'
-          - description: 'This error message describes any error that may have occurred in starting the workflow run. Currently the only error message is "Concurrent runs exceeded for workflow: <code>foo</code>."'
-        Statistics:
-          allOf:
-          - $ref: '#/components/schemas/WorkflowRunStatistics'
-          - description: The statistics of the run.
-        Graph:
-          allOf:
-          - $ref: '#/components/schemas/WorkflowGraph'
-          - description: The graph representing all the Glue components that belong to the workflow as nodes and directed connections between them as edges.
-        StartingEventBatchCondition:
-          allOf:
-          - $ref: '#/components/schemas/StartingEventBatchCondition'
-          - description: The batch condition that started the workflow run.
-      description: A workflow run is an execution of a workflow providing all the runtime information.
-    WorkflowRunProperties:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
-    BatchGetWorkflowsResponse:
-      type: object
-      properties:
-        Workflows:
-          allOf:
-          - $ref: '#/components/schemas/Workflows'
-          - description: A list of workflow resource metadata.
-        MissingWorkflows:
-          allOf:
-          - $ref: '#/components/schemas/WorkflowNames'
-          - description: A list of names of workflows not found.
-    LogicalOperator:
-      type: string
-      enum:
-      - EQUALS
-    NullableDouble:
-      type: number
-      format: double
-    NullableBoolean:
-      type: boolean
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
-    IdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    Predicate:
-      type: object
-      properties:
-        Logical:
-          allOf:
-          - $ref: '#/components/schemas/Logical'
-          - description: An optional field if only one condition is listed. If multiple conditions are listed, then this field is required.
-        Conditions:
-          allOf:
-          - $ref: '#/components/schemas/ConditionList'
-          - description: A list of the conditions that determine when the trigger will fire.
-      description: Defines the predicate of the trigger, which determines when it fires.
-    BatchSize:
-      type: integer
-      minimum: 1
-      maximum: 100
-    EventBatchingCondition:
-      type: object
-      required:
-      - BatchSize
-      properties:
-        BatchSize:
-          allOf:
-          - $ref: '#/components/schemas/BatchSize'
-          - description: Number of events that must be received from Amazon EventBridge before EventBridge event trigger fires.
-        BatchWindow:
-          allOf:
-          - $ref: '#/components/schemas/BatchWindow'
-          - description: Window of time in seconds after which EventBridge event trigger fires. Window starts when first event is received.
-      description: Batch condition that must be met (specified number of events received or batch time window expired) before EventBridge event trigger fires.
-    ExecutionClass:
-      type: string
-      enum:
-      - FLEX
-      - STANDARD
-      maxLength: 16
+      - CRAWLER
+      - JOB
+      - TRIGGER
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -943,20 +943,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string

@@ -214,59 +214,21 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.ListWorkflows API'
 components:
-  schemas:
-    InvalidInputException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ListWorkflowsResponse:
-      type: object
-      properties:
-        Workflows:
-          allOf:
-          - $ref: '#/components/schemas/WorkflowNames'
-          - description: List of names of workflows in the account.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/GenericString'
-          - description: A continuation token, if not all workflow names have been returned.
-    WorkflowNames:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 1
-      maxItems: 25
-    ListWorkflowsRequest:
-      type: object
-      title: ListWorkflowsRequest
-      properties:
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/GenericString'
-          - description: A continuation token, if this is a continuation request.
-        MaxResults:
-          allOf:
-          - $ref: '#/components/schemas/PageSize'
-          - description: The maximum size of a list to return.
-    InternalServiceException: {}
-    GenericString:
-      type: string
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
-    OperationTimeoutException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
       in: header
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Date:
+      name: X-Amz-Date
       in: header
       schema:
         type: string
@@ -289,18 +251,56 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
+  schemas:
+    InvalidInputException: {}
+    WorkflowNames:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 1
+      maxItems: 25
+    ListWorkflowsResponse:
+      type: object
+      properties:
+        Workflows:
+          allOf:
+          - $ref: '#/components/schemas/WorkflowNames'
+          - description: List of names of workflows in the account.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/GenericString'
+          - description: A continuation token, if not all workflow names have been returned.
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
+    GenericString:
+      type: string
+    OperationTimeoutException: {}
+    InternalServiceException: {}
+    ListWorkflowsRequest:
+      type: object
+      title: ListWorkflowsRequest
+      properties:
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/GenericString'
+          - description: A continuation token, if this is a continuation request.
+        MaxResults:
+          allOf:
+          - $ref: '#/components/schemas/PageSize'
+          - description: The maximum size of a list to return.
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   securitySchemes:
     hmac:
       type: apiKey

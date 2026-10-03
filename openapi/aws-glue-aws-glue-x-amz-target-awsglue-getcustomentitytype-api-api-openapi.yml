@@ -229,15 +229,18 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetCustomEntityType API'
 components:
   schemas:
-    InvalidInputException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    GetCustomEntityTypeRequest:
+      type: object
+      required:
+      - Name
+      title: GetCustomEntityTypeRequest
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the custom pattern that you want to retrieve.
     EntityNotFoundException: {}
-    AccessDeniedException: {}
-    InternalServiceException: {}
+    InvalidInputException: {}
     GetCustomEntityTypeResponse:
       type: object
       properties:
@@ -253,23 +256,20 @@ components:
           allOf:
           - $ref: '#/components/schemas/ContextWords'
           - description: A list of context words if specified when you created the custom pattern. If none of these context words are found within the vicinity of the regular expression the data will not be detected as sensitive data.
-    GetCustomEntityTypeRequest:
-      type: object
-      required:
-      - Name
-      title: GetCustomEntityTypeRequest
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the custom pattern that you want to retrieve.
+    AccessDeniedException: {}
+    OperationTimeoutException: {}
+    InternalServiceException: {}
     ContextWords:
       type: array
       items:
         $ref: '#/components/schemas/NameString'
       minItems: 1
       maxItems: 20
-    OperationTimeoutException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   parameters:
     X-Amz-Signature:
       name: X-Amz-Signature
@@ -277,14 +277,20 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Date:
+      name: X-Amz-Date
       in: header
       schema:
         type: string
       required: false
     X-Amz-Algorithm:
       name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -297,12 +303,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
       in: header
       schema:
         type: string

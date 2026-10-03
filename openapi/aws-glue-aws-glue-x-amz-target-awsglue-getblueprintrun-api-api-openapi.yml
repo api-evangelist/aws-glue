@@ -203,14 +203,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetBlueprintRun API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -227,36 +227,43 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
-    OrchestrationIAMRoleArn:
+    GetBlueprintRunResponse:
+      type: object
+      properties:
+        BlueprintRun:
+          allOf:
+          - $ref: '#/components/schemas/BlueprintRun'
+          - description: Returns a <code>BlueprintRun</code> object.
+    MessageString:
       type: string
-      pattern: arn:aws[^:]*:iam::[0-9]*:role/.+
-      minLength: 1
-      maxLength: 1024
-    OperationTimeoutException: {}
-    NameString:
+    OrchestrationNameString:
       type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
       minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+      maxLength: 128
+    EntityNotFoundException: {}
+    TimestampValue:
+      type: string
+      format: date-time
     GetBlueprintRunRequest:
       type: object
       required:
@@ -272,7 +279,22 @@ components:
           allOf:
           - $ref: '#/components/schemas/IdString'
           - description: The run ID for the blueprint run you want to retrieve.
-    InternalServiceException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    BlueprintRunState:
+      type: string
+      enum:
+      - RUNNING
+      - SUCCEEDED
+      - FAILED
+      - ROLLING_BACK
+    BlueprintParameters:
+      type: string
+      minLength: 1
+      maxLength: 131072
     BlueprintRun:
       type: object
       properties:
@@ -317,40 +339,18 @@ components:
           - $ref: '#/components/schemas/OrchestrationIAMRoleArn'
           - description: The role ARN. This role will be assumed by the Glue service and will be used to create the workflow and other entities of a workflow.
       description: The details of a blueprint run.
-    TimestampValue:
+    OrchestrationIAMRoleArn:
       type: string
-      format: date-time
-    BlueprintParameters:
-      type: string
+      pattern: arn:aws[^:]*:iam::[0-9]*:role/.+
       minLength: 1
-      maxLength: 131072
-    EntityNotFoundException: {}
-    GetBlueprintRunResponse:
-      type: object
-      properties:
-        BlueprintRun:
-          allOf:
-          - $ref: '#/components/schemas/BlueprintRun'
-          - description: Returns a <code>BlueprintRun</code> object.
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
-    MessageString:
-      type: string
+      maxLength: 1024
+    InternalServiceException: {}
     IdString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    BlueprintRunState:
-      type: string
-      enum:
-      - RUNNING
-      - SUCCEEDED
-      - FAILED
-      - ROLLING_BACK
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

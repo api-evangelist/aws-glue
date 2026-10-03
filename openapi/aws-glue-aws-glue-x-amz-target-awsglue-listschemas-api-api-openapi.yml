@@ -230,24 +230,75 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.ListSchemas API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    AccessDeniedException: {}
-    ListSchemasResponse:
+    SchemaListDefinition:
+      type: array
+      items:
+        $ref: '#/components/schemas/SchemaListItem'
+    EntityNotFoundException: {}
+    ListSchemasInput:
       type: object
+      title: ListSchemasInput
       properties:
-        Schemas:
+        RegistryId:
           allOf:
-          - $ref: '#/components/schemas/SchemaListDefinition'
-          - description: An array of <code>SchemaListItem</code> objects containing details of each schema.
+          - $ref: '#/components/schemas/RegistryId'
+          - description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
+        MaxResults:
+          allOf:
+          - $ref: '#/components/schemas/MaxResultsNumber'
+          - description: Maximum number of results required per page. If the value is not supplied, this will be defaulted to 25 per page.
         NextToken:
           allOf:
           - $ref: '#/components/schemas/SchemaRegistryTokenString'
-          - description: A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
+          - description: A continuation token, if this is a continuation call.
+    CreatedTimestamp:
+      type: string
+    UpdatedTimestamp:
+      type: string
     SchemaListItem:
       type: object
       properties:
@@ -280,27 +331,47 @@ components:
           - $ref: '#/components/schemas/UpdatedTimestamp'
           - description: The date and time that a schema was updated.
       description: An object that contains minimal details for a schema.
-    SchemaRegistryTokenString:
-      type: string
-    InvalidInputException: {}
-    InternalServiceException: {}
-    SchemaListDefinition:
-      type: array
-      items:
-        $ref: '#/components/schemas/SchemaListItem'
-    UpdatedTimestamp:
-      type: string
-    CreatedTimestamp:
-      type: string
     SchemaRegistryNameString:
       type: string
       pattern: '[a-zA-Z0-9-_$#.]+'
       minLength: 1
       maxLength: 255
+    ListSchemasResponse:
+      type: object
+      properties:
+        Schemas:
+          allOf:
+          - $ref: '#/components/schemas/SchemaListDefinition'
+          - description: An array of <code>SchemaListItem</code> objects containing details of each schema.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryTokenString'
+          - description: A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
+    AccessDeniedException: {}
+    InternalServiceException: {}
+    SchemaStatus:
+      type: string
+      enum:
+      - AVAILABLE
+      - PENDING
+      - DELETING
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    InvalidInputException: {}
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
     MaxResultsNumber:
       type: integer
       minimum: 1
       maximum: 100
+    SchemaRegistryTokenString:
+      type: string
     RegistryId:
       type: object
       properties:
@@ -313,77 +384,6 @@ components:
           - $ref: '#/components/schemas/GlueResourceArn'
           - description: Arn of the registry to be updated. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided.
       description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
-    EntityNotFoundException: {}
-    SchemaStatus:
-      type: string
-      enum:
-      - AVAILABLE
-      - PENDING
-      - DELETING
-    ListSchemasInput:
-      type: object
-      title: ListSchemasInput
-      properties:
-        RegistryId:
-          allOf:
-          - $ref: '#/components/schemas/RegistryId'
-          - description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
-        MaxResults:
-          allOf:
-          - $ref: '#/components/schemas/MaxResultsNumber'
-          - description: Maximum number of results required per page. If the value is not supplied, this will be defaulted to 25 per page.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryTokenString'
-          - description: A continuation token, if this is a continuation call.
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
   securitySchemes:
     hmac:
       type: apiKey

@@ -229,14 +229,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateDevEndpoint API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -253,35 +253,27 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
-    BooleanValue:
-      type: boolean
-    OperationTimeoutException: {}
-    InvalidInputException: {}
     ValidationException: {}
-    InternalServiceException: {}
-    StringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/GenericString'
+    EntityNotFoundException: {}
     UpdateDevEndpointRequest:
       type: object
       required:
@@ -320,6 +312,24 @@ components:
           allOf:
           - $ref: '#/components/schemas/MapValue'
           - description: '<p>The map of arguments to add the map of arguments used to configure the <code>DevEndpoint</code>.</p> <p>Valid arguments are:</p> <ul> <li> <p> <code>"--enable-glue-datacatalog": ""</code> </p> </li> </ul> <p>You can specify a version of Python support for development endpoints by using the <code>Arguments</code> parameter in the <code>CreateDevEndpoint</code> or <code>UpdateDevEndpoint</code> APIs. If no arguments are provided, the version defaults to Python 2.</p>'
+    BooleanValue:
+      type: boolean
+    StringList:
+      type: array
+      items:
+        $ref: '#/components/schemas/GenericString'
+    GenericString:
+      type: string
+    InternalServiceException: {}
+    PublicKeysList:
+      type: array
+      items:
+        $ref: '#/components/schemas/GenericString'
+      maxItems: 5
+    UpdateDevEndpointResponse:
+      type: object
+      properties: {}
+    InvalidInputException: {}
     DevEndpointCustomLibraries:
       type: object
       properties:
@@ -332,23 +342,13 @@ components:
           - $ref: '#/components/schemas/GenericString'
           - description: <p>The path to one or more Java <code>.jar</code> files in an S3 bucket that should be loaded in your <code>DevEndpoint</code>.</p> <note> <p>You can only use pure Java/Scala libraries with a <code>DevEndpoint</code>.</p> </note>
       description: Custom libraries to be loaded into a development endpoint.
-    PublicKeysList:
-      type: array
-      items:
-        $ref: '#/components/schemas/GenericString'
-      maxItems: 5
-    UpdateDevEndpointResponse:
-      type: object
-      properties: {}
-    GenericString:
-      type: string
-    EntityNotFoundException: {}
     MapValue:
       type: object
       minProperties: 0
       maxProperties: 100
       additionalProperties:
         $ref: '#/components/schemas/GenericString'
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

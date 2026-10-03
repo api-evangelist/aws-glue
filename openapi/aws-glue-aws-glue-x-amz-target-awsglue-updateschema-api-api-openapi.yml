@@ -237,32 +237,62 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateSchema API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    DescriptionString:
+    EntityNotFoundException: {}
+    Compatibility:
       type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    AccessDeniedException: {}
-    ConcurrentModificationException: {}
-    InvalidInputException: {}
-    InternalServiceException: {}
-    SchemaId:
-      type: object
-      properties:
-        SchemaArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: The Amazon Resource Name (ARN) of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
-        SchemaName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
-        RegistryName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the schema registry that contains the schema.
-      description: The unique ID of the schema in the Glue schema registry.
+      enum:
+      - NONE
+      - DISABLED
+      - BACKWARD
+      - BACKWARD_ALL
+      - FORWARD
+      - FORWARD_ALL
+      - FULL
+      - FULL_ALL
     UpdateSchemaInput:
       type: object
       required:
@@ -285,32 +315,43 @@ components:
           allOf:
           - $ref: '#/components/schemas/DescriptionString'
           - description: The new description for the schema.
+    LatestSchemaVersionBoolean:
+      type: boolean
     SchemaRegistryNameString:
       type: string
       pattern: '[a-zA-Z0-9-_$#.]+'
       minLength: 1
       maxLength: 255
+    SchemaVersionNumber:
+      type: object
+      properties:
+        LatestVersion:
+          allOf:
+          - $ref: '#/components/schemas/LatestSchemaVersionBoolean'
+          - description: The latest version available for the schema.
+        VersionNumber:
+          allOf:
+          - $ref: '#/components/schemas/VersionLongNumber'
+          - description: The version number of the schema.
+      description: A structure containing the schema version information.
     VersionLongNumber:
       type: integer
       minimum: 1
       maximum: 100000
-    EntityNotFoundException: {}
+    AccessDeniedException: {}
+    InternalServiceException: {}
     GlueResourceArn:
       type: string
       pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
       minLength: 1
       maxLength: 10240
-    Compatibility:
+    InvalidInputException: {}
+    DescriptionString:
       type: string
-      enum:
-      - NONE
-      - DISABLED
-      - BACKWARD
-      - BACKWARD_ALL
-      - FORWARD
-      - FORWARD_ALL
-      - FULL
-      - FULL_ALL
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    ConcurrentModificationException: {}
     UpdateSchemaResponse:
       type: object
       properties:
@@ -326,63 +367,22 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaRegistryNameString'
           - description: The name of the registry that contains the schema.
-    LatestSchemaVersionBoolean:
-      type: boolean
-    SchemaVersionNumber:
+    SchemaId:
       type: object
       properties:
-        LatestVersion:
+        SchemaArn:
           allOf:
-          - $ref: '#/components/schemas/LatestSchemaVersionBoolean'
-          - description: The latest version available for the schema.
-        VersionNumber:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: The Amazon Resource Name (ARN) of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
+        SchemaName:
           allOf:
-          - $ref: '#/components/schemas/VersionLongNumber'
-          - description: The version number of the schema.
-      description: A structure containing the schema version information.
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
+        RegistryName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the schema registry that contains the schema.
+      description: The unique ID of the schema in the Glue schema registry.
   securitySchemes:
     hmac:
       type: apiKey

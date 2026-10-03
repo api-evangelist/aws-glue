@@ -214,34 +214,50 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.ListDataQualityRulesetEvaluat…'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    InvalidInputException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    DataSource:
-      type: object
-      required:
-      - GlueTable
-      properties:
-        GlueTable:
-          allOf:
-          - $ref: '#/components/schemas/GlueTable'
-          - description: An Glue table.
-      description: A data source (an Glue table) for which you want data quality results.
     DataQualityRulesetEvaluationRunDescription:
       type: object
       properties:
@@ -262,11 +278,6 @@ components:
           - $ref: '#/components/schemas/DataSource'
           - description: The data source (an Glue table) associated with the run.
       description: Describes the result of a data quality ruleset evaluation run.
-    InternalServiceException: {}
-    DataQualityRulesetEvaluationRunList:
-      type: array
-      items:
-        $ref: '#/components/schemas/DataQualityRulesetEvaluationRunDescription'
     GlueTableAdditionalOptions:
       type: object
       minProperties: 1
@@ -277,6 +288,21 @@ components:
       type: integer
       minimum: 1
       maximum: 1000
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    TaskStatusType:
+      type: string
+      enum:
+      - STARTING
+      - RUNNING
+      - STOPPING
+      - STOPPED
+      - SUCCEEDED
+      - FAILED
+      - TIMEOUT
     DataQualityRulesetEvaluationRunFilter:
       type: object
       required:
@@ -295,6 +321,52 @@ components:
           - $ref: '#/components/schemas/Timestamp'
           - description: Filter results by runs that started after this time.
       description: The filter criteria.
+    DataSource:
+      type: object
+      required:
+      - GlueTable
+      properties:
+        GlueTable:
+          allOf:
+          - $ref: '#/components/schemas/GlueTable'
+          - description: An Glue table.
+      description: A data source (an Glue table) for which you want data quality results.
+    PaginationToken:
+      type: string
+    InternalServiceException: {}
+    ListDataQualityRulesetEvaluationRunsRequest:
+      type: object
+      title: ListDataQualityRulesetEvaluationRunsRequest
+      properties:
+        Filter:
+          allOf:
+          - $ref: '#/components/schemas/DataQualityRulesetEvaluationRunFilter'
+          - description: The filter criteria.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/PaginationToken'
+          - description: A paginated token to offset the results.
+        MaxResults:
+          allOf:
+          - $ref: '#/components/schemas/PageSize'
+          - description: The maximum number of results to return.
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    ListDataQualityRulesetEvaluationRunsResponse:
+      type: object
+      properties:
+        Runs:
+          allOf:
+          - $ref: '#/components/schemas/DataQualityRulesetEvaluationRunList'
+          - description: A list of <code>DataQualityRulesetEvaluationRunDescription</code> objects representing data quality ruleset runs.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/PaginationToken'
+          - description: A pagination token, if more results are available.
+    InvalidInputException: {}
     GlueTable:
       type: object
       required:
@@ -322,91 +394,19 @@ components:
           - $ref: '#/components/schemas/GlueTableAdditionalOptions'
           - description: '<p>Additional options for the table. Currently there are two keys supported:</p> <ul> <li> <p> <code>pushDownPredicate</code>: to filter on partitions without having to list and read all the files in your dataset.</p> </li> <li> <p> <code>catalogPartitionPredicate</code>: to use server-side partition pruning using partition indexes in the Glue Data Catalog.</p> </li> </ul>'
       description: The database and table in the Glue Data Catalog that is used for input or output data.
-    TaskStatusType:
+    DescriptionString:
       type: string
-      enum:
-      - STARTING
-      - RUNNING
-      - STOPPING
-      - STOPPED
-      - SUCCEEDED
-      - FAILED
-      - TIMEOUT
-    ListDataQualityRulesetEvaluationRunsRequest:
-      type: object
-      title: ListDataQualityRulesetEvaluationRunsRequest
-      properties:
-        Filter:
-          allOf:
-          - $ref: '#/components/schemas/DataQualityRulesetEvaluationRunFilter'
-          - description: The filter criteria.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/PaginationToken'
-          - description: A paginated token to offset the results.
-        MaxResults:
-          allOf:
-          - $ref: '#/components/schemas/PageSize'
-          - description: The maximum number of results to return.
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
     Timestamp:
       type: string
       format: date-time
-    PaginationToken:
-      type: string
-    ListDataQualityRulesetEvaluationRunsResponse:
-      type: object
-      properties:
-        Runs:
-          allOf:
-          - $ref: '#/components/schemas/DataQualityRulesetEvaluationRunList'
-          - description: A list of <code>DataQualityRulesetEvaluationRunDescription</code> objects representing data quality ruleset runs.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/PaginationToken'
-          - description: A pagination token, if more results are available.
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+    OperationTimeoutException: {}
+    DataQualityRulesetEvaluationRunList:
+      type: array
+      items:
+        $ref: '#/components/schemas/DataQualityRulesetEvaluationRunDescription'
   securitySchemes:
     hmac:
       type: apiKey

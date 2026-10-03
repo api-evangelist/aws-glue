@@ -218,55 +218,7 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.GetSchemaVersionsDiff API'
 components:
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    AccessDeniedException: {}
-    SchemaDiffType:
-      type: string
-      enum:
-      - SYNTAX_DIFF
     GetSchemaVersionsDiffInput:
       type: object
       required:
@@ -292,8 +244,54 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaDiffType'
           - description: Refers to <code>SYNTAX_DIFF</code>, which is the currently supported diff type.
-    InvalidInputException: {}
+    SchemaDefinitionDiff:
+      type: string
+      pattern: .*\S.*
+      minLength: 1
+      maxLength: 340000
+    EntityNotFoundException: {}
+    LatestSchemaVersionBoolean:
+      type: boolean
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    SchemaVersionNumber:
+      type: object
+      properties:
+        LatestVersion:
+          allOf:
+          - $ref: '#/components/schemas/LatestSchemaVersionBoolean'
+          - description: The latest version available for the schema.
+        VersionNumber:
+          allOf:
+          - $ref: '#/components/schemas/VersionLongNumber'
+          - description: The version number of the schema.
+      description: A structure containing the schema version information.
+    VersionLongNumber:
+      type: integer
+      minimum: 1
+      maximum: 100000
+    AccessDeniedException: {}
     InternalServiceException: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    InvalidInputException: {}
+    SchemaDiffType:
+      type: string
+      enum:
+      - SYNTAX_DIFF
+    GetSchemaVersionsDiffResponse:
+      type: object
+      properties:
+        Diff:
+          allOf:
+          - $ref: '#/components/schemas/SchemaDefinitionDiff'
+          - description: The difference between schemas as a string in JsonPatch format.
     SchemaId:
       type: object
       properties:
@@ -310,47 +308,49 @@ components:
           - $ref: '#/components/schemas/SchemaRegistryNameString'
           - description: The name of the schema registry that contains the schema.
       description: The unique ID of the schema in the Glue schema registry.
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    VersionLongNumber:
-      type: integer
-      minimum: 1
-      maximum: 100000
-    EntityNotFoundException: {}
-    GetSchemaVersionsDiffResponse:
-      type: object
-      properties:
-        Diff:
-          allOf:
-          - $ref: '#/components/schemas/SchemaDefinitionDiff'
-          - description: The difference between schemas as a string in JsonPatch format.
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    LatestSchemaVersionBoolean:
-      type: boolean
-    SchemaVersionNumber:
-      type: object
-      properties:
-        LatestVersion:
-          allOf:
-          - $ref: '#/components/schemas/LatestSchemaVersionBoolean'
-          - description: The latest version available for the schema.
-        VersionNumber:
-          allOf:
-          - $ref: '#/components/schemas/VersionLongNumber'
-          - description: The version number of the schema.
-      description: A structure containing the schema version information.
-    SchemaDefinitionDiff:
-      type: string
-      pattern: .*\S.*
-      minLength: 1
-      maxLength: 340000
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

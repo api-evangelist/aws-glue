@@ -242,12 +242,11 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.CancelStatement API'
 components:
   schemas:
-    InvalidInputException: {}
-    NameString:
+    OrchestrationNameString:
       type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
       minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+      maxLength: 128
     CancelStatementRequest:
       type: object
       required:
@@ -267,30 +266,43 @@ components:
           allOf:
           - $ref: '#/components/schemas/OrchestrationNameString'
           - description: The origin of the request to cancel the statement.
+    IntegerValue:
+      type: integer
+    InvalidInputException: {}
     EntityNotFoundException: {}
+    IllegalSessionStateException: {}
+    OperationTimeoutException: {}
     AccessDeniedException: {}
+    InternalServiceException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     CancelStatementResponse:
       type: object
       properties: {}
-    InternalServiceException: {}
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
-    IntegerValue:
-      type: integer
-    IllegalSessionStateException: {}
-    OperationTimeoutException: {}
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
       required: false
     X-Amz-Algorithm:
       name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -303,18 +315,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
       in: header
       schema:
         type: string

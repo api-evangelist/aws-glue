@@ -229,14 +229,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.PutResourcePolicy API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -253,37 +253,26 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
     ConditionCheckFailureException: {}
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    InvalidInputException: {}
-    InternalServiceException: {}
-    PolicyJsonString:
-      type: string
-      minLength: 2
     PutResourcePolicyRequest:
       type: object
       required:
@@ -310,17 +299,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/EnableHybridValues'
           - description: <p>If <code>'TRUE'</code>, indicates that you are using both methods to grant cross-account access to Data Catalog resources:</p> <ul> <li> <p>By directly updating the resource policy with <code>PutResourePolicy</code> </p> </li> <li> <p>By using the <b>Grant permissions</b> command on the Amazon Web Services Management Console.</p> </li> </ul> <p>Must be set to <code>'TRUE'</code> if you have already used the Management Console to grant cross-account access, otherwise the call fails. Default is 'FALSE'.</p>
-    EnableHybridValues:
-      type: string
-      enum:
-      - 'TRUE'
-      - 'FALSE'
-    ExistCondition:
-      type: string
-      enum:
-      - MUST_EXIST
-      - NOT_EXIST
-      - NONE
+    EntityNotFoundException: {}
     PutResourcePolicyResponse:
       type: object
       properties:
@@ -328,12 +307,33 @@ components:
           allOf:
           - $ref: '#/components/schemas/HashString'
           - description: A hash of the policy that has just been set. This must be included in a subsequent call that overwrites or updates this policy.
-    EntityNotFoundException: {}
+    EnableHybridValues:
+      type: string
+      enum:
+      - 'TRUE'
+      - 'FALSE'
+    InternalServiceException: {}
     GlueResourceArn:
       type: string
       pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
       minLength: 1
       maxLength: 10240
+    PolicyJsonString:
+      type: string
+      minLength: 2
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    InvalidInputException: {}
+    ExistCondition:
+      type: string
+      enum:
+      - MUST_EXIST
+      - NOT_EXIST
+      - NONE
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

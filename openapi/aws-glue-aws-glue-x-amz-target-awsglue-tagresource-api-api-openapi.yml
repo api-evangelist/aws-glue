@@ -216,6 +216,7 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.TagResource API'
 components:
   schemas:
+    EntityNotFoundException: {}
     TagResourceRequest:
       type: object
       required:
@@ -231,37 +232,48 @@ components:
           allOf:
           - $ref: '#/components/schemas/TagsMap'
           - description: Tags to add to this resource.
-    InvalidInputException: {}
-    EntityNotFoundException: {}
-    TagResourceResponse:
-      type: object
-      properties: {}
     TagsMap:
       type: object
       minProperties: 0
       maxProperties: 50
       additionalProperties:
         $ref: '#/components/schemas/TagValue'
+    InvalidInputException: {}
+    TagResourceResponse:
+      type: object
+      properties: {}
     TagValue:
       type: string
       minLength: 0
       maxLength: 256
+    OperationTimeoutException: {}
     InternalServiceException: {}
     GlueResourceArn:
       type: string
       pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
       minLength: 1
       maxLength: 10240
-    OperationTimeoutException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
       in: header
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -274,18 +286,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
       in: header
       schema:
         type: string

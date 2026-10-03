@@ -202,19 +202,118 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.BatchGetBlueprints API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+    BatchGetBlueprintsResponse:
+      type: object
+      properties:
+        Blueprints:
+          allOf:
+          - $ref: '#/components/schemas/Blueprints'
+          - description: Returns a list of blueprint as a <code>Blueprints</code> object.
+        MissingBlueprints:
+          allOf:
+          - $ref: '#/components/schemas/BlueprintNames'
+          - description: Returns a list of <code>BlueprintNames</code> that were not found.
+    TimestampValue:
+      type: string
+      format: date-time
+    ErrorString:
+      type: string
+    NullableBoolean:
+      type: boolean
+    BlueprintStatus:
+      type: string
+      enum:
+      - CREATING
+      - ACTIVE
+      - UPDATING
+      - FAILED
     BatchGetBlueprintNames:
       type: array
       items:
         $ref: '#/components/schemas/OrchestrationNameString'
       minItems: 1
       maxItems: 25
-    BlueprintParameterSpec:
+    BatchGetBlueprintsRequest:
+      type: object
+      required:
+      - Names
+      title: BatchGetBlueprintsRequest
+      properties:
+        Names:
+          allOf:
+          - $ref: '#/components/schemas/BatchGetBlueprintNames'
+          - description: A list of blueprint names.
+        IncludeBlueprint:
+          allOf:
+          - $ref: '#/components/schemas/NullableBoolean'
+          - description: Specifies whether or not to include the blueprint in the response.
+        IncludeParameterSpec:
+          allOf:
+          - $ref: '#/components/schemas/NullableBoolean'
+          - description: Specifies whether or not to include the parameters, as a JSON string, for the blueprint in the response.
+    BlueprintNames:
+      type: array
+      items:
+        $ref: '#/components/schemas/OrchestrationNameString'
+    Generic512CharString:
       type: string
       minLength: 1
-      maxLength: 131072
-    ErrorString:
+      maxLength: 512
+    GenericString:
       type: string
+    Blueprints:
+      type: array
+      items:
+        $ref: '#/components/schemas/Blueprint'
     LastActiveDefinition:
       type: object
       properties:
@@ -239,42 +338,8 @@ components:
           - $ref: '#/components/schemas/GenericString'
           - description: Specifies a path in Amazon S3 where the blueprint is copied when you create or update the blueprint.
       description: When there are multiple versions of a blueprint and the latest version has some errors, this attribute indicates the last successful blueprint definition that is available with the service.
-    BatchGetBlueprintsResponse:
-      type: object
-      properties:
-        Blueprints:
-          allOf:
-          - $ref: '#/components/schemas/Blueprints'
-          - description: Returns a list of blueprint as a <code>Blueprints</code> object.
-        MissingBlueprints:
-          allOf:
-          - $ref: '#/components/schemas/BlueprintNames'
-          - description: Returns a list of <code>BlueprintNames</code> that were not found.
-    BatchGetBlueprintsRequest:
-      type: object
-      required:
-      - Names
-      title: BatchGetBlueprintsRequest
-      properties:
-        Names:
-          allOf:
-          - $ref: '#/components/schemas/BatchGetBlueprintNames'
-          - description: A list of blueprint names.
-        IncludeBlueprint:
-          allOf:
-          - $ref: '#/components/schemas/NullableBoolean'
-          - description: Specifies whether or not to include the blueprint in the response.
-        IncludeParameterSpec:
-          allOf:
-          - $ref: '#/components/schemas/NullableBoolean'
-          - description: Specifies whether or not to include the parameters, as a JSON string, for the blueprint in the response.
-    OperationTimeoutException: {}
-    InvalidInputException: {}
-    Blueprints:
-      type: array
-      items:
-        $ref: '#/components/schemas/Blueprint'
     InternalServiceException: {}
+    InvalidInputException: {}
     Blueprint:
       type: object
       properties:
@@ -319,76 +384,11 @@ components:
           - $ref: '#/components/schemas/LastActiveDefinition'
           - description: When there are multiple versions of a blueprint and the latest version has some errors, this attribute indicates the last successful blueprint definition that is available with the service.
       description: The details of a blueprint.
-    TimestampValue:
-      type: string
-      format: date-time
-    BlueprintNames:
-      type: array
-      items:
-        $ref: '#/components/schemas/OrchestrationNameString'
-    GenericString:
-      type: string
-    Generic512CharString:
+    BlueprintParameterSpec:
       type: string
       minLength: 1
-      maxLength: 512
-    NullableBoolean:
-      type: boolean
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
-    BlueprintStatus:
-      type: string
-      enum:
-      - CREATING
-      - ACTIVE
-      - UPDATING
-      - FAILED
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+      maxLength: 131072
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

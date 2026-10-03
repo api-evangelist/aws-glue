@@ -216,14 +216,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetSchemaVersion API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -240,49 +240,38 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
-    AccessDeniedException: {}
+    EntityNotFoundException: {}
+    SchemaVersionStatus:
+      type: string
+      enum:
+      - AVAILABLE
+      - PENDING
+      - FAILURE
+      - DELETING
     SchemaVersionIdString:
       type: string
       pattern: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
       minLength: 36
       maxLength: 36
-    InvalidInputException: {}
-    InternalServiceException: {}
-    SchemaId:
-      type: object
-      properties:
-        SchemaArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: The Amazon Resource Name (ARN) of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
-        SchemaName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
-        RegistryName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the schema registry that contains the schema.
-      description: The unique ID of the schema in the Glue schema registry.
     GetSchemaVersionResponse:
       type: object
       properties:
@@ -314,6 +303,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/CreatedTimestamp'
           - description: The date and time the schema version was created.
+    DataFormat:
+      type: string
+      enum:
+      - AVRO
+      - JSON
+      - PROTOBUF
+    LatestSchemaVersionBoolean:
+      type: boolean
     CreatedTimestamp:
       type: string
     SchemaRegistryNameString:
@@ -321,24 +318,35 @@ components:
       pattern: '[a-zA-Z0-9-_$#.]+'
       minLength: 1
       maxLength: 255
+    SchemaVersionNumber:
+      type: object
+      properties:
+        LatestVersion:
+          allOf:
+          - $ref: '#/components/schemas/LatestSchemaVersionBoolean'
+          - description: The latest version available for the schema.
+        VersionNumber:
+          allOf:
+          - $ref: '#/components/schemas/VersionLongNumber'
+          - description: The version number of the schema.
+      description: A structure containing the schema version information.
     VersionLongNumber:
       type: integer
       minimum: 1
       maximum: 100000
-    DataFormat:
+    AccessDeniedException: {}
+    InternalServiceException: {}
+    GlueResourceArn:
       type: string
-      enum:
-      - AVRO
-      - JSON
-      - PROTOBUF
-    SchemaVersionStatus:
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    SchemaDefinitionString:
       type: string
-      enum:
-      - AVAILABLE
-      - PENDING
-      - FAILURE
-      - DELETING
-    EntityNotFoundException: {}
+      pattern: .*\S.*
+      minLength: 1
+      maxLength: 170000
+    InvalidInputException: {}
     GetSchemaVersionInput:
       type: object
       title: GetSchemaVersionInput
@@ -355,30 +363,22 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaVersionNumber'
           - description: The version number of the schema.
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    LatestSchemaVersionBoolean:
-      type: boolean
-    SchemaDefinitionString:
-      type: string
-      pattern: .*\S.*
-      minLength: 1
-      maxLength: 170000
-    SchemaVersionNumber:
+    SchemaId:
       type: object
       properties:
-        LatestVersion:
+        SchemaArn:
           allOf:
-          - $ref: '#/components/schemas/LatestSchemaVersionBoolean'
-          - description: The latest version available for the schema.
-        VersionNumber:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: The Amazon Resource Name (ARN) of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
+        SchemaName:
           allOf:
-          - $ref: '#/components/schemas/VersionLongNumber'
-          - description: The version number of the schema.
-      description: A structure containing the schema version information.
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
+        RegistryName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the schema registry that contains the schema.
+      description: The unique ID of the schema in the Glue schema registry.
   securitySchemes:
     hmac:
       type: apiKey

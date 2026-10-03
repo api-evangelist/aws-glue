@@ -203,14 +203,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetPlan API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -227,88 +227,44 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
-    SchemaPathString:
+    MappingList:
+      type: array
+      items:
+        $ref: '#/components/schemas/MappingEntry'
+    CodeGenArgValue:
       type: string
-    MappingEntry:
-      type: object
-      properties:
-        SourceTable:
-          allOf:
-          - $ref: '#/components/schemas/TableName'
-          - description: The name of the source table.
-        SourcePath:
-          allOf:
-          - $ref: '#/components/schemas/SchemaPathString'
-          - description: The source path.
-        SourceType:
-          allOf:
-          - $ref: '#/components/schemas/FieldType'
-          - description: The source type.
-        TargetTable:
-          allOf:
-          - $ref: '#/components/schemas/TableName'
-          - description: The target table.
-        TargetPath:
-          allOf:
-          - $ref: '#/components/schemas/SchemaPathString'
-          - description: The target path.
-        TargetType:
-          allOf:
-          - $ref: '#/components/schemas/FieldType'
-          - description: The target type.
-      description: Defines a mapping.
-    OperationTimeoutException: {}
+    TableName:
+      type: string
+    Boolean:
+      type: boolean
     Language:
       type: string
       enum:
       - PYTHON
       - SCALA
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    InvalidInputException: {}
-    CodeGenNodeArg:
+    AdditionalPlanOptionsMap:
       type: object
-      required:
-      - Name
-      - Value
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/CodeGenArgName'
-          - description: The name of the argument or property.
-        Value:
-          allOf:
-          - $ref: '#/components/schemas/CodeGenArgValue'
-          - description: The value of the argument or property.
-        Param:
-          allOf:
-          - $ref: '#/components/schemas/Boolean'
-          - description: True if the value is used as a parameter.
-      description: An argument or property of a node.
-    Boolean:
-      type: boolean
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
     Location:
       type: object
       properties:
@@ -325,52 +281,24 @@ components:
           - $ref: '#/components/schemas/CodeGenNodeArgs'
           - description: An Amazon DynamoDB table location.
       description: The location of resources.
-    ScalaCode:
+    SchemaPathString:
       type: string
-    InternalServiceException: {}
-    CodeGenNodeArgs:
-      type: array
-      items:
-        $ref: '#/components/schemas/CodeGenNodeArg'
-      minItems: 0
-      maxItems: 50
-    AdditionalPlanOptionsMap:
+    GetPlanResponse:
       type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
-    FieldType:
-      type: string
-    CodeGenArgValue:
-      type: string
-    PythonScript:
-      type: string
-    CatalogEntry:
-      type: object
-      required:
-      - DatabaseName
-      - TableName
       properties:
-        DatabaseName:
+        PythonScript:
           allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The database in which the table metadata resides.
-        TableName:
+          - $ref: '#/components/schemas/PythonScript'
+          - description: A Python script to perform the mapping.
+        ScalaCode:
           allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the table in question.
-      description: Specifies a table definition in the Glue Data Catalog.
-    MappingList:
-      type: array
-      items:
-        $ref: '#/components/schemas/MappingEntry'
-    CatalogEntries:
-      type: array
-      items:
-        $ref: '#/components/schemas/CatalogEntry'
-    CodeGenArgName:
+          - $ref: '#/components/schemas/ScalaCode'
+          - description: The Scala code to perform the mapping.
+    NameString:
       type: string
-    GenericString:
-      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     GetPlanRequest:
       type: object
       required:
@@ -402,19 +330,91 @@ components:
           allOf:
           - $ref: '#/components/schemas/AdditionalPlanOptionsMap'
           - description: <p>A map to hold additional optional key-value parameters.</p> <p>Currently, these key-value pairs are supported:</p> <ul> <li> <p> <code>inferSchema</code>  —  Specifies whether to set <code>inferSchema</code> to true or false for the default script generated by an Glue job. For example, to set <code>inferSchema</code> to true, pass the following key value pair:</p> <p> <code>--additional-plan-options-map '{"inferSchema":"true"}'</code> </p> </li> </ul>
-    TableName:
+    CodeGenNodeArgs:
+      type: array
+      items:
+        $ref: '#/components/schemas/CodeGenNodeArg'
+      minItems: 0
+      maxItems: 50
+    GenericString:
       type: string
-    GetPlanResponse:
+    CatalogEntry:
+      type: object
+      required:
+      - DatabaseName
+      - TableName
+      properties:
+        DatabaseName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The database in which the table metadata resides.
+        TableName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the table in question.
+      description: Specifies a table definition in the Glue Data Catalog.
+    PythonScript:
+      type: string
+    CodeGenArgName:
+      type: string
+    InternalServiceException: {}
+    CodeGenNodeArg:
+      type: object
+      required:
+      - Name
+      - Value
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/CodeGenArgName'
+          - description: The name of the argument or property.
+        Value:
+          allOf:
+          - $ref: '#/components/schemas/CodeGenArgValue'
+          - description: The value of the argument or property.
+        Param:
+          allOf:
+          - $ref: '#/components/schemas/Boolean'
+          - description: True if the value is used as a parameter.
+      description: An argument or property of a node.
+    InvalidInputException: {}
+    CatalogEntries:
+      type: array
+      items:
+        $ref: '#/components/schemas/CatalogEntry'
+    ScalaCode:
+      type: string
+    FieldType:
+      type: string
+    OperationTimeoutException: {}
+    MappingEntry:
       type: object
       properties:
-        PythonScript:
+        SourceTable:
           allOf:
-          - $ref: '#/components/schemas/PythonScript'
-          - description: A Python script to perform the mapping.
-        ScalaCode:
+          - $ref: '#/components/schemas/TableName'
+          - description: The name of the source table.
+        SourcePath:
           allOf:
-          - $ref: '#/components/schemas/ScalaCode'
-          - description: The Scala code to perform the mapping.
+          - $ref: '#/components/schemas/SchemaPathString'
+          - description: The source path.
+        SourceType:
+          allOf:
+          - $ref: '#/components/schemas/FieldType'
+          - description: The source type.
+        TargetTable:
+          allOf:
+          - $ref: '#/components/schemas/TableName'
+          - description: The target table.
+        TargetPath:
+          allOf:
+          - $ref: '#/components/schemas/SchemaPathString'
+          - description: The target path.
+        TargetType:
+          allOf:
+          - $ref: '#/components/schemas/FieldType'
+          - description: The target type.
+      description: Defines a mapping.
   securitySchemes:
     hmac:
       type: apiKey

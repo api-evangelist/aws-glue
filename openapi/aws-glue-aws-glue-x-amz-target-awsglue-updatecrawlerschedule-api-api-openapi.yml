@@ -229,20 +229,20 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateCrawlerSchedule API'
 components:
   schemas:
+    EntityNotFoundException: {}
     InvalidInputException: {}
+    CronExpression:
+      type: string
+    VersionMismatchException: {}
+    UpdateCrawlerScheduleResponse:
+      type: object
+      properties: {}
+    OperationTimeoutException: {}
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    EntityNotFoundException: {}
-    UpdateCrawlerScheduleResponse:
-      type: object
-      properties: {}
-    CronExpression:
-      type: string
-    SchedulerTransitioningException: {}
-    VersionMismatchException: {}
     UpdateCrawlerScheduleRequest:
       type: object
       required:
@@ -257,16 +257,22 @@ components:
           allOf:
           - $ref: '#/components/schemas/CronExpression'
           - description: 'The updated <code>cron</code> expression used to specify the schedule (see <a href="https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html">Time-Based Schedules for Jobs and Crawlers</a>. For example, to run something every day at 12:15 UTC, you would specify: <code>cron(15 12 * * ? *)</code>.'
-    OperationTimeoutException: {}
+    SchedulerTransitioningException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
       in: header
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Date:
+      name: X-Amz-Date
       in: header
       schema:
         type: string
@@ -285,12 +291,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
       in: header
       schema:
         type: string

@@ -255,14 +255,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.PutWorkflowRunProperties API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -279,28 +279,26 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
     AlreadyExistsException: {}
-    ConcurrentModificationException: {}
-    ResourceNumberLimitExceededException: {}
     PutWorkflowRunPropertiesRequest:
       type: object
       required:
@@ -321,29 +319,31 @@ components:
           allOf:
           - $ref: '#/components/schemas/WorkflowRunProperties'
           - description: The properties to put for the specified run.
-    OperationTimeoutException: {}
-    InvalidInputException: {}
+    EntityNotFoundException: {}
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    InternalServiceException: {}
     PutWorkflowRunPropertiesResponse:
       type: object
       properties: {}
-    GenericString:
-      type: string
-    EntityNotFoundException: {}
     WorkflowRunProperties:
       type: object
       additionalProperties:
         $ref: '#/components/schemas/GenericString'
+    GenericString:
+      type: string
+    InternalServiceException: {}
+    ResourceNumberLimitExceededException: {}
+    InvalidInputException: {}
+    ConcurrentModificationException: {}
     IdString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

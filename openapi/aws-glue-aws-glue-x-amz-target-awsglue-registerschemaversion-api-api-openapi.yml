@@ -248,14 +248,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.RegisterSchemaVersion API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -272,33 +272,40 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
-    AccessDeniedException: {}
-    SchemaVersionIdString:
-      type: string
-      pattern: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
-      minLength: 36
-      maxLength: 36
-    ConcurrentModificationException: {}
-    ResourceNumberLimitExceededException: {}
+    RegisterSchemaVersionResponse:
+      type: object
+      properties:
+        SchemaVersionId:
+          allOf:
+          - $ref: '#/components/schemas/SchemaVersionIdString'
+          - description: The unique ID that represents the version of this schema.
+        VersionNumber:
+          allOf:
+          - $ref: '#/components/schemas/VersionLongNumber'
+          - description: The version of this schema (for sync flow only, in case this is the first version).
+        Status:
+          allOf:
+          - $ref: '#/components/schemas/SchemaVersionStatus'
+          - description: The status of the schema version.
     RegisterSchemaVersionInput:
       type: object
       required:
@@ -314,8 +321,43 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaDefinitionString'
           - description: The schema definition using the <code>DataFormat</code> setting for the <code>SchemaName</code>.
-    InvalidInputException: {}
+    EntityNotFoundException: {}
+    SchemaVersionStatus:
+      type: string
+      enum:
+      - AVAILABLE
+      - PENDING
+      - FAILURE
+      - DELETING
+    SchemaVersionIdString:
+      type: string
+      pattern: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
+      minLength: 36
+      maxLength: 36
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    VersionLongNumber:
+      type: integer
+      minimum: 1
+      maximum: 100000
+    AccessDeniedException: {}
     InternalServiceException: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    ResourceNumberLimitExceededException: {}
+    SchemaDefinitionString:
+      type: string
+      pattern: .*\S.*
+      minLength: 1
+      maxLength: 170000
+    InvalidInputException: {}
+    ConcurrentModificationException: {}
     SchemaId:
       type: object
       properties:
@@ -332,48 +374,6 @@ components:
           - $ref: '#/components/schemas/SchemaRegistryNameString'
           - description: The name of the schema registry that contains the schema.
       description: The unique ID of the schema in the Glue schema registry.
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    VersionLongNumber:
-      type: integer
-      minimum: 1
-      maximum: 100000
-    RegisterSchemaVersionResponse:
-      type: object
-      properties:
-        SchemaVersionId:
-          allOf:
-          - $ref: '#/components/schemas/SchemaVersionIdString'
-          - description: The unique ID that represents the version of this schema.
-        VersionNumber:
-          allOf:
-          - $ref: '#/components/schemas/VersionLongNumber'
-          - description: The version of this schema (for sync flow only, in case this is the first version).
-        Status:
-          allOf:
-          - $ref: '#/components/schemas/SchemaVersionStatus'
-          - description: The status of the schema version.
-    SchemaVersionStatus:
-      type: string
-      enum:
-      - AVAILABLE
-      - PENDING
-      - FAILURE
-      - DELETING
-    EntityNotFoundException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    SchemaDefinitionString:
-      type: string
-      pattern: .*\S.*
-      minLength: 1
-      maxLength: 170000
   securitySchemes:
     hmac:
       type: apiKey

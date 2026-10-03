@@ -242,14 +242,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateBlueprint API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -266,46 +266,36 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
-    ConcurrentModificationException: {}
-    OperationTimeoutException: {}
-    InvalidInputException: {}
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+    EntityNotFoundException: {}
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    InternalServiceException: {}
-    UpdateBlueprintResponse:
-      type: object
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: Returns the name of the blueprint that was updated.
-    IllegalBlueprintStateException: {}
-    Generic512CharString:
-      type: string
-      minLength: 1
-      maxLength: 512
     UpdateBlueprintRequest:
       type: object
       required:
@@ -325,17 +315,27 @@ components:
           allOf:
           - $ref: '#/components/schemas/OrchestrationS3Location'
           - description: Specifies a path in Amazon S3 where the blueprint is published.
-    EntityNotFoundException: {}
+    IllegalBlueprintStateException: {}
+    Generic512CharString:
+      type: string
+      minLength: 1
+      maxLength: 512
+    InternalServiceException: {}
+    UpdateBlueprintResponse:
+      type: object
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: Returns the name of the blueprint that was updated.
     OrchestrationS3Location:
       type: string
       pattern: ^s3://([^/]+)/([^/]+/)*([^/]+)$
       minLength: 1
       maxLength: 8192
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
+    InvalidInputException: {}
+    ConcurrentModificationException: {}
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

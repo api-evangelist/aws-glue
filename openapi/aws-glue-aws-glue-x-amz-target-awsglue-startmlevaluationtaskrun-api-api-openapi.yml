@@ -248,22 +248,7 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.StartMLEvaluationTaskRun API'
 components:
   schemas:
-    InvalidInputException: {}
     EntityNotFoundException: {}
-    StartMLEvaluationTaskRunResponse:
-      type: object
-      properties:
-        TaskRunId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The unique identifier associated with this run.
-    InternalServiceException: {}
-    MLTransformNotReadyException: {}
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     StartMLEvaluationTaskRunRequest:
       type: object
       required:
@@ -274,17 +259,38 @@ components:
           allOf:
           - $ref: '#/components/schemas/HashString'
           - description: The unique identifier of the machine learning transform.
+    InvalidInputException: {}
     ConcurrentRunsExceededException: {}
     OperationTimeoutException: {}
+    InternalServiceException: {}
+    StartMLEvaluationTaskRunResponse:
+      type: object
+      properties:
+        TaskRunId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The unique identifier associated with this run.
+    MLTransformNotReadyException: {}
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   parameters:
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -303,12 +309,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
       in: header
       schema:
         type: string

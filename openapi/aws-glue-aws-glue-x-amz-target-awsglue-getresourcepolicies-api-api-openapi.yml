@@ -230,69 +230,11 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.GetResourcePolicies API'
 components:
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    GetResourcePoliciesRequest:
-      type: object
-      title: GetResourcePoliciesRequest
-      properties:
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/Token'
-          - description: A continuation token, if this is a continuation request.
-        MaxResults:
-          allOf:
-          - $ref: '#/components/schemas/PageSize'
-          - description: The maximum size of a list to return.
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    InvalidInputException: {}
+    GetResourcePoliciesResponseList:
+      type: array
+      items:
+        $ref: '#/components/schemas/GluePolicy'
     Token:
       type: string
     GetResourcePoliciesResponse:
@@ -306,22 +248,22 @@ components:
           allOf:
           - $ref: '#/components/schemas/Token'
           - description: A continuation token, if the returned list does not contain the last resource policy available.
-    GetResourcePoliciesResponseList:
-      type: array
-      items:
-        $ref: '#/components/schemas/GluePolicy'
-    InternalServiceException: {}
-    PolicyJsonString:
-      type: string
-      minLength: 2
     PageSize:
       type: integer
       minimum: 1
       maximum: 1000
-    Timestamp:
-      type: string
-      format: date-time
-    GlueEncryptionException: {}
+    GetResourcePoliciesRequest:
+      type: object
+      title: GetResourcePoliciesRequest
+      properties:
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/Token'
+          - description: A continuation token, if this is a continuation request.
+        MaxResults:
+          allOf:
+          - $ref: '#/components/schemas/PageSize'
+          - description: The maximum size of a list to return.
     GluePolicy:
       type: object
       properties:
@@ -342,6 +284,64 @@ components:
           - $ref: '#/components/schemas/Timestamp'
           - description: The date and time at which the policy was last updated.
       description: A structure for returning a resource policy.
+    InternalServiceException: {}
+    PolicyJsonString:
+      type: string
+      minLength: 2
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    GlueEncryptionException: {}
+    InvalidInputException: {}
+    Timestamp:
+      type: string
+      format: date-time
+    OperationTimeoutException: {}
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

@@ -242,14 +242,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.StartWorkflowRun API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -266,28 +266,26 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
-    ResourceNumberLimitExceededException: {}
-    OperationTimeoutException: {}
-    InvalidInputException: {}
+    EntityNotFoundException: {}
     NameString:
       type: string
       minLength: 1
@@ -300,7 +298,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/IdString'
           - description: An Id for the new run.
+    WorkflowRunProperties:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    GenericString:
+      type: string
     InternalServiceException: {}
+    ConcurrentRunsExceededException: {}
+    ResourceNumberLimitExceededException: {}
+    InvalidInputException: {}
     StartWorkflowRunRequest:
       type: object
       required:
@@ -315,19 +322,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/WorkflowRunProperties'
           - description: The workflow run properties for the new workflow run.
-    GenericString:
-      type: string
-    EntityNotFoundException: {}
-    WorkflowRunProperties:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
     IdString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ConcurrentRunsExceededException: {}
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

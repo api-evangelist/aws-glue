@@ -216,8 +216,8 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.CancelMLTaskRun API'
 components:
   schemas:
-    InvalidInputException: {}
     EntityNotFoundException: {}
+    InvalidInputException: {}
     CancelMLTaskRunResponse:
       type: object
       properties:
@@ -233,22 +233,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/TaskStatusType'
           - description: The status for this run.
-    InternalServiceException: {}
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    TaskStatusType:
-      type: string
-      enum:
-      - STARTING
-      - RUNNING
-      - STOPPING
-      - STOPPED
-      - SUCCEEDED
-      - FAILED
-      - TIMEOUT
     CancelMLTaskRunRequest:
       type: object
       required:
@@ -265,27 +249,25 @@ components:
           - $ref: '#/components/schemas/HashString'
           - description: A unique identifier for the task run.
     OperationTimeoutException: {}
+    InternalServiceException: {}
+    TaskStatusType:
+      type: string
+      enum:
+      - STARTING
+      - RUNNING
+      - STOPPING
+      - STOPPED
+      - SUCCEEDED
+      - FAILED
+      - TIMEOUT
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   parameters:
     X-Amz-SignedHeaders:
       name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
       in: header
       schema:
         type: string
@@ -302,8 +284,26 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
       in: header
       schema:
         type: string

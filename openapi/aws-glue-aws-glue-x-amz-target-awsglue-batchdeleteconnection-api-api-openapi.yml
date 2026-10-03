@@ -190,23 +190,20 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.BatchDeleteConnection API'
 components:
   schemas:
-    ErrorDetail:
+    BatchDeleteConnectionRequest:
       type: object
+      required:
+      - ConnectionNameList
+      title: BatchDeleteConnectionRequest
       properties:
-        ErrorCode:
+        CatalogId:
           allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The code associated with this error.
-        ErrorMessage:
+          - $ref: '#/components/schemas/CatalogIdString'
+          - description: The ID of the Data Catalog in which the connections reside. If none is provided, the Amazon Web Services account ID is used by default.
+        ConnectionNameList:
           allOf:
-          - $ref: '#/components/schemas/DescriptionString'
-          - description: A message describing the error.
-      description: Contains details about an error.
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+          - $ref: '#/components/schemas/DeleteConnectionNameList'
+          - description: A list of names of the connections to delete.
     BatchDeleteConnectionResponse:
       type: object
       properties:
@@ -223,31 +220,10 @@ components:
       minLength: 0
       maxLength: 2048
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    BatchDeleteConnectionRequest:
-      type: object
-      required:
-      - ConnectionNameList
-      title: BatchDeleteConnectionRequest
-      properties:
-        CatalogId:
-          allOf:
-          - $ref: '#/components/schemas/CatalogIdString'
-          - description: The ID of the Data Catalog in which the connections reside. If none is provided, the Amazon Web Services account ID is used by default.
-        ConnectionNameList:
-          allOf:
-          - $ref: '#/components/schemas/DeleteConnectionNameList'
-          - description: A list of names of the connections to delete.
-    DeleteConnectionNameList:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 0
-      maxItems: 25
     ErrorByName:
       type: object
       additionalProperties:
         $ref: '#/components/schemas/ErrorDetail'
-    InternalServiceException: {}
     NameStringList:
       type: array
       items:
@@ -258,15 +234,45 @@ components:
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     OperationTimeoutException: {}
+    DeleteConnectionNameList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 0
+      maxItems: 25
+    InternalServiceException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    ErrorDetail:
+      type: object
+      properties:
+        ErrorCode:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The code associated with this error.
+        ErrorMessage:
+          allOf:
+          - $ref: '#/components/schemas/DescriptionString'
+          - description: A message describing the error.
+      description: Contains details about an error.
   parameters:
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -285,12 +291,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
       in: header
       schema:
         type: string

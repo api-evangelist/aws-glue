@@ -225,14 +225,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteSchemaVersions API'
 components:
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -249,26 +249,50 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
   schemas:
-    AccessDeniedException: {}
+    ErrorDetails:
+      type: object
+      properties:
+        ErrorCode:
+          allOf:
+          - $ref: '#/components/schemas/ErrorCodeString'
+          - description: The error code for an error.
+        ErrorMessage:
+          allOf:
+          - $ref: '#/components/schemas/ErrorMessageString'
+          - description: The error message for an error.
+      description: An object containing error details.
+    EntityNotFoundException: {}
+    VersionsString:
+      type: string
+      pattern: '[1-9][0-9]*|[1-9][0-9]*-[1-9][0-9]*'
+      minLength: 1
+      maxLength: 100000
+    DeleteSchemaVersionsResponse:
+      type: object
+      properties:
+        SchemaVersionErrors:
+          allOf:
+          - $ref: '#/components/schemas/SchemaVersionErrorList'
+          - description: A list of <code>SchemaVersionErrorItem</code> objects, each containing an error and schema version.
     DeleteSchemaVersionsInput:
       type: object
       required:
@@ -284,15 +308,29 @@ components:
           allOf:
           - $ref: '#/components/schemas/VersionsString'
           - description: '<p>A version range may be supplied which may be of the format:</p> <ul> <li> <p>a single version number, 5</p> </li> <li> <p>a range, 5-8 : deletes versions 5, 6, 7, 8</p> </li> </ul>'
-    ConcurrentModificationException: {}
-    InvalidInputException: {}
-    DeleteSchemaVersionsResponse:
-      type: object
-      properties:
-        SchemaVersionErrors:
-          allOf:
-          - $ref: '#/components/schemas/SchemaVersionErrorList'
-          - description: A list of <code>SchemaVersionErrorItem</code> objects, each containing an error and schema version.
+    ErrorCodeString:
+      type: string
+    ErrorMessageString:
+      type: string
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    VersionLongNumber:
+      type: integer
+      minimum: 1
+      maximum: 100000
+    SchemaVersionErrorList:
+      type: array
+      items:
+        $ref: '#/components/schemas/SchemaVersionErrorItem'
+    AccessDeniedException: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
     SchemaId:
       type: object
       properties:
@@ -309,10 +347,8 @@ components:
           - $ref: '#/components/schemas/SchemaRegistryNameString'
           - description: The name of the schema registry that contains the schema.
       description: The unique ID of the schema in the Glue schema registry.
-    SchemaVersionErrorList:
-      type: array
-      items:
-        $ref: '#/components/schemas/SchemaVersionErrorItem'
+    InvalidInputException: {}
+    ConcurrentModificationException: {}
     SchemaVersionErrorItem:
       type: object
       properties:
@@ -325,42 +361,6 @@ components:
           - $ref: '#/components/schemas/ErrorDetails'
           - description: The details of the error for the schema version.
       description: An object that contains the error details for an operation on a schema version.
-    VersionsString:
-      type: string
-      pattern: '[1-9][0-9]*|[1-9][0-9]*-[1-9][0-9]*'
-      minLength: 1
-      maxLength: 100000
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    VersionLongNumber:
-      type: integer
-      minimum: 1
-      maximum: 100000
-    EntityNotFoundException: {}
-    ErrorCodeString:
-      type: string
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    ErrorMessageString:
-      type: string
-    ErrorDetails:
-      type: object
-      properties:
-        ErrorCode:
-          allOf:
-          - $ref: '#/components/schemas/ErrorCodeString'
-          - description: The error code for an error.
-        ErrorMessage:
-          allOf:
-          - $ref: '#/components/schemas/ErrorMessageString'
-          - description: The error message for an error.
-      description: An object containing error details.
   securitySchemes:
     hmac:
       type: apiKey

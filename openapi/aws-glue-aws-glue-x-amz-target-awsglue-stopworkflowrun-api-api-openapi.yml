@@ -229,16 +229,20 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.StopWorkflowRun API'
 components:
   schemas:
+    EntityNotFoundException: {}
+    StopWorkflowRunResponse:
+      type: object
+      properties: {}
     InvalidInputException: {}
-    NameString:
+    IllegalWorkflowStateException: {}
+    IdString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    EntityNotFoundException: {}
+    OperationTimeoutException: {}
     InternalServiceException: {}
-    IllegalWorkflowStateException: {}
-    IdString:
+    NameString:
       type: string
       minLength: 1
       maxLength: 255
@@ -258,10 +262,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/IdString'
           - description: The ID of the workflow run to stop.
-    StopWorkflowRunResponse:
-      type: object
-      properties: {}
-    OperationTimeoutException: {}
   parameters:
     X-Amz-Signature:
       name: X-Amz-Signature
@@ -269,14 +269,20 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Date:
+      name: X-Amz-Date
       in: header
       schema:
         type: string
       required: false
     X-Amz-Algorithm:
       name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -289,12 +295,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
       in: header
       schema:
         type: string

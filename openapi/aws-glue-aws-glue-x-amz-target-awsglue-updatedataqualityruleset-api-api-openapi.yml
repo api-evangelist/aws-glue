@@ -254,19 +254,50 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateDataQualityRuleset API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    DataQualityRulesetString:
-      type: string
-      minLength: 1
-      maxLength: 65536
-    AlreadyExistsException: {}
-    ResourceNumberLimitExceededException: {}
-    IdempotentParameterMismatchException: {}
     UpdateDataQualityRulesetRequest:
       type: object
       required:
@@ -285,14 +316,17 @@ components:
           allOf:
           - $ref: '#/components/schemas/DataQualityRulesetString'
           - description: A Data Quality Definition Language (DQDL) ruleset. For more information, see the Glue developer guide.
-    OperationTimeoutException: {}
-    InvalidInputException: {}
+    AlreadyExistsException: {}
+    DataQualityRulesetString:
+      type: string
+      minLength: 1
+      maxLength: 65536
+    EntityNotFoundException: {}
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    InternalServiceException: {}
     UpdateDataQualityRulesetResponse:
       type: object
       properties:
@@ -308,50 +342,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/DataQualityRulesetString'
           - description: A Data Quality Definition Language (DQDL) ruleset. For more information, see the Glue developer guide.
-    EntityNotFoundException: {}
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+    InternalServiceException: {}
+    ResourceNumberLimitExceededException: {}
+    InvalidInputException: {}
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    IdempotentParameterMismatchException: {}
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

@@ -215,35 +215,71 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.GetJobRun API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    Timeout:
+    GenericMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    GlueVersionString:
+      type: string
+      pattern: ^\w+\.\w+$
+      minLength: 1
+      maxLength: 255
+    NullableInteger:
       type: integer
-      minimum: 1
-    WorkerType:
-      type: string
-      enum:
-      - Standard
-      - G.1X
-      - G.2X
-      - G.025X
-    ErrorString:
-      type: string
-    BooleanValue:
-      type: boolean
-    Predecessor:
+    ExecutionTime:
+      type: integer
+    NotificationProperty:
       type: object
       properties:
-        JobName:
+        NotifyDelayAfter:
           allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the job definition used by the predecessor job run.
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/IdString'
-          - description: The job-run ID of the predecessor job run.
-      description: A job run that was used in the predicate of a conditional trigger that triggered this job run.
-    AttemptCount:
-      type: integer
+          - $ref: '#/components/schemas/NotifyDelayAfter'
+          - description: After a job run starts, the number of minutes to wait before sending a job run delay notification.
+      description: Specifies configuration properties of a notification.
     JobRunState:
       type: string
       enum:
@@ -256,14 +292,97 @@ components:
       - TIMEOUT
       - ERROR
       - WAITING
-    OperationTimeoutException: {}
-    InvalidInputException: {}
+    AttemptCount:
+      type: integer
+    EntityNotFoundException: {}
+    GetJobRunResponse:
+      type: object
+      properties:
+        JobRun:
+          allOf:
+          - $ref: '#/components/schemas/JobRun'
+          - description: The requested job-run metadata.
+    TimestampValue:
+      type: string
+      format: date-time
+    ExecutionClass:
+      type: string
+      enum:
+      - FLEX
+      - STANDARD
+      maxLength: 16
+    NullableDouble:
+      type: number
+      format: double
+    ErrorString:
+      type: string
+    BooleanValue:
+      type: boolean
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    IntegerValue:
+      type: integer
+    Predecessor:
+      type: object
+      properties:
+        JobName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the job definition used by the predecessor job run.
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/IdString'
+          - description: The job-run ID of the predecessor job run.
+      description: A job run that was used in the predicate of a conditional trigger that triggered this job run.
+    WorkerType:
+      type: string
+      enum:
+      - Standard
+      - G.1X
+      - G.2X
+      - G.025X
+    NotifyDelayAfter:
+      type: integer
+      minimum: 1
+    GenericString:
+      type: string
+    GetJobRunRequest:
+      type: object
+      required:
+      - JobName
+      - RunId
+      title: GetJobRunRequest
+      properties:
+        JobName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: Name of the job definition being run.
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/IdString'
+          - description: The ID of the job run.
+        PredecessorsIncluded:
+          allOf:
+          - $ref: '#/components/schemas/BooleanValue'
+          - description: True if a list of predecessor runs should be returned.
     InternalServiceException: {}
+    InvalidInputException: {}
+    Timeout:
+      type: integer
+      minimum: 1
+    PredecessorList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Predecessor'
+    IdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    OperationTimeoutException: {}
     JobRun:
       type: object
       properties:
@@ -365,125 +484,6 @@ components:
           - $ref: '#/components/schemas/ExecutionClass'
           - description: <p>Indicates whether the job is run with a standard or flexible execution class. The standard execution-class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>
       description: Contains information about a job run.
-    GenericMap:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
-    IntegerValue:
-      type: integer
-    PredecessorList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Predecessor'
-    NotificationProperty:
-      type: object
-      properties:
-        NotifyDelayAfter:
-          allOf:
-          - $ref: '#/components/schemas/NotifyDelayAfter'
-          - description: After a job run starts, the number of minutes to wait before sending a job run delay notification.
-      description: Specifies configuration properties of a notification.
-    GetJobRunResponse:
-      type: object
-      properties:
-        JobRun:
-          allOf:
-          - $ref: '#/components/schemas/JobRun'
-          - description: The requested job-run metadata.
-    TimestampValue:
-      type: string
-      format: date-time
-    GlueVersionString:
-      type: string
-      pattern: ^\w+\.\w+$
-      minLength: 1
-      maxLength: 255
-    NotifyDelayAfter:
-      type: integer
-      minimum: 1
-    GenericString:
-      type: string
-    NullableInteger:
-      type: integer
-    EntityNotFoundException: {}
-    ExecutionTime:
-      type: integer
-    GetJobRunRequest:
-      type: object
-      required:
-      - JobName
-      - RunId
-      title: GetJobRunRequest
-      properties:
-        JobName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: Name of the job definition being run.
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/IdString'
-          - description: The ID of the job run.
-        PredecessorsIncluded:
-          allOf:
-          - $ref: '#/components/schemas/BooleanValue'
-          - description: True if a list of predecessor runs should be returned.
-    NullableDouble:
-      type: number
-      format: double
-    IdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ExecutionClass:
-      type: string
-      enum:
-      - FLEX
-      - STANDARD
-      maxLength: 16
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
   securitySchemes:
     hmac:
       type: apiKey

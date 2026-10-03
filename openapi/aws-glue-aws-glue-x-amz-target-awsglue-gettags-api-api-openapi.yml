@@ -216,7 +216,18 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetTags API'
 components:
   schemas:
+    EntityNotFoundException: {}
     InvalidInputException: {}
+    TagsMap:
+      type: object
+      minProperties: 0
+      maxProperties: 50
+      additionalProperties:
+        $ref: '#/components/schemas/TagValue'
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
     GetTagsResponse:
       type: object
       properties:
@@ -224,13 +235,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/TagsMap'
           - description: The requested tags.
-    EntityNotFoundException: {}
-    TagsMap:
-      type: object
-      minProperties: 0
-      maxProperties: 50
-      additionalProperties:
-        $ref: '#/components/schemas/TagValue'
     GetTagsRequest:
       type: object
       required:
@@ -241,26 +245,28 @@ components:
           allOf:
           - $ref: '#/components/schemas/GlueResourceArn'
           - description: The Amazon Resource Name (ARN) of the resource for which to retrieve tags.
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
+    OperationTimeoutException: {}
     InternalServiceException: {}
     GlueResourceArn:
       type: string
       pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
       minLength: 1
       maxLength: 10240
-    OperationTimeoutException: {}
   parameters:
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -279,12 +285,6 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
       in: header
       schema:
         type: string

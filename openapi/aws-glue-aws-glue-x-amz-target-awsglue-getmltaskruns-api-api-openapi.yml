@@ -230,7 +230,73 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.GetMLTaskRuns API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
+    FindMatchesTaskRunProperties:
+      type: object
+      properties:
+        JobId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The job ID for the Find Matches task run.
+        JobName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name assigned to the job for the Find Matches task run.
+        JobRunId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The job run ID for the Find Matches task run.
+      description: Specifies configuration properties for a Find Matches task run.
+    ExecutionTime:
+      type: integer
+    SortDirectionType:
+      type: string
+      enum:
+      - DESCENDING
+      - ASCENDING
     TaskRunSortCriteria:
       type: object
       required:
@@ -246,10 +312,6 @@ components:
           - $ref: '#/components/schemas/SortDirectionType'
           - description: The sort direction to be used to sort the list of task runs for the machine learning transform.
       description: The sorting criteria that are used to sort the list of task runs for the machine learning transform.
-    TaskRunList:
-      type: array
-      items:
-        $ref: '#/components/schemas/TaskRun'
     LabelingSetGenerationTaskRunProperties:
       type: object
       properties:
@@ -258,24 +320,37 @@ components:
           - $ref: '#/components/schemas/UriString'
           - description: The Amazon Simple Storage Service (Amazon S3) path where you will generate the labeling set.
       description: Specifies configuration properties for a labeling set generation task run.
-    ExportLabelsTaskRunProperties:
-      type: object
-      properties:
-        OutputS3Path:
-          allOf:
-          - $ref: '#/components/schemas/UriString'
-          - description: The Amazon Simple Storage Service (Amazon S3) path where you will export the labels.
-      description: Specifies configuration properties for an exporting labels task run.
-    SortDirectionType:
+    EntityNotFoundException: {}
+    TaskRunSortColumnType:
       type: string
       enum:
-      - DESCENDING
-      - ASCENDING
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+      - TASK_RUN_TYPE
+      - STATUS
+      - STARTED
+    TaskRunFilterCriteria:
+      type: object
+      properties:
+        TaskRunType:
+          allOf:
+          - $ref: '#/components/schemas/TaskType'
+          - description: The type of task run.
+        Status:
+          allOf:
+          - $ref: '#/components/schemas/TaskStatusType'
+          - description: The current status of the task run.
+        StartedBefore:
+          allOf:
+          - $ref: '#/components/schemas/Timestamp'
+          - description: Filter on task runs started before this date.
+        StartedAfter:
+          allOf:
+          - $ref: '#/components/schemas/Timestamp'
+          - description: Filter on task runs started after this date.
+      description: The criteria that are used to filter the task runs for the machine learning transform.
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
     TaskRunProperties:
       type: object
       properties:
@@ -300,14 +375,59 @@ components:
           - $ref: '#/components/schemas/FindMatchesTaskRunProperties'
           - description: The configuration properties for a find matches task run.
       description: The configuration properties for the task run.
-    OperationTimeoutException: {}
-    InvalidInputException: {}
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    TaskStatusType:
+      type: string
+      enum:
+      - STARTING
+      - RUNNING
+      - STOPPING
+      - STOPPED
+      - SUCCEEDED
+      - FAILED
+      - TIMEOUT
+    PaginationToken:
+      type: string
+    ReplaceBoolean:
+      type: boolean
+    TaskType:
+      type: string
+      enum:
+      - EVALUATION
+      - LABELING_SET_GENERATION
+      - IMPORT_LABELS
+      - EXPORT_LABELS
+      - FIND_MATCHES
+    ExportLabelsTaskRunProperties:
+      type: object
+      properties:
+        OutputS3Path:
+          allOf:
+          - $ref: '#/components/schemas/UriString'
+          - description: The Amazon Simple Storage Service (Amazon S3) path where you will export the labels.
+      description: Specifies configuration properties for an exporting labels task run.
+    GetMLTaskRunsResponse:
+      type: object
+      properties:
+        TaskRuns:
+          allOf:
+          - $ref: '#/components/schemas/TaskRunList'
+          - description: A list of task runs that are associated with the transform.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/PaginationToken'
+          - description: A pagination token, if more results are available.
+    GenericString:
+      type: string
     InternalServiceException: {}
+    TaskRunList:
+      type: array
+      items:
+        $ref: '#/components/schemas/TaskRun'
     GetMLTaskRunsRequest:
       type: object
       required:
@@ -336,65 +456,24 @@ components:
           - description: The sorting criteria, in the <code>TaskRunSortCriteria</code> structure, for the task run.
     UriString:
       type: string
-    TaskType:
+    HashString:
       type: string
-      enum:
-      - EVALUATION
-      - LABELING_SET_GENERATION
-      - IMPORT_LABELS
-      - EXPORT_LABELS
-      - FIND_MATCHES
-    TaskRunFilterCriteria:
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    ImportLabelsTaskRunProperties:
       type: object
       properties:
-        TaskRunType:
+        InputS3Path:
           allOf:
-          - $ref: '#/components/schemas/TaskType'
-          - description: The type of task run.
-        Status:
+          - $ref: '#/components/schemas/UriString'
+          - description: The Amazon Simple Storage Service (Amazon S3) path from where you will import the labels.
+        Replace:
           allOf:
-          - $ref: '#/components/schemas/TaskStatusType'
-          - description: The current status of the task run.
-        StartedBefore:
-          allOf:
-          - $ref: '#/components/schemas/Timestamp'
-          - description: Filter on task runs started before this date.
-        StartedAfter:
-          allOf:
-          - $ref: '#/components/schemas/Timestamp'
-          - description: Filter on task runs started after this date.
-      description: The criteria that are used to filter the task runs for the machine learning transform.
-    FindMatchesTaskRunProperties:
-      type: object
-      properties:
-        JobId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The job ID for the Find Matches task run.
-        JobName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name assigned to the job for the Find Matches task run.
-        JobRunId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The job run ID for the Find Matches task run.
-      description: Specifies configuration properties for a Find Matches task run.
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
-    GetMLTaskRunsResponse:
-      type: object
-      properties:
-        TaskRuns:
-          allOf:
-          - $ref: '#/components/schemas/TaskRunList'
-          - description: A list of task runs that are associated with the transform.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/PaginationToken'
-          - description: A pagination token, if more results are available.
+          - $ref: '#/components/schemas/ReplaceBoolean'
+          - description: Indicates whether to overwrite your existing labels.
+      description: Specifies configuration properties for an importing labels task run.
+    InvalidInputException: {}
     TaskRun:
       type: object
       properties:
@@ -439,89 +518,10 @@ components:
           - $ref: '#/components/schemas/ExecutionTime'
           - description: The amount of time (in seconds) that the task run consumed resources.
       description: The sampling parameters that are associated with the machine learning transform.
-    GenericString:
-      type: string
-    TaskStatusType:
-      type: string
-      enum:
-      - STARTING
-      - RUNNING
-      - STOPPING
-      - STOPPED
-      - SUCCEEDED
-      - FAILED
-      - TIMEOUT
-    PaginationToken:
-      type: string
     Timestamp:
       type: string
       format: date-time
-    EntityNotFoundException: {}
-    ExecutionTime:
-      type: integer
-    ReplaceBoolean:
-      type: boolean
-    TaskRunSortColumnType:
-      type: string
-      enum:
-      - TASK_RUN_TYPE
-      - STATUS
-      - STARTED
-    ImportLabelsTaskRunProperties:
-      type: object
-      properties:
-        InputS3Path:
-          allOf:
-          - $ref: '#/components/schemas/UriString'
-          - description: The Amazon Simple Storage Service (Amazon S3) path from where you will import the labels.
-        Replace:
-          allOf:
-          - $ref: '#/components/schemas/ReplaceBoolean'
-          - description: Indicates whether to overwrite your existing labels.
-      description: Specifies configuration properties for an importing labels task run.
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

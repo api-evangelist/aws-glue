@@ -241,7 +241,125 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateDatabase API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
+    FederatedDatabase:
+      type: object
+      properties:
+        Identifier:
+          allOf:
+          - $ref: '#/components/schemas/FederationIdentifier'
+          - description: A unique identifier for the federated database.
+        ConnectionName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the connection to the external metastore.
+      description: A database that points to an entity outside the Glue Data Catalog.
+    Permission:
+      type: string
+      enum:
+      - ALL
+      - SELECT
+      - ALTER
+      - DROP
+      - DELETE
+      - INSERT
+      - CREATE_DATABASE
+      - CREATE_TABLE
+      - DATA_LOCATION_ACCESS
+    UpdateDatabaseResponse:
+      type: object
+      properties: {}
+    DatabaseIdentifier:
+      type: object
+      properties:
+        CatalogId:
+          allOf:
+          - $ref: '#/components/schemas/CatalogIdString'
+          - description: The ID of the Data Catalog in which the database resides.
+        DatabaseName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the catalog database.
+      description: A structure that describes a target database for resource linking.
+    PrincipalPermissions:
+      type: object
+      properties:
+        Principal:
+          allOf:
+          - $ref: '#/components/schemas/DataLakePrincipal'
+          - description: The principal who is granted permissions.
+        Permissions:
+          allOf:
+          - $ref: '#/components/schemas/PermissionList'
+          - description: The permissions that are granted to the principal.
+      description: Permissions granted to a principal.
+    FederationIdentifier:
+      type: string
+      minLength: 1
+      maxLength: 512
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    UpdateDatabaseRequest:
+      type: object
+      required:
+      - Name
+      - DatabaseInput
+      title: UpdateDatabaseRequest
+      properties:
+        CatalogId:
+          allOf:
+          - $ref: '#/components/schemas/CatalogIdString'
+          - description: The ID of the Data Catalog in which the metadata database resides. If none is provided, the Amazon Web Services account ID is used by default.
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the database to update in the catalog. For Hive compatibility, this is folded to lowercase.
+        DatabaseInput:
+          allOf:
+          - $ref: '#/components/schemas/DatabaseInput'
+          - description: A <code>DatabaseInput</code> object specifying the new definition of the metadata database in the catalog.
     DatabaseInput:
       type: object
       required:
@@ -276,46 +394,12 @@ components:
           - $ref: '#/components/schemas/FederatedDatabase'
           - description: A <code>FederatedDatabase</code> structure that references an entity outside the Glue Data Catalog.
       description: The structure used to create or update a database.
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    ParametersMapValue:
-      type: string
-      maxLength: 512000
-    ConcurrentModificationException: {}
-    CatalogIdString:
+    EntityNotFoundException: {}
+    DataLakePrincipalString:
       type: string
       minLength: 1
       maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    FederationIdentifier:
-      type: string
-      minLength: 1
-      maxLength: 512
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    UpdateDatabaseRequest:
-      type: object
-      required:
-      - Name
-      - DatabaseInput
-      title: UpdateDatabaseRequest
-      properties:
-        CatalogId:
-          allOf:
-          - $ref: '#/components/schemas/CatalogIdString'
-          - description: The ID of the Data Catalog in which the metadata database resides. If none is provided, the Amazon Web Services account ID is used by default.
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the database to update in the catalog. For Hive compatibility, this is folded to lowercase.
-        DatabaseInput:
-          allOf:
-          - $ref: '#/components/schemas/DatabaseInput'
-          - description: A <code>DatabaseInput</code> object specifying the new definition of the metadata database in the catalog.
-    NameString:
+    CatalogIdString:
       type: string
       minLength: 1
       maxLength: 255
@@ -324,7 +408,36 @@ components:
       type: object
       additionalProperties:
         $ref: '#/components/schemas/ParametersMapValue'
+    ParametersMapValue:
+      type: string
+      maxLength: 512000
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    InternalServiceException: {}
+    GlueEncryptionException: {}
     InvalidInputException: {}
+    PrincipalPermissionsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/PrincipalPermissions'
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    ConcurrentModificationException: {}
+    URI:
+      type: string
+      minLength: 1
+      maxLength: 1024
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    PermissionList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Permission'
     DataLakePrincipal:
       type: object
       properties:
@@ -333,120 +446,7 @@ components:
           - $ref: '#/components/schemas/DataLakePrincipalString'
           - description: An identifier for the Lake Formation principal.
       description: The Lake Formation principal.
-    InternalServiceException: {}
-    FederatedDatabase:
-      type: object
-      properties:
-        Identifier:
-          allOf:
-          - $ref: '#/components/schemas/FederationIdentifier'
-          - description: A unique identifier for the federated database.
-        ConnectionName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the connection to the external metastore.
-      description: A database that points to an entity outside the Glue Data Catalog.
-    PrincipalPermissions:
-      type: object
-      properties:
-        Principal:
-          allOf:
-          - $ref: '#/components/schemas/DataLakePrincipal'
-          - description: The principal who is granted permissions.
-        Permissions:
-          allOf:
-          - $ref: '#/components/schemas/PermissionList'
-          - description: The permissions that are granted to the principal.
-      description: Permissions granted to a principal.
-    URI:
-      type: string
-      minLength: 1
-      maxLength: 1024
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    DatabaseIdentifier:
-      type: object
-      properties:
-        CatalogId:
-          allOf:
-          - $ref: '#/components/schemas/CatalogIdString'
-          - description: The ID of the Data Catalog in which the database resides.
-        DatabaseName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the catalog database.
-      description: A structure that describes a target database for resource linking.
-    PermissionList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Permission'
-    GlueEncryptionException: {}
-    EntityNotFoundException: {}
-    PrincipalPermissionsList:
-      type: array
-      items:
-        $ref: '#/components/schemas/PrincipalPermissions'
-    DataLakePrincipalString:
-      type: string
-      minLength: 1
-      maxLength: 255
-    UpdateDatabaseResponse:
-      type: object
-      properties: {}
-    Permission:
-      type: string
-      enum:
-      - ALL
-      - SELECT
-      - ALTER
-      - DROP
-      - DELETE
-      - INSERT
-      - CREATE_DATABASE
-      - CREATE_TABLE
-      - DATA_LOCATION_ACCESS
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

@@ -202,25 +202,50 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.RemoveSchemaVersionMetadata…'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    MetadataKeyValuePair:
-      type: object
-      properties:
-        MetadataKey:
-          allOf:
-          - $ref: '#/components/schemas/MetadataKeyString'
-          - description: A metadata key.
-        MetadataValue:
-          allOf:
-          - $ref: '#/components/schemas/MetadataValueString'
-          - description: A metadata key’s corresponding value.
-      description: A structure containing a key value pair for metadata.
-    AccessDeniedException: {}
-    SchemaVersionIdString:
-      type: string
-      pattern: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
-      minLength: 36
-      maxLength: 36
     RemoveSchemaVersionMetadataInput:
       type: object
       required:
@@ -243,33 +268,31 @@ components:
           allOf:
           - $ref: '#/components/schemas/MetadataKeyValuePair'
           - description: The value of the metadata key.
-    MetadataValueString:
+    EntityNotFoundException: {}
+    MetadataKeyValuePair:
+      type: object
+      properties:
+        MetadataKey:
+          allOf:
+          - $ref: '#/components/schemas/MetadataKeyString'
+          - description: A metadata key.
+        MetadataValue:
+          allOf:
+          - $ref: '#/components/schemas/MetadataValueString'
+          - description: A metadata key’s corresponding value.
+      description: A structure containing a key value pair for metadata.
+    SchemaVersionIdString:
       type: string
-      pattern: '[a-zA-Z0-9+-=._./@]+'
-      minLength: 1
-      maxLength: 256
+      pattern: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
+      minLength: 36
+      maxLength: 36
+    LatestSchemaVersionBoolean:
+      type: boolean
     MetadataKeyString:
       type: string
       pattern: '[a-zA-Z0-9+-=._./@]+'
       minLength: 1
       maxLength: 128
-    InvalidInputException: {}
-    SchemaId:
-      type: object
-      properties:
-        SchemaArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: The Amazon Resource Name (ARN) of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
-        SchemaName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
-        RegistryName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the schema registry that contains the schema.
-      description: The unique ID of the schema in the Glue schema registry.
     SchemaRegistryNameString:
       type: string
       pattern: '[a-zA-Z0-9-_$#.]+'
@@ -279,7 +302,24 @@ components:
       type: integer
       minimum: 1
       maximum: 100000
-    EntityNotFoundException: {}
+    SchemaVersionNumber:
+      type: object
+      properties:
+        LatestVersion:
+          allOf:
+          - $ref: '#/components/schemas/LatestSchemaVersionBoolean'
+          - description: The latest version available for the schema.
+        VersionNumber:
+          allOf:
+          - $ref: '#/components/schemas/VersionLongNumber'
+          - description: The version number of the schema.
+      description: A structure containing the schema version information.
+    MetadataValueString:
+      type: string
+      pattern: '[a-zA-Z0-9+-=._./@]+'
+      minLength: 1
+      maxLength: 256
+    AccessDeniedException: {}
     RemoveSchemaVersionMetadataResponse:
       type: object
       properties:
@@ -320,63 +360,23 @@ components:
       pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
       minLength: 1
       maxLength: 10240
-    LatestSchemaVersionBoolean:
-      type: boolean
-    SchemaVersionNumber:
+    InvalidInputException: {}
+    SchemaId:
       type: object
       properties:
-        LatestVersion:
+        SchemaArn:
           allOf:
-          - $ref: '#/components/schemas/LatestSchemaVersionBoolean'
-          - description: The latest version available for the schema.
-        VersionNumber:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: The Amazon Resource Name (ARN) of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
+        SchemaName:
           allOf:
-          - $ref: '#/components/schemas/VersionLongNumber'
-          - description: The version number of the schema.
-      description: A structure containing the schema version information.
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
+        RegistryName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the schema registry that contains the schema.
+      description: The unique ID of the schema in the Glue schema registry.
   securitySchemes:
     hmac:
       type: apiKey

@@ -260,20 +260,58 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.CreateSchema API'
 components:
+  parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    AccessDeniedException: {}
-    SchemaVersionIdString:
-      type: string
-      pattern: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
-      minLength: 36
-      maxLength: 36
+    TagsMap:
+      type: object
+      minProperties: 0
+      maxProperties: 50
+      additionalProperties:
+        $ref: '#/components/schemas/TagValue'
     AlreadyExistsException: {}
-    ConcurrentModificationException: {}
+    EntityNotFoundException: {}
     CreateSchemaInput:
       type: object
       required:
@@ -309,8 +347,74 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaDefinitionString'
           - description: The schema definition using the <code>DataFormat</code> setting for <code>SchemaName</code>.
+    SchemaVersionStatus:
+      type: string
+      enum:
+      - AVAILABLE
+      - PENDING
+      - FAILURE
+      - DELETING
+    Compatibility:
+      type: string
+      enum:
+      - NONE
+      - DISABLED
+      - BACKWARD
+      - BACKWARD_ALL
+      - FORWARD
+      - FORWARD_ALL
+      - FULL
+      - FULL_ALL
+    SchemaVersionIdString:
+      type: string
+      pattern: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
+      minLength: 36
+      maxLength: 36
+    DataFormat:
+      type: string
+      enum:
+      - AVRO
+      - JSON
+      - PROTOBUF
+    SchemaCheckpointNumber:
+      type: integer
+      minimum: 1
+      maximum: 100000
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    VersionLongNumber:
+      type: integer
+      minimum: 1
+      maximum: 100000
+    AccessDeniedException: {}
+    InternalServiceException: {}
+    SchemaStatus:
+      type: string
+      enum:
+      - AVAILABLE
+      - PENDING
+      - DELETING
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
     ResourceNumberLimitExceededException: {}
+    SchemaDefinitionString:
+      type: string
+      pattern: .*\S.*
+      minLength: 1
+      maxLength: 170000
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
     InvalidInputException: {}
+    ConcurrentModificationException: {}
     CreateSchemaResponse:
       type: object
       properties:
@@ -374,35 +478,6 @@ components:
       type: string
       minLength: 0
       maxLength: 256
-    TagsMap:
-      type: object
-      minProperties: 0
-      maxProperties: 50
-      additionalProperties:
-        $ref: '#/components/schemas/TagValue'
-    InternalServiceException: {}
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    VersionLongNumber:
-      type: integer
-      minimum: 1
-      maximum: 100000
-    DataFormat:
-      type: string
-      enum:
-      - AVRO
-      - JSON
-      - PROTOBUF
-    SchemaVersionStatus:
-      type: string
-      enum:
-      - AVAILABLE
-      - PENDING
-      - FAILURE
-      - DELETING
     RegistryId:
       type: object
       properties:
@@ -415,81 +490,6 @@ components:
           - $ref: '#/components/schemas/GlueResourceArn'
           - description: Arn of the registry to be updated. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided.
       description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
-    EntityNotFoundException: {}
-    SchemaStatus:
-      type: string
-      enum:
-      - AVAILABLE
-      - PENDING
-      - DELETING
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    Compatibility:
-      type: string
-      enum:
-      - NONE
-      - DISABLED
-      - BACKWARD
-      - BACKWARD_ALL
-      - FORWARD
-      - FORWARD_ALL
-      - FULL
-      - FULL_ALL
-    SchemaDefinitionString:
-      type: string
-      pattern: .*\S.*
-      minLength: 1
-      maxLength: 170000
-    SchemaCheckpointNumber:
-      type: integer
-      minimum: 1
-      maximum: 100000
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
   securitySchemes:
     hmac:
       type: apiKey
