@@ -486,8 +486,9 @@ apis:
     for aws glue #x amz target=awsglue.canceldataqualityrulerecommen….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.CancelDataQualityRuleRecommen…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.CancelDataQualityRuleRecommen…
   properties:
   - type: OpenAPI
     url: >-
@@ -513,8 +514,9 @@ apis:
     for aws glue #x amz target=awsglue.canceldataqualityrulesetevalu….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.CancelDataQualityRulesetEvalu…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.CancelDataQualityRulesetEvalu…
   properties:
   - type: OpenAPI
     url: >-
@@ -1221,8 +1223,9 @@ apis:
     for aws glue #x amz target=awsglue.deletecolumnstatisticsforpart….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.DeleteColumnStatisticsForPart…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.DeleteColumnStatisticsForPart…
   properties:
   - type: OpenAPI
     url: >-
@@ -1248,8 +1251,9 @@ apis:
     for aws glue #x amz target=awsglue.deletecolumnstatisticsfortabl….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.DeleteColumnStatisticsForTabl…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.DeleteColumnStatisticsForTabl…
   properties:
   - type: OpenAPI
     url: >-
@@ -1982,8 +1986,9 @@ apis:
     for aws glue #x amz target=awsglue.getcolumnstatisticsforpartiti….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.GetColumnStatisticsForPartiti…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.GetColumnStatisticsForPartiti…
   properties:
   - type: OpenAPI
     url: >-
@@ -2244,8 +2249,9 @@ apis:
     for aws glue #x amz target=awsglue.getdatacatalogencryptionsetti….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.GetDataCatalogEncryptionSetti…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.GetDataCatalogEncryptionSetti…
   properties:
   - type: OpenAPI
     url: >-
@@ -2323,8 +2329,9 @@ apis:
     for aws glue #x amz target=awsglue.getdataqualityrulerecommendat….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.GetDataQualityRuleRecommendat…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.GetDataQualityRuleRecommendat…
   properties:
   - type: OpenAPI
     url: >-
@@ -2376,8 +2383,9 @@ apis:
     for aws glue #x amz target=awsglue.getdataqualityrulesetevaluati….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.GetDataQualityRulesetEvaluati…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.GetDataQualityRulesetEvaluati…
   properties:
   - type: OpenAPI
     url: >-
@@ -3289,8 +3297,9 @@ apis:
     for aws glue #x amz target=awsglue.getunfilteredpartitionmetadat….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.GetUnfilteredPartitionMetadat…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.GetUnfilteredPartitionMetadat…
   properties:
   - type: OpenAPI
     url: >-
@@ -3316,8 +3325,9 @@ apis:
     for aws glue #x amz target=awsglue.getunfilteredpartitionsmetada….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.GetUnfilteredPartitionsMetada…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.GetUnfilteredPartitionsMetada…
   properties:
   - type: OpenAPI
     url: >-
@@ -3686,8 +3696,9 @@ apis:
     for aws glue #x amz target=awsglue.listdataqualityrulerecommenda….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.ListDataQualityRuleRecommenda…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.ListDataQualityRuleRecommenda…
   properties:
   - type: OpenAPI
     url: >-
@@ -3713,8 +3724,9 @@ apis:
     for aws glue #x amz target=awsglue.listdataqualityrulesetevaluat….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.ListDataQualityRulesetEvaluat…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.ListDataQualityRulesetEvaluat…
   properties:
   - type: OpenAPI
     url: >-
@@ -4027,8 +4039,9 @@ apis:
     for aws glue #x amz target=awsglue.putdatacatalogencryptionsetti….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.PutDataCatalogEncryptionSetti…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.PutDataCatalogEncryptionSetti…
   properties:
   - type: OpenAPI
     url: >-
@@ -4396,8 +4409,9 @@ apis:
     for aws glue #x amz target=awsglue.startdataqualityrulerecommend….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.StartDataQualityRuleRecommend…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.StartDataQualityRuleRecommend…
   properties:
   - type: OpenAPI
     url: >-
@@ -4423,8 +4437,9 @@ apis:
     for aws glue #x amz target=awsglue.startdataqualityrulesetevalua….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.StartDataQualityRulesetEvalua…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.StartDataQualityRulesetEvalua…
   properties:
   - type: OpenAPI
     url: >-
@@ -4557,8 +4572,9 @@ apis:
     for aws glue #x amz target=awsglue.startmllabelingsetgenerationt….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.StartMLLabelingSetGenerationT…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.StartMLLabelingSetGenerationT…
   properties:
   - type: OpenAPI
     url: >-
@@ -4870,8 +4886,9 @@ apis:
     for aws glue #x amz target=awsglue.updatecolumnstatisticsforpart….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.UpdateColumnStatisticsForPart…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.UpdateColumnStatisticsForPart…
   properties:
   - type: OpenAPI
     url: >-
@@ -4897,8 +4914,9 @@ apis:
     for aws glue #x amz target=awsglue.updatecolumnstatisticsfortabl….
   humanURL: https://docs.aws.amazon.com/glue/latest/webapi/WebAPI_Welcome.html
   baseURL: https://glue.us-east-1.amazonaws.com
-  tags:
-  - 'AWS Glue #X Amz Target=AWSGlue.UpdateColumnStatisticsForTabl…'
+  tags: []
+  tags_raw:
+  - AWS Glue #X Amz Target=AWSGlue.UpdateColumnStatisticsForTabl…
   properties:
   - type: OpenAPI
     url: >-
@@ -5364,6 +5382,9 @@ apis:
   - type: JSONLD
     url: json-ld/amazon-glue-context.jsonld
 common:
+- type: CapabilityMap
+  url: capabilities/aws-glue-capability-edges.yml
+  name: AWS Glue Business Capability Map
 - type: AgenticAccess
   url: agentic-access/aws-glue-agentic-access.yml
 - type: TrustCenter
