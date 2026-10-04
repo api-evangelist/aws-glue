@@ -241,94 +241,12 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.ListStatements API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    DoubleValue:
-      type: number
-      format: double
-    StatementState:
-      type: string
-      enum:
-      - WAITING
-      - RUNNING
-      - AVAILABLE
-      - CANCELLING
-      - CANCELLED
-      - ERROR
-    Statement:
-      type: object
-      properties:
-        Id:
-          allOf:
-          - $ref: '#/components/schemas/IntegerValue'
-          - description: The ID of the statement.
-        Code:
-          allOf:
-          - $ref: '#/components/schemas/GenericString'
-          - description: The execution code of the statement.
-        State:
-          allOf:
-          - $ref: '#/components/schemas/StatementState'
-          - description: The state while request is actioned.
-        Output:
-          allOf:
-          - $ref: '#/components/schemas/StatementOutput'
-          - description: The output in JSON.
-        Progress:
-          allOf:
-          - $ref: '#/components/schemas/DoubleValue'
-          - description: The code execution progress.
-        StartedOn:
-          allOf:
-          - $ref: '#/components/schemas/LongValue'
-          - description: The unix time and date that the job definition was started.
-        CompletedOn:
-          allOf:
-          - $ref: '#/components/schemas/LongValue'
-          - description: The unix time and date that the job definition was completed.
-      description: The statement or request for a particular action to occur in a session.
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    LongValue:
+      type: integer
     ListStatementsResponse:
       type: object
       properties:
@@ -340,26 +258,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/OrchestrationToken'
           - description: A continuation token, if not all statements have yet been returned.
-    EntityNotFoundException: {}
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
-    IllegalSessionStateException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    StatementList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Statement'
     IntegerValue:
       type: integer
-    LongValue:
-      type: integer
-    GenericString:
-      type: string
-    AccessDeniedException: {}
-    InternalServiceException: {}
     StatementOutput:
       type: object
       properties:
@@ -406,19 +310,67 @@ components:
           allOf:
           - $ref: '#/components/schemas/OrchestrationToken'
           - description: A continuation token, if this is a continuation call.
-    InvalidInputException: {}
-    StatementList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Statement'
-    OrchestrationToken:
+    StatementState:
       type: string
-      maxLength: 400000
+      enum:
+      - WAITING
+      - RUNNING
+      - AVAILABLE
+      - CANCELLING
+      - CANCELLED
+      - ERROR
+    DoubleValue:
+      type: number
+      format: double
+    IllegalSessionStateException: {}
+    Statement:
+      type: object
+      properties:
+        Id:
+          allOf:
+          - $ref: '#/components/schemas/IntegerValue'
+          - description: The ID of the statement.
+        Code:
+          allOf:
+          - $ref: '#/components/schemas/GenericString'
+          - description: The execution code of the statement.
+        State:
+          allOf:
+          - $ref: '#/components/schemas/StatementState'
+          - description: The state while request is actioned.
+        Output:
+          allOf:
+          - $ref: '#/components/schemas/StatementOutput'
+          - description: The output in JSON.
+        Progress:
+          allOf:
+          - $ref: '#/components/schemas/DoubleValue'
+          - description: The code execution progress.
+        StartedOn:
+          allOf:
+          - $ref: '#/components/schemas/LongValue'
+          - description: The unix time and date that the job definition was started.
+        CompletedOn:
+          allOf:
+          - $ref: '#/components/schemas/LongValue'
+          - description: The unix time and date that the job definition was completed.
+      description: The statement or request for a particular action to occur in a session.
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    GenericString:
+      type: string
+    OperationTimeoutException: {}
     OrchestrationStringList:
       type: array
       items:
         $ref: '#/components/schemas/GenericString'
-    OperationTimeoutException: {}
+    OrchestrationToken:
+      type: string
+      maxLength: 400000
+    AccessDeniedException: {}
     StatementOutputData:
       type: object
       properties:
@@ -427,6 +379,54 @@ components:
           - $ref: '#/components/schemas/GenericString'
           - description: The code execution output in text format.
       description: The code execution output in JSON format.
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

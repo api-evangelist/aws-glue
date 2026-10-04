@@ -216,14 +216,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteWorkflow API'
 components:
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -234,14 +234,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Credential:
+      name: X-Amz-Credential
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -259,6 +259,9 @@ components:
         type: string
       required: false
   schemas:
+    InvalidInputException: {}
+    OperationTimeoutException: {}
+    InternalServiceException: {}
     DeleteWorkflowResponse:
       type: object
       properties:
@@ -266,10 +269,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/NameString'
           - description: Name of the workflow specified in input.
-    InvalidInputException: {}
-    ConcurrentModificationException: {}
-    OperationTimeoutException: {}
-    InternalServiceException: {}
     NameString:
       type: string
       minLength: 1
@@ -285,6 +284,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/NameString'
           - description: Name of the workflow to be deleted.
+    ConcurrentModificationException: {}
   securitySchemes:
     hmac:
       type: apiKey

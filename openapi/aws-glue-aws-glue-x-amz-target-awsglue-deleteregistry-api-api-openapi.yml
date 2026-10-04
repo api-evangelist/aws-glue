@@ -215,72 +215,15 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteRegistry API'
 components:
-  schemas:
-    EntityNotFoundException: {}
-    InvalidInputException: {}
-    RegistryId:
-      type: object
-      properties:
-        RegistryName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: 'Name of the registry. Used only for lookup. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided. '
-        RegistryArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: Arn of the registry to be updated. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided.
-      description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
-    ConcurrentModificationException: {}
-    DeleteRegistryInput:
-      type: object
-      required:
-      - RegistryId
-      title: DeleteRegistryInput
-      properties:
-        RegistryId:
-          allOf:
-          - $ref: '#/components/schemas/RegistryId'
-          - description: This is a wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    DeleteRegistryResponse:
-      type: object
-      properties:
-        RegistryName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the registry being deleted.
-        RegistryArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: The Amazon Resource Name (ARN) of the registry being deleted.
-        Status:
-          allOf:
-          - $ref: '#/components/schemas/RegistryStatus'
-          - description: The status of the registry. A successful operation will return the <code>Deleting</code> status.
-    AccessDeniedException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    RegistryStatus:
-      type: string
-      enum:
-      - AVAILABLE
-      - DELETING
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -291,14 +234,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Credential:
+      name: X-Amz-Credential
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -315,6 +258,63 @@ components:
       schema:
         type: string
       required: false
+  schemas:
+    InvalidInputException: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    EntityNotFoundException: {}
+    DeleteRegistryResponse:
+      type: object
+      properties:
+        RegistryName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the registry being deleted.
+        RegistryArn:
+          allOf:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: The Amazon Resource Name (ARN) of the registry being deleted.
+        Status:
+          allOf:
+          - $ref: '#/components/schemas/RegistryStatus'
+          - description: The status of the registry. A successful operation will return the <code>Deleting</code> status.
+    RegistryId:
+      type: object
+      properties:
+        RegistryName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: 'Name of the registry. Used only for lookup. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided. '
+        RegistryArn:
+          allOf:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: Arn of the registry to be updated. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided.
+      description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
+    RegistryStatus:
+      type: string
+      enum:
+      - AVAILABLE
+      - DELETING
+    AccessDeniedException: {}
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    DeleteRegistryInput:
+      type: object
+      required:
+      - RegistryId
+      title: DeleteRegistryInput
+      properties:
+        RegistryId:
+          allOf:
+          - $ref: '#/components/schemas/RegistryId'
+          - description: This is a wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
+    ConcurrentModificationException: {}
   securitySchemes:
     hmac:
       type: apiKey

@@ -214,162 +214,7 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.ListDataQualityRuleRecommenda…'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    GlueTableAdditionalOptions:
-      type: object
-      minProperties: 1
-      maxProperties: 10
-      additionalProperties:
-        $ref: '#/components/schemas/DescriptionString'
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
-    ListDataQualityRuleRecommendationRunsRequest:
-      type: object
-      title: ListDataQualityRuleRecommendationRunsRequest
-      properties:
-        Filter:
-          allOf:
-          - $ref: '#/components/schemas/DataQualityRuleRecommendationRunFilter'
-          - description: The filter criteria.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/PaginationToken'
-          - description: A paginated token to offset the results.
-        MaxResults:
-          allOf:
-          - $ref: '#/components/schemas/PageSize'
-          - description: The maximum number of results to return.
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    TaskStatusType:
-      type: string
-      enum:
-      - STARTING
-      - RUNNING
-      - STOPPING
-      - STOPPED
-      - SUCCEEDED
-      - FAILED
-      - TIMEOUT
-    DataSource:
-      type: object
-      required:
-      - GlueTable
-      properties:
-        GlueTable:
-          allOf:
-          - $ref: '#/components/schemas/GlueTable'
-          - description: An Glue table.
-      description: A data source (an Glue table) for which you want data quality results.
-    DataQualityRuleRecommendationRunDescription:
-      type: object
-      properties:
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The unique run identifier associated with this run.
-        Status:
-          allOf:
-          - $ref: '#/components/schemas/TaskStatusType'
-          - description: The status for this run.
-        StartedOn:
-          allOf:
-          - $ref: '#/components/schemas/Timestamp'
-          - description: The date and time when this run started.
-        DataSource:
-          allOf:
-          - $ref: '#/components/schemas/DataSource'
-          - description: The data source (Glue table) associated with the recommendation run.
-      description: Describes the result of a data quality rule recommendation run.
-    PaginationToken:
-      type: string
-    DataQualityRuleRecommendationRunList:
-      type: array
-      items:
-        $ref: '#/components/schemas/DataQualityRuleRecommendationRunDescription'
-    ListDataQualityRuleRecommendationRunsResponse:
-      type: object
-      properties:
-        Runs:
-          allOf:
-          - $ref: '#/components/schemas/DataQualityRuleRecommendationRunList'
-          - description: A list of <code>DataQualityRuleRecommendationRunDescription</code> objects.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/PaginationToken'
-          - description: A pagination token, if more results are available.
-    InternalServiceException: {}
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    DataQualityRuleRecommendationRunFilter:
-      type: object
-      required:
-      - DataSource
-      properties:
-        DataSource:
-          allOf:
-          - $ref: '#/components/schemas/DataSource'
-          - description: Filter based on a specified data source (Glue table).
-        StartedBefore:
-          allOf:
-          - $ref: '#/components/schemas/Timestamp'
-          - description: Filter based on time for results started before provided time.
-        StartedAfter:
-          allOf:
-          - $ref: '#/components/schemas/Timestamp'
-          - description: Filter based on time for results started after provided time.
-      description: A filter for listing data quality recommendation runs.
     InvalidInputException: {}
     GlueTable:
       type: object
@@ -403,10 +248,165 @@ components:
       minLength: 0
       maxLength: 2048
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    InternalServiceException: {}
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
+    DataQualityRuleRecommendationRunList:
+      type: array
+      items:
+        $ref: '#/components/schemas/DataQualityRuleRecommendationRunDescription'
+    DataSource:
+      type: object
+      required:
+      - GlueTable
+      properties:
+        GlueTable:
+          allOf:
+          - $ref: '#/components/schemas/GlueTable'
+          - description: An Glue table.
+      description: A data source (an Glue table) for which you want data quality results.
     Timestamp:
       type: string
       format: date-time
+    PaginationToken:
+      type: string
+    TaskStatusType:
+      type: string
+      enum:
+      - STARTING
+      - RUNNING
+      - STOPPING
+      - STOPPED
+      - SUCCEEDED
+      - FAILED
+      - TIMEOUT
+    ListDataQualityRuleRecommendationRunsResponse:
+      type: object
+      properties:
+        Runs:
+          allOf:
+          - $ref: '#/components/schemas/DataQualityRuleRecommendationRunList'
+          - description: A list of <code>DataQualityRuleRecommendationRunDescription</code> objects.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/PaginationToken'
+          - description: A pagination token, if more results are available.
+    ListDataQualityRuleRecommendationRunsRequest:
+      type: object
+      title: ListDataQualityRuleRecommendationRunsRequest
+      properties:
+        Filter:
+          allOf:
+          - $ref: '#/components/schemas/DataQualityRuleRecommendationRunFilter'
+          - description: The filter criteria.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/PaginationToken'
+          - description: A paginated token to offset the results.
+        MaxResults:
+          allOf:
+          - $ref: '#/components/schemas/PageSize'
+          - description: The maximum number of results to return.
+    DataQualityRuleRecommendationRunDescription:
+      type: object
+      properties:
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The unique run identifier associated with this run.
+        Status:
+          allOf:
+          - $ref: '#/components/schemas/TaskStatusType'
+          - description: The status for this run.
+        StartedOn:
+          allOf:
+          - $ref: '#/components/schemas/Timestamp'
+          - description: The date and time when this run started.
+        DataSource:
+          allOf:
+          - $ref: '#/components/schemas/DataSource'
+          - description: The data source (Glue table) associated with the recommendation run.
+      description: Describes the result of a data quality rule recommendation run.
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    GlueTableAdditionalOptions:
+      type: object
+      minProperties: 1
+      maxProperties: 10
+      additionalProperties:
+        $ref: '#/components/schemas/DescriptionString'
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     OperationTimeoutException: {}
+    DataQualityRuleRecommendationRunFilter:
+      type: object
+      required:
+      - DataSource
+      properties:
+        DataSource:
+          allOf:
+          - $ref: '#/components/schemas/DataSource'
+          - description: Filter based on a specified data source (Glue table).
+        StartedBefore:
+          allOf:
+          - $ref: '#/components/schemas/Timestamp'
+          - description: Filter based on time for results started before provided time.
+        StartedAfter:
+          allOf:
+          - $ref: '#/components/schemas/Timestamp'
+          - description: Filter based on time for results started after provided time.
+      description: A filter for listing data quality recommendation runs.
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

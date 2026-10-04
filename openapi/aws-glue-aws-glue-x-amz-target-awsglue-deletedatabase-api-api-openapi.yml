@@ -234,48 +234,15 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteDatabase API'
 components:
-  schemas:
-    EntityNotFoundException: {}
-    InvalidInputException: {}
-    ConcurrentModificationException: {}
-    DeleteDatabaseResponse:
-      type: object
-      properties: {}
-    CatalogIdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    DeleteDatabaseRequest:
-      type: object
-      required:
-      - Name
-      title: DeleteDatabaseRequest
-      properties:
-        CatalogId:
-          allOf:
-          - $ref: '#/components/schemas/CatalogIdString'
-          - description: The ID of the Data Catalog in which the database resides. If none is provided, the Amazon Web Services account ID is used by default.
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the database to delete. For Hive compatibility, this must be all lowercase.
-    InternalServiceException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -286,14 +253,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Credential:
+      name: X-Amz-Credential
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -310,6 +277,39 @@ components:
       schema:
         type: string
       required: false
+  schemas:
+    CatalogIdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
+    DeleteDatabaseResponse:
+      type: object
+      properties: {}
+    InternalServiceException: {}
+    DeleteDatabaseRequest:
+      type: object
+      required:
+      - Name
+      title: DeleteDatabaseRequest
+      properties:
+        CatalogId:
+          allOf:
+          - $ref: '#/components/schemas/CatalogIdString'
+          - description: The ID of the Data Catalog in which the database resides. If none is provided, the Amazon Web Services account ID is used by default.
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the database to delete. For Hive compatibility, this must be all lowercase.
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    ConcurrentModificationException: {}
   securitySchemes:
     hmac:
       type: apiKey

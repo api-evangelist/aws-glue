@@ -232,20 +232,23 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteColumnStatisticsForPart…'
 components:
   schemas:
-    GlueEncryptionException: {}
-    EntityNotFoundException: {}
-    InvalidInputException: {}
-    ValueString:
-      type: string
-      maxLength: 1024
+    ValueStringList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ValueString'
     CatalogIdString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
     DeleteColumnStatisticsForPartitionResponse:
       type: object
       properties: {}
+    GlueEncryptionException: {}
+    InternalServiceException: {}
     DeleteColumnStatisticsForPartitionRequest:
       type: object
       required:
@@ -275,26 +278,17 @@ components:
           allOf:
           - $ref: '#/components/schemas/NameString'
           - description: Name of the column.
-    OperationTimeoutException: {}
-    InternalServiceException: {}
+    ValueString:
+      type: string
+      maxLength: 1024
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ValueStringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/ValueString'
   parameters:
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -305,14 +299,20 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Date:
+      name: X-Amz-Date
       in: header
       schema:
         type: string
       required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string

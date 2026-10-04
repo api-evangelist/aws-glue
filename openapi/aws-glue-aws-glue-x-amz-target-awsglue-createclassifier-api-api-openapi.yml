@@ -202,177 +202,15 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.CreateClassifier API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    CustomDatatypes:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-    CreateGrokClassifierRequest:
-      type: object
-      required:
-      - Classification
-      - Name
-      - GrokPattern
-      properties:
-        Classification:
-          allOf:
-          - $ref: '#/components/schemas/Classification'
-          - description: An identifier of the data format that the classifier matches, such as Twitter, JSON, Omniture logs, Amazon CloudWatch Logs, and so on.
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the new classifier.
-        GrokPattern:
-          allOf:
-          - $ref: '#/components/schemas/GrokPattern'
-          - description: The grok pattern used by this classifier.
-        CustomPatterns:
-          allOf:
-          - $ref: '#/components/schemas/CustomPatterns'
-          - description: Optional custom grok patterns used by this classifier.
-      description: Specifies a <code>grok</code> classifier for <code>CreateClassifier</code> to create.
-    GrokPattern:
-      type: string
-      minLength: 1
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\t]*'
     CustomPatterns:
       type: string
       minLength: 0
       maxLength: 16000
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    AlreadyExistsException: {}
-    CsvQuoteSymbol:
-      type: string
-      pattern: '[^\r\n]'
-      minLength: 1
-      maxLength: 1
+    InvalidInputException: {}
     JsonPath:
       type: string
-    CreateXMLClassifierRequest:
-      type: object
-      required:
-      - Classification
-      - Name
-      properties:
-        Classification:
-          allOf:
-          - $ref: '#/components/schemas/Classification'
-          - description: An identifier of the data format that the classifier matches.
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the classifier.
-        RowTag:
-          allOf:
-          - $ref: '#/components/schemas/RowTag'
-          - description: The XML tag designating the element that contains each record in an XML document being parsed. This can't identify a self-closing element (closed by <code>/&gt;</code>). An empty row element that contains only attributes can be parsed as long as it ends with a closing tag (for example, <code>&lt;row item_a="A" item_b="B"&gt;&lt;/row&gt;</code> is okay, but <code>&lt;row item_a="A" item_b="B" /&gt;</code> is not).
-      description: Specifies an XML classifier for <code>CreateClassifier</code> to create.
-    NullableBoolean:
-      type: boolean
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    CsvHeaderOption:
-      type: string
-      enum:
-      - UNKNOWN
-      - PRESENT
-      - ABSENT
-    Classification:
-      type: string
-    RowTag:
-      type: string
-    CreateJsonClassifierRequest:
-      type: object
-      required:
-      - Name
-      - JsonPath
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the classifier.
-        JsonPath:
-          allOf:
-          - $ref: '#/components/schemas/JsonPath'
-          - description: A <code>JsonPath</code> string defining the JSON data for the classifier to classify. Glue supports a subset of JsonPath, as described in <a href="https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html#custom-classifier-json">Writing JsonPath Custom Classifiers</a>.
-      description: Specifies a JSON classifier for <code>CreateClassifier</code> to create.
-    InvalidInputException: {}
-    CreateClassifierRequest:
-      type: object
-      title: CreateClassifierRequest
-      properties:
-        GrokClassifier:
-          allOf:
-          - $ref: '#/components/schemas/CreateGrokClassifierRequest'
-          - description: A <code>GrokClassifier</code> object specifying the classifier to create.
-        XMLClassifier:
-          allOf:
-          - $ref: '#/components/schemas/CreateXMLClassifierRequest'
-          - description: An <code>XMLClassifier</code> object specifying the classifier to create.
-        JsonClassifier:
-          allOf:
-          - $ref: '#/components/schemas/CreateJsonClassifierRequest'
-          - description: A <code>JsonClassifier</code> object specifying the classifier to create.
-        CsvClassifier:
-          allOf:
-          - $ref: '#/components/schemas/CreateCsvClassifierRequest'
-          - description: A <code>CsvClassifier</code> object specifying the classifier to create.
-    CsvColumnDelimiter:
-      type: string
-      pattern: '[^\r\n]'
-      minLength: 1
-      maxLength: 1
-    CsvHeader:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
     CreateCsvClassifierRequest:
       type: object
       required:
@@ -415,10 +253,172 @@ components:
           - $ref: '#/components/schemas/CustomDatatypes'
           - description: Creates a list of supported custom datatypes.
       description: Specifies a custom CSV classifier for <code>CreateClassifier</code> to create.
+    CreateJsonClassifierRequest:
+      type: object
+      required:
+      - Name
+      - JsonPath
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the classifier.
+        JsonPath:
+          allOf:
+          - $ref: '#/components/schemas/JsonPath'
+          - description: A <code>JsonPath</code> string defining the JSON data for the classifier to classify. Glue supports a subset of JsonPath, as described in <a href="https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html#custom-classifier-json">Writing JsonPath Custom Classifiers</a>.
+      description: Specifies a JSON classifier for <code>CreateClassifier</code> to create.
+    CsvHeader:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+    NullableBoolean:
+      type: boolean
+    CsvHeaderOption:
+      type: string
+      enum:
+      - UNKNOWN
+      - PRESENT
+      - ABSENT
+    CreateXMLClassifierRequest:
+      type: object
+      required:
+      - Classification
+      - Name
+      properties:
+        Classification:
+          allOf:
+          - $ref: '#/components/schemas/Classification'
+          - description: An identifier of the data format that the classifier matches.
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the classifier.
+        RowTag:
+          allOf:
+          - $ref: '#/components/schemas/RowTag'
+          - description: The XML tag designating the element that contains each record in an XML document being parsed. This can't identify a self-closing element (closed by <code>/&gt;</code>). An empty row element that contains only attributes can be parsed as long as it ends with a closing tag (for example, <code>&lt;row item_a="A" item_b="B"&gt;&lt;/row&gt;</code> is okay, but <code>&lt;row item_a="A" item_b="B" /&gt;</code> is not).
+      description: Specifies an XML classifier for <code>CreateClassifier</code> to create.
+    AlreadyExistsException: {}
+    Classification:
+      type: string
+    RowTag:
+      type: string
+    CsvColumnDelimiter:
+      type: string
+      pattern: '[^\r\n]'
+      minLength: 1
+      maxLength: 1
+    CsvQuoteSymbol:
+      type: string
+      pattern: '[^\r\n]'
+      minLength: 1
+      maxLength: 1
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     OperationTimeoutException: {}
+    CreateClassifierRequest:
+      type: object
+      title: CreateClassifierRequest
+      properties:
+        GrokClassifier:
+          allOf:
+          - $ref: '#/components/schemas/CreateGrokClassifierRequest'
+          - description: A <code>GrokClassifier</code> object specifying the classifier to create.
+        XMLClassifier:
+          allOf:
+          - $ref: '#/components/schemas/CreateXMLClassifierRequest'
+          - description: An <code>XMLClassifier</code> object specifying the classifier to create.
+        JsonClassifier:
+          allOf:
+          - $ref: '#/components/schemas/CreateJsonClassifierRequest'
+          - description: A <code>JsonClassifier</code> object specifying the classifier to create.
+        CsvClassifier:
+          allOf:
+          - $ref: '#/components/schemas/CreateCsvClassifierRequest'
+          - description: A <code>CsvClassifier</code> object specifying the classifier to create.
+    CreateGrokClassifierRequest:
+      type: object
+      required:
+      - Classification
+      - Name
+      - GrokPattern
+      properties:
+        Classification:
+          allOf:
+          - $ref: '#/components/schemas/Classification'
+          - description: An identifier of the data format that the classifier matches, such as Twitter, JSON, Omniture logs, Amazon CloudWatch Logs, and so on.
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the new classifier.
+        GrokPattern:
+          allOf:
+          - $ref: '#/components/schemas/GrokPattern'
+          - description: The grok pattern used by this classifier.
+        CustomPatterns:
+          allOf:
+          - $ref: '#/components/schemas/CustomPatterns'
+          - description: Optional custom grok patterns used by this classifier.
+      description: Specifies a <code>grok</code> classifier for <code>CreateClassifier</code> to create.
+    CustomDatatypes:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+    GrokPattern:
+      type: string
+      minLength: 1
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\t]*'
     CreateClassifierResponse:
       type: object
       properties: {}
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

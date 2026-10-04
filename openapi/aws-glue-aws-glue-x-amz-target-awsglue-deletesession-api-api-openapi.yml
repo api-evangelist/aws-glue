@@ -241,45 +241,13 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteSession API'
 components:
-  schemas:
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
-    InvalidInputException: {}
-    DeleteSessionResponse:
-      type: object
-      properties:
-        Id:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: Returns the ID of the deleted session.
-    ConcurrentModificationException: {}
-    IllegalSessionStateException: {}
-    OperationTimeoutException: {}
-    AccessDeniedException: {}
-    InternalServiceException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    DeleteSessionRequest:
-      type: object
-      required:
-      - Id
-      title: DeleteSessionRequest
-      properties:
-        Id:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The ID of the session to be deleted.
-        RequestOrigin:
-          allOf:
-          - $ref: '#/components/schemas/OrchestrationNameString'
-          - description: The name of the origin of the delete session request.
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-SignedHeaders:
       name: X-Amz-SignedHeaders
       in: header
@@ -292,20 +260,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -322,6 +284,44 @@ components:
       schema:
         type: string
       required: false
+  schemas:
+    InvalidInputException: {}
+    OperationTimeoutException: {}
+    InternalServiceException: {}
+    DeleteSessionResponse:
+      type: object
+      properties:
+        Id:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: Returns the ID of the deleted session.
+    IllegalSessionStateException: {}
+    DeleteSessionRequest:
+      type: object
+      required:
+      - Id
+      title: DeleteSessionRequest
+      properties:
+        Id:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The ID of the session to be deleted.
+        RequestOrigin:
+          allOf:
+          - $ref: '#/components/schemas/OrchestrationNameString'
+          - description: The name of the origin of the delete session request.
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    AccessDeniedException: {}
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+    ConcurrentModificationException: {}
   securitySchemes:
     hmac:
       type: apiKey

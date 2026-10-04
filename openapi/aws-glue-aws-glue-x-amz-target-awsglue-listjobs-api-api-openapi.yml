@@ -230,72 +230,24 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.ListJobs API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
     TagsMap:
       type: object
       minProperties: 0
       maxProperties: 50
       additionalProperties:
         $ref: '#/components/schemas/TagValue'
-    ListJobsResponse:
-      type: object
-      properties:
-        JobNames:
-          allOf:
-          - $ref: '#/components/schemas/JobNameList'
-          - description: The names of all jobs in the account, or the jobs with the specified tags.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/GenericString'
-          - description: A continuation token, if the returned list does not contain the last metric available.
-    EntityNotFoundException: {}
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
     NameString:
       type: string
       minLength: 1
@@ -303,7 +255,6 @@ components:
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     GenericString:
       type: string
-    InternalServiceException: {}
     ListJobsRequest:
       type: object
       title: ListJobsRequest
@@ -324,12 +275,61 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/NameString'
-    InvalidInputException: {}
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
     OperationTimeoutException: {}
+    ListJobsResponse:
+      type: object
+      properties:
+        JobNames:
+          allOf:
+          - $ref: '#/components/schemas/JobNameList'
+          - description: The names of all jobs in the account, or the jobs with the specified tags.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/GenericString'
+          - description: A continuation token, if the returned list does not contain the last metric available.
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

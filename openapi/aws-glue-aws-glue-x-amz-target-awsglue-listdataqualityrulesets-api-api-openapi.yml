@@ -227,128 +227,14 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.ListDataQualityRulesets API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    TagsMap:
-      type: object
-      minProperties: 0
-      maxProperties: 50
-      additionalProperties:
-        $ref: '#/components/schemas/TagValue'
-    DataQualityRulesetListDetails:
-      type: object
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the data quality ruleset.
-        Description:
-          allOf:
-          - $ref: '#/components/schemas/DescriptionString'
-          - description: A description of the data quality ruleset.
-        CreatedOn:
-          allOf:
-          - $ref: '#/components/schemas/Timestamp'
-          - description: The date and time the data quality ruleset was created.
-        LastModifiedOn:
-          allOf:
-          - $ref: '#/components/schemas/Timestamp'
-          - description: The date and time the data quality ruleset was last modified.
-        TargetTable:
-          allOf:
-          - $ref: '#/components/schemas/DataQualityTargetTable'
-          - description: An object representing an Glue table.
-        RecommendationRunId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: When a ruleset was created from a recommendation run, this run ID is generated to link the two together.
-        RuleCount:
-          allOf:
-          - $ref: '#/components/schemas/NullableInteger'
-          - description: The number of rules in the ruleset.
-      description: Describes a data quality ruleset returned by <code>GetDataQualityRuleset</code>.
-    NullableInteger:
-      type: integer
+    InvalidInputException: {}
     EntityNotFoundException: {}
-    ListDataQualityRulesetsResponse:
-      type: object
-      properties:
-        Rulesets:
-          allOf:
-          - $ref: '#/components/schemas/DataQualityRulesetList'
-          - description: A paginated list of rulesets for the specified list of Glue tables.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/PaginationToken'
-          - description: A pagination token, if more results are available.
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
-    NameString:
+    DescriptionString:
       type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    PaginationToken:
-      type: string
-    DataQualityTargetTable:
-      type: object
-      required:
-      - TableName
-      - DatabaseName
-      properties:
-        TableName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the Glue table.
-        DatabaseName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the database where the Glue table exists.
-      description: An object representing an Glue table.
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
     InternalServiceException: {}
     DataQualityRulesetFilterCriteria:
       type: object
@@ -382,29 +268,17 @@ components:
           - $ref: '#/components/schemas/DataQualityTargetTable'
           - description: The name and database name of the target table.
       description: The criteria used to filter data quality rulesets.
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    InvalidInputException: {}
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
-    Timestamp:
-      type: string
-      format: date-time
-    OperationTimeoutException: {}
-    DataQualityRulesetList:
-      type: array
-      items:
-        $ref: '#/components/schemas/DataQualityRulesetListDetails'
+    ListDataQualityRulesetsResponse:
+      type: object
+      properties:
+        Rulesets:
+          allOf:
+          - $ref: '#/components/schemas/DataQualityRulesetList'
+          - description: A paginated list of rulesets for the specified list of Glue tables.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/PaginationToken'
+          - description: A pagination token, if more results are available.
     ListDataQualityRulesetsRequest:
       type: object
       title: ListDataQualityRulesetsRequest
@@ -425,6 +299,132 @@ components:
           allOf:
           - $ref: '#/components/schemas/TagsMap'
           - description: A list of key-value pair tags.
+    DataQualityRulesetListDetails:
+      type: object
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the data quality ruleset.
+        Description:
+          allOf:
+          - $ref: '#/components/schemas/DescriptionString'
+          - description: A description of the data quality ruleset.
+        CreatedOn:
+          allOf:
+          - $ref: '#/components/schemas/Timestamp'
+          - description: The date and time the data quality ruleset was created.
+        LastModifiedOn:
+          allOf:
+          - $ref: '#/components/schemas/Timestamp'
+          - description: The date and time the data quality ruleset was last modified.
+        TargetTable:
+          allOf:
+          - $ref: '#/components/schemas/DataQualityTargetTable'
+          - description: An object representing an Glue table.
+        RecommendationRunId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: When a ruleset was created from a recommendation run, this run ID is generated to link the two together.
+        RuleCount:
+          allOf:
+          - $ref: '#/components/schemas/NullableInteger'
+          - description: The number of rules in the ruleset.
+      description: Describes a data quality ruleset returned by <code>GetDataQualityRuleset</code>.
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
+    NullableInteger:
+      type: integer
+    DataQualityRulesetList:
+      type: array
+      items:
+        $ref: '#/components/schemas/DataQualityRulesetListDetails'
+    Timestamp:
+      type: string
+      format: date-time
+    PaginationToken:
+      type: string
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
+    TagsMap:
+      type: object
+      minProperties: 0
+      maxProperties: 50
+      additionalProperties:
+        $ref: '#/components/schemas/TagValue'
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    OperationTimeoutException: {}
+    DataQualityTargetTable:
+      type: object
+      required:
+      - TableName
+      - DatabaseName
+      properties:
+        TableName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the Glue table.
+        DatabaseName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the database where the Glue table exists.
+      description: An object representing an Glue table.
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

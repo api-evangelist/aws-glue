@@ -214,55 +214,52 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.ListRegistries API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
+    InvalidInputException: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    InternalServiceException: {}
+    SchemaRegistryTokenString:
+      type: string
+    MaxResultsNumber:
+      type: integer
+      minimum: 1
+      maximum: 100
+    RegistryListDefinition:
+      type: array
+      items:
+        $ref: '#/components/schemas/RegistryListItem'
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
     RegistryStatus:
       type: string
       enum:
       - AVAILABLE
       - DELETING
+    ListRegistriesResponse:
+      type: object
+      properties:
+        Registries:
+          allOf:
+          - $ref: '#/components/schemas/RegistryListDefinition'
+          - description: An array of <code>RegistryDetailedListItem</code> objects containing minimal details of each registry.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryTokenString'
+          - description: A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
+    CreatedTimestamp:
+      type: string
     RegistryListItem:
       type: object
       properties:
@@ -291,21 +288,9 @@ components:
           - $ref: '#/components/schemas/UpdatedTimestamp'
           - description: The date the registry was updated.
       description: A structure containing the details for a registry.
-    ListRegistriesResponse:
-      type: object
-      properties:
-        Registries:
-          allOf:
-          - $ref: '#/components/schemas/RegistryListDefinition'
-          - description: An array of <code>RegistryDetailedListItem</code> objects containing minimal details of each registry.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryTokenString'
-          - description: A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
-    CreatedTimestamp:
-      type: string
     UpdatedTimestamp:
       type: string
+    AccessDeniedException: {}
     ListRegistriesInput:
       type: object
       title: ListRegistriesInput
@@ -318,34 +303,49 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaRegistryTokenString'
           - description: A continuation token, if this is a continuation call.
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    AccessDeniedException: {}
-    InternalServiceException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    RegistryListDefinition:
-      type: array
-      items:
-        $ref: '#/components/schemas/RegistryListItem'
-    InvalidInputException: {}
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    MaxResultsNumber:
-      type: integer
-      minimum: 1
-      maximum: 100
-    SchemaRegistryTokenString:
-      type: string
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

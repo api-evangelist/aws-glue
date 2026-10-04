@@ -255,26 +255,16 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.CreatePartitionIndex API'
 components:
   schemas:
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    GlueEncryptionException: {}
+    ResourceNumberLimitExceededException: {}
     KeyList:
       type: array
       items:
         $ref: '#/components/schemas/NameString'
       minItems: 1
-    PartitionIndex:
-      type: object
-      required:
-      - Keys
-      - IndexName
-      properties:
-        Keys:
-          allOf:
-          - $ref: '#/components/schemas/KeyList'
-          - description: The keys for the partition index.
-        IndexName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the partition index.
-      description: A structure for a partition index.
     CreatePartitionIndexRequest:
       type: object
       required:
@@ -300,34 +290,44 @@ components:
           - $ref: '#/components/schemas/PartitionIndex'
           - description: Specifies a <code>PartitionIndex</code> structure to create a partition index in an existing table.
     AlreadyExistsException: {}
-    EntityNotFoundException: {}
-    CreatePartitionIndexResponse:
-      type: object
-      properties: {}
-    CatalogIdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    InternalServiceException: {}
-    ResourceNumberLimitExceededException: {}
-    GlueEncryptionException: {}
-    InvalidInputException: {}
+    CatalogIdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     OperationTimeoutException: {}
+    PartitionIndex:
+      type: object
+      required:
+      - Keys
+      - IndexName
+      properties:
+        Keys:
+          allOf:
+          - $ref: '#/components/schemas/KeyList'
+          - description: The keys for the partition index.
+        IndexName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the partition index.
+      description: A structure for a partition index.
+    CreatePartitionIndexResponse:
+      type: object
+      properties: {}
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -344,20 +344,20 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

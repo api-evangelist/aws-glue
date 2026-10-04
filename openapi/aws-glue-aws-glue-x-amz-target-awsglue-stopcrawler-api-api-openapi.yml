@@ -215,44 +215,9 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.StopCrawler API'
 components:
-  schemas:
-    EntityNotFoundException: {}
-    CrawlerNotRunningException: {}
-    CrawlerStoppingException: {}
-    StopCrawlerResponse:
-      type: object
-      properties: {}
-    OperationTimeoutException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    StopCrawlerRequest:
-      type: object
-      required:
-      - Name
-      title: StopCrawlerRequest
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: Name of the crawler to stop.
   parameters:
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Algorithm:
       name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
       in: header
       schema:
         type: string
@@ -263,8 +228,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -281,6 +258,29 @@ components:
       schema:
         type: string
       required: false
+  schemas:
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
+    CrawlerStoppingException: {}
+    CrawlerNotRunningException: {}
+    StopCrawlerRequest:
+      type: object
+      required:
+      - Name
+      title: StopCrawlerRequest
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: Name of the crawler to stop.
+    StopCrawlerResponse:
+      type: object
+      properties: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   securitySchemes:
     hmac:
       type: apiKey

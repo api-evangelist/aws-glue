@@ -239,8 +239,22 @@ components:
           allOf:
           - $ref: '#/components/schemas/NameString'
           - description: The name of the custom pattern that you want to retrieve.
-    EntityNotFoundException: {}
     InvalidInputException: {}
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
+    InternalServiceException: {}
+    ContextWords:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 1
+      maxItems: 20
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    AccessDeniedException: {}
     GetCustomEntityTypeResponse:
       type: object
       properties:
@@ -256,33 +270,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/ContextWords'
           - description: A list of context words if specified when you created the custom pattern. If none of these context words are found within the vicinity of the regular expression the data will not be detected as sensitive data.
-    AccessDeniedException: {}
-    OperationTimeoutException: {}
-    InternalServiceException: {}
-    ContextWords:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 1
-      maxItems: 20
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   parameters:
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Algorithm:
       name: X-Amz-Algorithm
       in: header
@@ -295,8 +283,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string

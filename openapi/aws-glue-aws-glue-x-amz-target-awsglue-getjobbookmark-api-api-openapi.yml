@@ -240,77 +240,7 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.GetJobBookmark API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    ValidationException: {}
-    EntityNotFoundException: {}
-    GetJobBookmarkRequest:
-      type: object
-      required:
-      - JobName
-      title: GetJobBookmarkRequest
-      properties:
-        JobName:
-          allOf:
-          - $ref: '#/components/schemas/JobName'
-          - description: The name of the job in question.
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/RunId'
-          - description: The unique run identifier associated with this job run.
-    JobName:
-      type: string
-    IntegerValue:
-      type: integer
-    GetJobBookmarkResponse:
-      type: object
-      properties:
-        JobBookmarkEntry:
-          allOf:
-          - $ref: '#/components/schemas/JobBookmarkEntry'
-          - description: A structure that defines a point that a job can resume processing.
     JobBookmarkEntry:
       type: object
       properties:
@@ -343,13 +273,83 @@ components:
           - $ref: '#/components/schemas/JsonValue'
           - description: The bookmark itself.
       description: Defines a point that a job can resume processing.
-    InternalServiceException: {}
-    JsonValue:
-      type: string
     InvalidInputException: {}
+    EntityNotFoundException: {}
+    InternalServiceException: {}
     RunId:
       type: string
+    IntegerValue:
+      type: integer
+    ValidationException: {}
+    JsonValue:
+      type: string
+    GetJobBookmarkRequest:
+      type: object
+      required:
+      - JobName
+      title: GetJobBookmarkRequest
+      properties:
+        JobName:
+          allOf:
+          - $ref: '#/components/schemas/JobName'
+          - description: The name of the job in question.
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/RunId'
+          - description: The unique run identifier associated with this job run.
     OperationTimeoutException: {}
+    JobName:
+      type: string
+    GetJobBookmarkResponse:
+      type: object
+      properties:
+        JobBookmarkEntry:
+          allOf:
+          - $ref: '#/components/schemas/JobBookmarkEntry'
+          - description: A structure that defines a point that a job can resume processing.
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

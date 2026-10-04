@@ -215,38 +215,15 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.CancelDataQualityRulesetEvalu…'
 components:
-  schemas:
-    EntityNotFoundException: {}
-    InvalidInputException: {}
-    CancelDataQualityRulesetEvaluationRunResponse:
-      type: object
-      properties: {}
-    CancelDataQualityRulesetEvaluationRunRequest:
-      type: object
-      required:
-      - RunId
-      title: CancelDataQualityRulesetEvaluationRunRequest
-      properties:
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The unique run identifier associated with this run.
-    OperationTimeoutException: {}
-    InternalServiceException: {}
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -257,14 +234,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Credential:
+      name: X-Amz-Credential
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -281,6 +258,29 @@ components:
       schema:
         type: string
       required: false
+  schemas:
+    InvalidInputException: {}
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    OperationTimeoutException: {}
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    CancelDataQualityRulesetEvaluationRunResponse:
+      type: object
+      properties: {}
+    CancelDataQualityRulesetEvaluationRunRequest:
+      type: object
+      required:
+      - RunId
+      title: CancelDataQualityRulesetEvaluationRunRequest
+      properties:
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The unique run identifier associated with this run.
   securitySchemes:
     hmac:
       type: apiKey

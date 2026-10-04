@@ -215,57 +215,7 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.UntagResource API'
 components:
-  schemas:
-    EntityNotFoundException: {}
-    UntagResourceRequest:
-      type: object
-      required:
-      - ResourceArn
-      - TagsToRemove
-      title: UntagResourceRequest
-      properties:
-        ResourceArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: The Amazon Resource Name (ARN) of the resource from which to remove the tags.
-        TagsToRemove:
-          allOf:
-          - $ref: '#/components/schemas/TagKeysList'
-          - description: Tags to remove from this resource.
-    InvalidInputException: {}
-    TagKey:
-      type: string
-      minLength: 1
-      maxLength: 128
-    TagKeysList:
-      type: array
-      items:
-        $ref: '#/components/schemas/TagKey'
-      minItems: 0
-      maxItems: 50
-    OperationTimeoutException: {}
-    InternalServiceException: {}
-    UntagResourceResponse:
-      type: object
-      properties: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
   parameters:
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Algorithm:
       name: X-Amz-Algorithm
       in: header
@@ -278,8 +228,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -296,6 +258,44 @@ components:
       schema:
         type: string
       required: false
+  schemas:
+    InvalidInputException: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
+    UntagResourceResponse:
+      type: object
+      properties: {}
+    InternalServiceException: {}
+    TagKey:
+      type: string
+      minLength: 1
+      maxLength: 128
+    TagKeysList:
+      type: array
+      items:
+        $ref: '#/components/schemas/TagKey'
+      minItems: 0
+      maxItems: 50
+    UntagResourceRequest:
+      type: object
+      required:
+      - ResourceArn
+      - TagsToRemove
+      title: UntagResourceRequest
+      properties:
+        ResourceArn:
+          allOf:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: The Amazon Resource Name (ARN) of the resource from which to remove the tags.
+        TagsToRemove:
+          allOf:
+          - $ref: '#/components/schemas/TagKeysList'
+          - description: Tags to remove from this resource.
   securitySchemes:
     hmac:
       type: apiKey

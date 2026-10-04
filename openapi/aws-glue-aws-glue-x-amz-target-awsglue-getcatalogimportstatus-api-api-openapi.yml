@@ -190,14 +190,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetCatalogImportStatus API'
 components:
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -208,14 +208,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Credential:
+      name: X-Amz-Credential
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -233,13 +233,14 @@ components:
         type: string
       required: false
   schemas:
-    GetCatalogImportStatusResponse:
-      type: object
-      properties:
-        ImportStatus:
-          allOf:
-          - $ref: '#/components/schemas/CatalogImportStatus'
-          - description: The status of the specified catalog migration.
+    CatalogIdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    Boolean:
+      type: boolean
+    OperationTimeoutException: {}
     CatalogImportStatus:
       type: object
       properties:
@@ -256,14 +257,7 @@ components:
           - $ref: '#/components/schemas/NameString'
           - description: The name of the person who initiated the migration.
       description: A structure containing migration status information.
-    Timestamp:
-      type: string
-      format: date-time
-    CatalogIdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    InternalServiceException: {}
     GetCatalogImportStatusRequest:
       type: object
       title: GetCatalogImportStatusRequest
@@ -272,15 +266,21 @@ components:
           allOf:
           - $ref: '#/components/schemas/CatalogIdString'
           - description: The ID of the catalog to migrate. Currently, this should be the Amazon Web Services account ID.
-    OperationTimeoutException: {}
-    Boolean:
-      type: boolean
-    InternalServiceException: {}
+    Timestamp:
+      type: string
+      format: date-time
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    GetCatalogImportStatusResponse:
+      type: object
+      properties:
+        ImportStatus:
+          allOf:
+          - $ref: '#/components/schemas/CatalogImportStatus'
+          - description: The status of the specified catalog migration.
   securitySchemes:
     hmac:
       type: apiKey

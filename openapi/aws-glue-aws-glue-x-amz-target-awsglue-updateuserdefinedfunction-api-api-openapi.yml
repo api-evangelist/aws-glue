@@ -228,53 +228,16 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateUserDefinedFunction API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    UpdateUserDefinedFunctionResponse:
-      type: object
-      properties: {}
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    ResourceType:
+      type: string
+      enum:
+      - JAR
+      - FILE
+      - ARCHIVE
     UserDefinedFunctionInput:
       type: object
       properties:
@@ -299,31 +262,7 @@ components:
           - $ref: '#/components/schemas/ResourceUriList'
           - description: The resource URIs for the function.
       description: A structure used to create or update a user-defined function.
-    EntityNotFoundException: {}
-    ResourceUriList:
-      type: array
-      items:
-        $ref: '#/components/schemas/ResourceUri'
-      minItems: 0
-      maxItems: 1000
-    CatalogIdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    InternalServiceException: {}
     GlueEncryptionException: {}
-    InvalidInputException: {}
-    URI:
-      type: string
-      minLength: 1
-      maxLength: 1024
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
     UpdateUserDefinedFunctionRequest:
       type: object
       required:
@@ -348,19 +287,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserDefinedFunctionInput'
           - description: A <code>FunctionInput</code> object that redefines the function in the Data Catalog.
-    PrincipalType:
+    UpdateUserDefinedFunctionResponse:
+      type: object
+      properties: {}
+    URI:
       type: string
-      enum:
-      - USER
-      - ROLE
-      - GROUP
-    ResourceType:
-      type: string
-      enum:
-      - JAR
-      - FILE
-      - ARCHIVE
-    OperationTimeoutException: {}
+      minLength: 1
+      maxLength: 1024
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
     ResourceUri:
       type: object
       properties:
@@ -373,6 +307,72 @@ components:
           - $ref: '#/components/schemas/URI'
           - description: The URI for accessing the resource.
       description: The URIs for function resources.
+    ResourceUriList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ResourceUri'
+      minItems: 0
+      maxItems: 1000
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    CatalogIdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    PrincipalType:
+      type: string
+      enum:
+      - USER
+      - ROLE
+      - GROUP
+    OperationTimeoutException: {}
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

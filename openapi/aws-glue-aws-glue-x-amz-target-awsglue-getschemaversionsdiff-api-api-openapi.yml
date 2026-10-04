@@ -219,6 +219,57 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetSchemaVersionsDiff API'
 components:
   schemas:
+    SchemaDiffType:
+      type: string
+      enum:
+      - SYNTAX_DIFF
+    InvalidInputException: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    SchemaDefinitionDiff:
+      type: string
+      pattern: .*\S.*
+      minLength: 1
+      maxLength: 340000
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    SchemaId:
+      type: object
+      properties:
+        SchemaArn:
+          allOf:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: The Amazon Resource Name (ARN) of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
+        SchemaName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
+        RegistryName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the schema registry that contains the schema.
+      description: The unique ID of the schema in the Glue schema registry.
+    GetSchemaVersionsDiffResponse:
+      type: object
+      properties:
+        Diff:
+          allOf:
+          - $ref: '#/components/schemas/SchemaDefinitionDiff'
+          - description: The difference between schemas as a string in JsonPatch format.
+    LatestSchemaVersionBoolean:
+      type: boolean
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    VersionLongNumber:
+      type: integer
+      minimum: 1
+      maximum: 100000
     GetSchemaVersionsDiffInput:
       type: object
       required:
@@ -244,19 +295,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaDiffType'
           - description: Refers to <code>SYNTAX_DIFF</code>, which is the currently supported diff type.
-    SchemaDefinitionDiff:
-      type: string
-      pattern: .*\S.*
-      minLength: 1
-      maxLength: 340000
-    EntityNotFoundException: {}
-    LatestSchemaVersionBoolean:
-      type: boolean
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
     SchemaVersionNumber:
       type: object
       properties:
@@ -269,54 +307,16 @@ components:
           - $ref: '#/components/schemas/VersionLongNumber'
           - description: The version number of the schema.
       description: A structure containing the schema version information.
-    VersionLongNumber:
-      type: integer
-      minimum: 1
-      maximum: 100000
     AccessDeniedException: {}
-    InternalServiceException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    InvalidInputException: {}
-    SchemaDiffType:
-      type: string
-      enum:
-      - SYNTAX_DIFF
-    GetSchemaVersionsDiffResponse:
-      type: object
-      properties:
-        Diff:
-          allOf:
-          - $ref: '#/components/schemas/SchemaDefinitionDiff'
-          - description: The difference between schemas as a string in JsonPatch format.
-    SchemaId:
-      type: object
-      properties:
-        SchemaArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: The Amazon Resource Name (ARN) of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
-        SchemaName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
-        RegistryName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the schema registry that contains the schema.
-      description: The unique ID of the schema in the Glue schema registry.
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -333,20 +333,20 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

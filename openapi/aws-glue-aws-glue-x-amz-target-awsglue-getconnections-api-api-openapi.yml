@@ -227,50 +227,90 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.GetConnections API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    PhysicalConnectionRequirements:
+      type: object
+      properties:
+        SubnetId:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The subnet ID used by the connection.
+        SecurityGroupIdList:
+          allOf:
+          - $ref: '#/components/schemas/SecurityGroupIdList'
+          - description: The security group ID list used by the connection.
+        AvailabilityZone:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The connection's Availability Zone. This field is redundant because the specified subnet implies the Availability Zone to be used. Currently the field must be populated, but it will be deprecated in the future.
+      description: Specifies the physical requirements for a connection.
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
+    ValueString:
+      type: string
+      maxLength: 1024
+    GetConnectionsRequest:
+      type: object
+      title: GetConnectionsRequest
+      properties:
+        CatalogId:
+          allOf:
+          - $ref: '#/components/schemas/CatalogIdString'
+          - description: The ID of the Data Catalog in which the connections reside. If none is provided, the Amazon Web Services account ID is used by default.
+        Filter:
+          allOf:
+          - $ref: '#/components/schemas/GetConnectionsFilter'
+          - description: A filter that controls which connections are returned.
+        HidePassword:
+          allOf:
+          - $ref: '#/components/schemas/Boolean'
+          - description: Allows you to retrieve the connection metadata without returning the password. For instance, the Glue console uses this flag to retrieve the connection, and does not display the password. Set this parameter when the caller might not have permission to use the KMS key to decrypt the password, but it does have permission to access the rest of the connection properties.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/Token'
+          - description: A continuation token, if this is a continuation call.
+        MaxResults:
+          allOf:
+          - $ref: '#/components/schemas/PageSize'
+          - description: The maximum number of connections to return in one response.
+    GlueEncryptionException: {}
+    SecurityGroupIdList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 0
+      maxItems: 50
+    Timestamp:
+      type: string
+      format: date-time
+    GetConnectionsResponse:
+      type: object
+      properties:
+        ConnectionList:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionList'
+          - description: A list of requested connection definitions.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/Token'
+          - description: A continuation token, if the list of connections returned does not include the last of the filtered connections.
+    Token:
+      type: string
+    ConnectionProperties:
+      type: object
+      minProperties: 0
+      maxProperties: 100
+      additionalProperties:
+        $ref: '#/components/schemas/ValueString'
     Connection:
       type: object
       properties:
@@ -311,20 +351,6 @@ components:
           - $ref: '#/components/schemas/NameString'
           - description: The user, group, or role that last updated this connection definition.
       description: Defines a connection to a data source.
-    Token:
-      type: string
-    ConnectionType:
-      type: string
-      enum:
-      - JDBC
-      - SFTP
-      - MONGODB
-      - KAFKA
-      - NETWORK
-      - MARKETPLACE
-      - CUSTOM
-    Boolean:
-      type: boolean
     GetConnectionsFilter:
       type: object
       properties:
@@ -337,108 +363,82 @@ components:
           - $ref: '#/components/schemas/ConnectionType'
           - description: The type of connections to return. Currently, SFTP is not supported.
       description: Filters the connection definitions that are returned by the <code>GetConnections</code> API operation.
-    EntityNotFoundException: {}
-    SecurityGroupIdList:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 0
-      maxItems: 50
-    PhysicalConnectionRequirements:
-      type: object
-      properties:
-        SubnetId:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The subnet ID used by the connection.
-        SecurityGroupIdList:
-          allOf:
-          - $ref: '#/components/schemas/SecurityGroupIdList'
-          - description: The security group ID list used by the connection.
-        AvailabilityZone:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The connection's Availability Zone. This field is redundant because the specified subnet implies the Availability Zone to be used. Currently the field must be populated, but it will be deprecated in the future.
-      description: Specifies the physical requirements for a connection.
-    CatalogIdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ConnectionProperties:
-      type: object
-      minProperties: 0
-      maxProperties: 100
-      additionalProperties:
-        $ref: '#/components/schemas/ValueString'
-    GetConnectionsResponse:
-      type: object
-      properties:
-        ConnectionList:
-          allOf:
-          - $ref: '#/components/schemas/ConnectionList'
-          - description: A list of requested connection definitions.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/Token'
-          - description: A continuation token, if the list of connections returned does not include the last of the filtered connections.
     ConnectionList:
       type: array
       items:
         $ref: '#/components/schemas/Connection'
-    GetConnectionsRequest:
-      type: object
-      title: GetConnectionsRequest
-      properties:
-        CatalogId:
-          allOf:
-          - $ref: '#/components/schemas/CatalogIdString'
-          - description: The ID of the Data Catalog in which the connections reside. If none is provided, the Amazon Web Services account ID is used by default.
-        Filter:
-          allOf:
-          - $ref: '#/components/schemas/GetConnectionsFilter'
-          - description: A filter that controls which connections are returned.
-        HidePassword:
-          allOf:
-          - $ref: '#/components/schemas/Boolean'
-          - description: Allows you to retrieve the connection metadata without returning the password. For instance, the Glue console uses this flag to retrieve the connection, and does not display the password. Set this parameter when the caller might not have permission to use the KMS key to decrypt the password, but it does have permission to access the rest of the connection properties.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/Token'
-          - description: A continuation token, if this is a continuation call.
-        MaxResults:
-          allOf:
-          - $ref: '#/components/schemas/PageSize'
-          - description: The maximum number of connections to return in one response.
-    GlueEncryptionException: {}
-    InvalidInputException: {}
-    DescriptionString:
+    ConnectionType:
       type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+      enum:
+      - JDBC
+      - SFTP
+      - MONGODB
+      - KAFKA
+      - NETWORK
+      - MARKETPLACE
+      - CUSTOM
+    CatalogIdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    Boolean:
+      type: boolean
+    OperationTimeoutException: {}
     MatchCriteria:
       type: array
       items:
         $ref: '#/components/schemas/NameString'
       minItems: 0
       maxItems: 10
-    ValueString:
-      type: string
-      maxLength: 1024
-    Timestamp:
-      type: string
-      format: date-time
-    OperationTimeoutException: {}
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

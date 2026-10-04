@@ -215,50 +215,13 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.GetWorkflowRunProperties API'
 components:
-  schemas:
-    EntityNotFoundException: {}
-    InvalidInputException: {}
-    GetWorkflowRunPropertiesResponse:
-      type: object
-      properties:
-        RunProperties:
-          allOf:
-          - $ref: '#/components/schemas/WorkflowRunProperties'
-          - description: The workflow run properties which were set during the specified run.
-    WorkflowRunProperties:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
-    GenericString:
-      type: string
-    IdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    InternalServiceException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GetWorkflowRunPropertiesRequest:
-      type: object
-      required:
-      - Name
-      - RunId
-      title: GetWorkflowRunPropertiesRequest
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: Name of the workflow which was run.
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/IdString'
-          - description: The ID of the workflow run whose run properties should be returned.
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-SignedHeaders:
       name: X-Amz-SignedHeaders
       in: header
@@ -271,20 +234,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -301,6 +258,49 @@ components:
       schema:
         type: string
       required: false
+  schemas:
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
+    InternalServiceException: {}
+    GetWorkflowRunPropertiesRequest:
+      type: object
+      required:
+      - Name
+      - RunId
+      title: GetWorkflowRunPropertiesRequest
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: Name of the workflow which was run.
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/IdString'
+          - description: The ID of the workflow run whose run properties should be returned.
+    WorkflowRunProperties:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    GetWorkflowRunPropertiesResponse:
+      type: object
+      properties:
+        RunProperties:
+          allOf:
+          - $ref: '#/components/schemas/WorkflowRunProperties'
+          - description: The workflow run properties which were set during the specified run.
+    GenericString:
+      type: string
+    IdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   securitySchemes:
     hmac:
       type: apiKey

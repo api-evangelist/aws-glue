@@ -203,14 +203,14 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteBlueprint API'
 components:
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -221,14 +221,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Credential:
+      name: X-Amz-Credential
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -248,6 +248,14 @@ components:
   schemas:
     InvalidInputException: {}
     OperationTimeoutException: {}
+    InternalServiceException: {}
+    DeleteBlueprintResponse:
+      type: object
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: Returns the name of the blueprint that was deleted.
     DeleteBlueprintRequest:
       type: object
       required:
@@ -258,14 +266,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/NameString'
           - description: The name of the blueprint to delete.
-    InternalServiceException: {}
-    DeleteBlueprintResponse:
-      type: object
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: Returns the name of the blueprint that was deleted.
     NameString:
       type: string
       minLength: 1

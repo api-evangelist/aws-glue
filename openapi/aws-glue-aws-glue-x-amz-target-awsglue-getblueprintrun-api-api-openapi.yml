@@ -202,49 +202,6 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.GetBlueprintRun API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
     GetBlueprintRunResponse:
       type: object
@@ -253,17 +210,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/BlueprintRun'
           - description: Returns a <code>BlueprintRun</code> object.
-    MessageString:
-      type: string
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
     EntityNotFoundException: {}
-    TimestampValue:
+    BlueprintParameters:
       type: string
-      format: date-time
+      minLength: 1
+      maxLength: 131072
+    InternalServiceException: {}
     GetBlueprintRunRequest:
       type: object
       required:
@@ -279,22 +231,26 @@ components:
           allOf:
           - $ref: '#/components/schemas/IdString'
           - description: The run ID for the blueprint run you want to retrieve.
+    TimestampValue:
+      type: string
+      format: date-time
+    OrchestrationIAMRoleArn:
+      type: string
+      pattern: arn:aws[^:]*:iam::[0-9]*:role/.+
+      minLength: 1
+      maxLength: 1024
+    MessageString:
+      type: string
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    BlueprintRunState:
-      type: string
-      enum:
-      - RUNNING
-      - SUCCEEDED
-      - FAILED
-      - ROLLING_BACK
-    BlueprintParameters:
+    IdString:
       type: string
       minLength: 1
-      maxLength: 131072
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     BlueprintRun:
       type: object
       properties:
@@ -339,18 +295,62 @@ components:
           - $ref: '#/components/schemas/OrchestrationIAMRoleArn'
           - description: The role ARN. This role will be assumed by the Glue service and will be used to create the workflow and other entities of a workflow.
       description: The details of a blueprint run.
-    OrchestrationIAMRoleArn:
+    BlueprintRunState:
       type: string
-      pattern: arn:aws[^:]*:iam::[0-9]*:role/.+
-      minLength: 1
-      maxLength: 1024
-    InternalServiceException: {}
-    IdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+      enum:
+      - RUNNING
+      - SUCCEEDED
+      - FAILED
+      - ROLLING_BACK
     OperationTimeoutException: {}
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

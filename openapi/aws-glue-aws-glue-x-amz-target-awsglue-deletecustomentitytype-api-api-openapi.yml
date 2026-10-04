@@ -228,43 +228,15 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteCustomEntityType API'
 components:
-  schemas:
-    EntityNotFoundException: {}
-    InvalidInputException: {}
-    DeleteCustomEntityTypeRequest:
-      type: object
-      required:
-      - Name
-      title: DeleteCustomEntityTypeRequest
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the custom pattern that you want to delete.
-    DeleteCustomEntityTypeResponse:
-      type: object
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the custom pattern you deleted.
-    OperationTimeoutException: {}
-    AccessDeniedException: {}
-    InternalServiceException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -275,14 +247,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Credential:
+      name: X-Amz-Credential
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -299,6 +271,34 @@ components:
       schema:
         type: string
       required: false
+  schemas:
+    InvalidInputException: {}
+    DeleteCustomEntityTypeResponse:
+      type: object
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the custom pattern you deleted.
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
+    InternalServiceException: {}
+    DeleteCustomEntityTypeRequest:
+      type: object
+      required:
+      - Name
+      title: DeleteCustomEntityTypeRequest
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the custom pattern that you want to delete.
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    AccessDeniedException: {}
   securitySchemes:
     hmac:
       type: apiKey

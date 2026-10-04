@@ -228,105 +228,9 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.StartDataQualityRulesetEvalua…'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    NullableInteger:
-      type: integer
-    EntityNotFoundException: {}
-    RulesetNames:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 1
-      maxItems: 10
-    DataQualityEvaluationRunAdditionalRunOptions:
-      type: object
-      properties:
-        CloudWatchMetricsEnabled:
-          allOf:
-          - $ref: '#/components/schemas/NullableBoolean'
-          - description: Whether or not to enable CloudWatch metrics.
-        ResultsS3Prefix:
-          allOf:
-          - $ref: '#/components/schemas/UriString'
-          - description: Prefix for Amazon S3 to store results.
-      description: Additional run options you can specify for an evaluation run.
-    GlueTableAdditionalOptions:
-      type: object
-      minProperties: 1
-      maxProperties: 10
-      additionalProperties:
-        $ref: '#/components/schemas/DescriptionString'
-    NullableBoolean:
-      type: boolean
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    DataSource:
-      type: object
-      required:
-      - GlueTable
-      properties:
-        GlueTable:
-          allOf:
-          - $ref: '#/components/schemas/GlueTable'
-          - description: An Glue table.
-      description: A data source (an Glue table) for which you want data quality results.
-    InternalServiceException: {}
-    RoleString:
-      type: string
-    UriString:
-      type: string
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     InvalidInputException: {}
+    EntityNotFoundException: {}
     GlueTable:
       type: object
       required:
@@ -359,6 +263,28 @@ components:
       minLength: 0
       maxLength: 2048
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    InternalServiceException: {}
+    RoleString:
+      type: string
+    Timeout:
+      type: integer
+      minimum: 1
+    DataQualityEvaluationRunAdditionalRunOptions:
+      type: object
+      properties:
+        CloudWatchMetricsEnabled:
+          allOf:
+          - $ref: '#/components/schemas/NullableBoolean'
+          - description: Whether or not to enable CloudWatch metrics.
+        ResultsS3Prefix:
+          allOf:
+          - $ref: '#/components/schemas/UriString'
+          - description: Prefix for Amazon S3 to store results.
+      description: Additional run options you can specify for an evaluation run.
+    NullableInteger:
+      type: integer
+    NullableBoolean:
+      type: boolean
     StartDataQualityRulesetEvaluationRunResponse:
       type: object
       properties:
@@ -366,11 +292,42 @@ components:
           allOf:
           - $ref: '#/components/schemas/HashString'
           - description: The unique run identifier associated with this run.
-    Timeout:
-      type: integer
-      minimum: 1
     ConflictException: {}
+    DataSource:
+      type: object
+      required:
+      - GlueTable
+      properties:
+        GlueTable:
+          allOf:
+          - $ref: '#/components/schemas/GlueTable'
+          - description: An Glue table.
+      description: A data source (an Glue table) for which you want data quality results.
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    GlueTableAdditionalOptions:
+      type: object
+      minProperties: 1
+      maxProperties: 10
+      additionalProperties:
+        $ref: '#/components/schemas/DescriptionString'
+    RulesetNames:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 1
+      maxItems: 10
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     OperationTimeoutException: {}
+    UriString:
+      type: string
     StartDataQualityRulesetEvaluationRunRequest:
       type: object
       required:
@@ -407,6 +364,49 @@ components:
           allOf:
           - $ref: '#/components/schemas/RulesetNames'
           - description: A list of ruleset names.
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

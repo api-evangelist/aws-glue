@@ -228,79 +228,9 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.CreateBlueprint API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    TagsMap:
-      type: object
-      minProperties: 0
-      maxProperties: 50
-      additionalProperties:
-        $ref: '#/components/schemas/TagValue'
-    AlreadyExistsException: {}
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    Generic512CharString:
-      type: string
-      minLength: 1
-      maxLength: 512
-    InternalServiceException: {}
-    ResourceNumberLimitExceededException: {}
-    OrchestrationS3Location:
-      type: string
-      pattern: ^s3://([^/]+)/([^/]+/)*([^/]+)$
-      minLength: 1
-      maxLength: 8192
     InvalidInputException: {}
+    InternalServiceException: {}
     CreateBlueprintResponse:
       type: object
       properties:
@@ -308,6 +238,27 @@ components:
           allOf:
           - $ref: '#/components/schemas/NameString'
           - description: Returns the name of the blueprint that was registered.
+    ResourceNumberLimitExceededException: {}
+    Generic512CharString:
+      type: string
+      minLength: 1
+      maxLength: 512
+    AlreadyExistsException: {}
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
+    TagsMap:
+      type: object
+      minProperties: 0
+      maxProperties: 50
+      additionalProperties:
+        $ref: '#/components/schemas/TagValue'
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     CreateBlueprintRequest:
       type: object
       required:
@@ -331,11 +282,60 @@ components:
           allOf:
           - $ref: '#/components/schemas/TagsMap'
           - description: The tags to be applied to this blueprint.
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
     OperationTimeoutException: {}
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+    OrchestrationS3Location:
+      type: string
+      pattern: ^s3://([^/]+)/([^/]+/)*([^/]+)$
+      minLength: 1
+      maxLength: 8192
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

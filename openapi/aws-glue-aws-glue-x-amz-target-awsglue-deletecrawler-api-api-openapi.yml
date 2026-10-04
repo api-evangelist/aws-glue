@@ -215,44 +215,15 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteCrawler API'
 components:
-  schemas:
-    EntityNotFoundException: {}
-    DeleteCrawlerResponse:
-      type: object
-      properties: {}
-    CrawlerRunningException: {}
-    OperationTimeoutException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    SchedulerTransitioningException: {}
-    DeleteCrawlerRequest:
-      type: object
-      required:
-      - Name
-      title: DeleteCrawlerRequest
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the crawler to remove.
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Algorithm:
       name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -269,6 +240,12 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
@@ -281,6 +258,29 @@ components:
       schema:
         type: string
       required: false
+  schemas:
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
+    DeleteCrawlerRequest:
+      type: object
+      required:
+      - Name
+      title: DeleteCrawlerRequest
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the crawler to remove.
+    DeleteCrawlerResponse:
+      type: object
+      properties: {}
+    SchedulerTransitioningException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    CrawlerRunningException: {}
   securitySchemes:
     hmac:
       type: apiKey

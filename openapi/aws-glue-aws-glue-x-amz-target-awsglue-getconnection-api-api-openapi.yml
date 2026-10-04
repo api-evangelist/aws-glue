@@ -215,50 +215,67 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.GetConnection API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    PhysicalConnectionRequirements:
+      type: object
+      properties:
+        SubnetId:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The subnet ID used by the connection.
+        SecurityGroupIdList:
+          allOf:
+          - $ref: '#/components/schemas/SecurityGroupIdList'
+          - description: The security group ID list used by the connection.
+        AvailabilityZone:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The connection's Availability Zone. This field is redundant because the specified subnet implies the Availability Zone to be used. Currently the field must be populated, but it will be deprecated in the future.
+      description: Specifies the physical requirements for a connection.
+    ValueString:
+      type: string
+      maxLength: 1024
+    GlueEncryptionException: {}
+    SecurityGroupIdList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 0
+      maxItems: 50
+    Timestamp:
+      type: string
+      format: date-time
+    GetConnectionRequest:
+      type: object
+      required:
+      - Name
+      title: GetConnectionRequest
+      properties:
+        CatalogId:
+          allOf:
+          - $ref: '#/components/schemas/CatalogIdString'
+          - description: The ID of the Data Catalog in which the connection resides. If none is provided, the Amazon Web Services account ID is used by default.
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the connection definition to retrieve.
+        HidePassword:
+          allOf:
+          - $ref: '#/components/schemas/Boolean'
+          - description: Allows you to retrieve the connection metadata without returning the password. For instance, the Glue console uses this flag to retrieve the connection, and does not display the password. Set this parameter when the caller might not have permission to use the KMS key to decrypt the password, but it does have permission to access the rest of the connection properties.
+    ConnectionProperties:
+      type: object
+      minProperties: 0
+      maxProperties: 100
+      additionalProperties:
+        $ref: '#/components/schemas/ValueString'
     Connection:
       type: object
       properties:
@@ -299,24 +316,11 @@ components:
           - $ref: '#/components/schemas/NameString'
           - description: The user, group, or role that last updated this connection definition.
       description: Defines a connection to a data source.
-    GetConnectionRequest:
-      type: object
-      required:
-      - Name
-      title: GetConnectionRequest
-      properties:
-        CatalogId:
-          allOf:
-          - $ref: '#/components/schemas/CatalogIdString'
-          - description: The ID of the Data Catalog in which the connection resides. If none is provided, the Amazon Web Services account ID is used by default.
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the connection definition to retrieve.
-        HidePassword:
-          allOf:
-          - $ref: '#/components/schemas/Boolean'
-          - description: Allows you to retrieve the connection metadata without returning the password. For instance, the Glue console uses this flag to retrieve the connection, and does not display the password. Set this parameter when the caller might not have permission to use the KMS key to decrypt the password, but it does have permission to access the rest of the connection properties.
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     ConnectionType:
       type: string
       enum:
@@ -327,66 +331,20 @@ components:
       - NETWORK
       - MARKETPLACE
       - CUSTOM
-    Boolean:
-      type: boolean
-    EntityNotFoundException: {}
-    SecurityGroupIdList:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 0
-      maxItems: 50
-    PhysicalConnectionRequirements:
-      type: object
-      properties:
-        SubnetId:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The subnet ID used by the connection.
-        SecurityGroupIdList:
-          allOf:
-          - $ref: '#/components/schemas/SecurityGroupIdList'
-          - description: The security group ID list used by the connection.
-        AvailabilityZone:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The connection's Availability Zone. This field is redundant because the specified subnet implies the Availability Zone to be used. Currently the field must be populated, but it will be deprecated in the future.
-      description: Specifies the physical requirements for a connection.
     CatalogIdString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ConnectionProperties:
-      type: object
-      minProperties: 0
-      maxProperties: 100
-      additionalProperties:
-        $ref: '#/components/schemas/ValueString'
-    GlueEncryptionException: {}
-    InvalidInputException: {}
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    Boolean:
+      type: boolean
+    OperationTimeoutException: {}
     MatchCriteria:
       type: array
       items:
         $ref: '#/components/schemas/NameString'
       minItems: 0
       maxItems: 10
-    ValueString:
-      type: string
-      maxLength: 1024
-    Timestamp:
-      type: string
-      format: date-time
     GetConnectionResponse:
       type: object
       properties:
@@ -394,7 +352,49 @@ components:
           allOf:
           - $ref: '#/components/schemas/Connection'
           - description: The requested connection definition.
-    OperationTimeoutException: {}
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

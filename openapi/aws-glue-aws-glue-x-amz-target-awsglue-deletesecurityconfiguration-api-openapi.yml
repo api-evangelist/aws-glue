@@ -215,38 +215,15 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteSecurityConfiguration…'
 components:
-  schemas:
-    EntityNotFoundException: {}
-    InvalidInputException: {}
-    DeleteSecurityConfigurationRequest:
-      type: object
-      required:
-      - Name
-      title: DeleteSecurityConfigurationRequest
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the security configuration to delete.
-    DeleteSecurityConfigurationResponse:
-      type: object
-      properties: {}
-    OperationTimeoutException: {}
-    InternalServiceException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -257,14 +234,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Credential:
+      name: X-Amz-Credential
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -281,6 +258,29 @@ components:
       schema:
         type: string
       required: false
+  schemas:
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
+    DeleteSecurityConfigurationResponse:
+      type: object
+      properties: {}
+    DeleteSecurityConfigurationRequest:
+      type: object
+      required:
+      - Name
+      title: DeleteSecurityConfigurationRequest
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the security configuration to delete.
+    InternalServiceException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   securitySchemes:
     hmac:
       type: apiKey

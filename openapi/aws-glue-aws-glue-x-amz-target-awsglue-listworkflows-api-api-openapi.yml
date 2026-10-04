@@ -215,14 +215,20 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.ListWorkflows API'
 components:
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -233,20 +239,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -265,6 +265,8 @@ components:
         $ref: '#/components/schemas/NameString'
       minItems: 1
       maxItems: 25
+    OperationTimeoutException: {}
+    InternalServiceException: {}
     ListWorkflowsResponse:
       type: object
       properties:
@@ -276,14 +278,13 @@ components:
           allOf:
           - $ref: '#/components/schemas/GenericString'
           - description: A continuation token, if not all workflow names have been returned.
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     GenericString:
       type: string
-    OperationTimeoutException: {}
-    InternalServiceException: {}
     ListWorkflowsRequest:
       type: object
       title: ListWorkflowsRequest
@@ -296,11 +297,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/PageSize'
           - description: The maximum size of a list to return.
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
   securitySchemes:
     hmac:
       type: apiKey

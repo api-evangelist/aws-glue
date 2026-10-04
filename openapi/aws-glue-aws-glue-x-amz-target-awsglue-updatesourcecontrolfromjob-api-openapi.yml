@@ -257,63 +257,14 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateSourceControlFromJob…'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    AlreadyExistsException: {}
-    ValidationException: {}
-    EntityNotFoundException: {}
-    CommitIdString:
-      type: string
-      minLength: 1
-      maxLength: 40
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    NameString:
+    InvalidInputException: {}
+    AuthTokenString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    EntityNotFoundException: {}
     UpdateSourceControlFromJobResponse:
       type: object
       properties:
@@ -321,19 +272,19 @@ components:
           allOf:
           - $ref: '#/components/schemas/NameString'
           - description: The name of the Glue job.
-    AccessDeniedException: {}
     InternalServiceException: {}
+    CommitIdString:
+      type: string
+      minLength: 1
+      maxLength: 40
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     SourceControlAuthStrategy:
       type: string
       enum:
       - PERSONAL_ACCESS_TOKEN
       - AWS_SECRETS_MANAGER
-    SourceControlProvider:
-      type: string
-      enum:
-      - GITHUB
-      - AWS_CODE_COMMIT
-    InvalidInputException: {}
+    AlreadyExistsException: {}
+    ValidationException: {}
     UpdateSourceControlFromJobRequest:
       type: object
       title: UpdateSourceControlFromJobRequest
@@ -374,12 +325,61 @@ components:
           allOf:
           - $ref: '#/components/schemas/AuthTokenString'
           - description: The value of the authorization token.
-    AuthTokenString:
+    NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     OperationTimeoutException: {}
+    SourceControlProvider:
+      type: string
+      enum:
+      - GITHUB
+      - AWS_CODE_COMMIT
+    AccessDeniedException: {}
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

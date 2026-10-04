@@ -241,53 +241,42 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.GetStatement API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    DoubleValue:
-      type: number
-      format: double
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    LongValue:
+      type: integer
+    IntegerValue:
+      type: integer
+    StatementOutput:
+      type: object
+      properties:
+        Data:
+          allOf:
+          - $ref: '#/components/schemas/StatementOutputData'
+          - description: The code execution output.
+        ExecutionCount:
+          allOf:
+          - $ref: '#/components/schemas/IntegerValue'
+          - description: The execution count of the output.
+        Status:
+          allOf:
+          - $ref: '#/components/schemas/StatementState'
+          - description: The status of the code execution output.
+        ErrorName:
+          allOf:
+          - $ref: '#/components/schemas/GenericString'
+          - description: The name of the error in the output.
+        ErrorValue:
+          allOf:
+          - $ref: '#/components/schemas/GenericString'
+          - description: The error value of the output.
+        Traceback:
+          allOf:
+          - $ref: '#/components/schemas/OrchestrationStringList'
+          - description: The traceback of the output.
+      description: The code execution output in JSON format.
     StatementState:
       type: string
       enum:
@@ -297,6 +286,10 @@ components:
       - CANCELLING
       - CANCELLED
       - ERROR
+    DoubleValue:
+      type: number
+      format: double
+    IllegalSessionStateException: {}
     Statement:
       type: object
       properties:
@@ -329,6 +322,18 @@ components:
           - $ref: '#/components/schemas/LongValue'
           - description: The unix time and date that the job definition was completed.
       description: The statement or request for a particular action to occur in a session.
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    GenericString:
+      type: string
+    OperationTimeoutException: {}
+    OrchestrationStringList:
+      type: array
+      items:
+        $ref: '#/components/schemas/GenericString'
     GetStatementRequest:
       type: object
       required:
@@ -348,20 +353,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/OrchestrationNameString'
           - description: The origin of the request.
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
-    EntityNotFoundException: {}
-    IllegalSessionStateException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    IntegerValue:
-      type: integer
     GetStatementResponse:
       type: object
       properties:
@@ -369,46 +360,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/Statement'
           - description: Returns the statement.
-    LongValue:
-      type: integer
-    GenericString:
-      type: string
     AccessDeniedException: {}
-    InternalServiceException: {}
-    StatementOutput:
-      type: object
-      properties:
-        Data:
-          allOf:
-          - $ref: '#/components/schemas/StatementOutputData'
-          - description: The code execution output.
-        ExecutionCount:
-          allOf:
-          - $ref: '#/components/schemas/IntegerValue'
-          - description: The execution count of the output.
-        Status:
-          allOf:
-          - $ref: '#/components/schemas/StatementState'
-          - description: The status of the code execution output.
-        ErrorName:
-          allOf:
-          - $ref: '#/components/schemas/GenericString'
-          - description: The name of the error in the output.
-        ErrorValue:
-          allOf:
-          - $ref: '#/components/schemas/GenericString'
-          - description: The error value of the output.
-        Traceback:
-          allOf:
-          - $ref: '#/components/schemas/OrchestrationStringList'
-          - description: The traceback of the output.
-      description: The code execution output in JSON format.
-    InvalidInputException: {}
-    OrchestrationStringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/GenericString'
-    OperationTimeoutException: {}
     StatementOutputData:
       type: object
       properties:
@@ -417,6 +369,54 @@ components:
           - $ref: '#/components/schemas/GenericString'
           - description: The code execution output in text format.
       description: The code execution output in JSON format.
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

@@ -228,150 +228,32 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateCrawler API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    Role:
-      type: string
-    SchemaChangePolicy:
+    EnableAdditionalMetadata:
+      type: array
+      items:
+        $ref: '#/components/schemas/JdbcMetadataEntry'
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    S3Target:
       type: object
       properties:
-        UpdateBehavior:
-          allOf:
-          - $ref: '#/components/schemas/UpdateBehavior'
-          - description: The update behavior when the crawler finds a changed schema.
-        DeleteBehavior:
-          allOf:
-          - $ref: '#/components/schemas/DeleteBehavior'
-          - description: The deletion behavior when the crawler finds a deleted object.
-      description: A policy that specifies update and deletion behaviors for the crawler.
-    MongoDBTarget:
-      type: object
-      properties:
-        ConnectionName:
-          allOf:
-          - $ref: '#/components/schemas/ConnectionName'
-          - description: The name of the connection to use to connect to the Amazon DocumentDB or MongoDB target.
         Path:
           allOf:
           - $ref: '#/components/schemas/Path'
-          - description: The path of the Amazon DocumentDB or MongoDB target (database/collection).
-        ScanAll:
+          - description: The path to the Amazon S3 target.
+        Exclusions:
           allOf:
-          - $ref: '#/components/schemas/NullableBoolean'
-          - description: <p>Indicates whether to scan all the records, or to sample rows from the table. Scanning all the records can take a long time when the table is not a high throughput table.</p> <p>A value of <code>true</code> means to scan all records, while a value of <code>false</code> means to sample the records. If no value is specified, the value defaults to <code>true</code>.</p>
-      description: Specifies an Amazon DocumentDB or MongoDB data store to crawl.
-    VersionMismatchException: {}
-    NullableInteger:
-      type: integer
-    ConnectionName:
-      type: string
-    CrawlerConfiguration:
-      type: string
-    RecrawlPolicy:
-      type: object
-      properties:
-        RecrawlBehavior:
-          allOf:
-          - $ref: '#/components/schemas/RecrawlBehavior'
-          - description: <p>Specifies whether to crawl the entire dataset again or to crawl only folders that were added since the last crawler run.</p> <p>A value of <code>CRAWL_EVERYTHING</code> specifies crawling the entire dataset again.</p> <p>A value of <code>CRAWL_NEW_FOLDERS_ONLY</code> specifies crawling only folders that were added since the last crawler run.</p> <p>A value of <code>CRAWL_EVENT_MODE</code> specifies crawling only the changes identified by Amazon S3 events.</p>
-      description: When crawling an Amazon S3 data source after the first crawl is complete, specifies whether to crawl the entire dataset again or to crawl only folders that were added since the last crawler run. For more information, see <a href="https://docs.aws.amazon.com/glue/latest/dg/incremental-crawls.html">Incremental Crawls in Glue</a> in the developer guide.
-    CatalogTablesList:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 1
-    EntityNotFoundException: {}
-    JdbcTargetList:
-      type: array
-      items:
-        $ref: '#/components/schemas/JdbcTarget'
-    CatalogTargetList:
-      type: array
-      items:
-        $ref: '#/components/schemas/CatalogTarget'
-    TablePrefix:
-      type: string
-      minLength: 0
-      maxLength: 128
-    CronExpression:
-      type: string
-    LineageConfiguration:
-      type: object
-      properties:
-        CrawlerLineageSettings:
-          allOf:
-          - $ref: '#/components/schemas/CrawlerLineageSettings'
-          - description: '<p>Specifies whether data lineage is enabled for the crawler. Valid values are:</p> <ul> <li> <p>ENABLE: enables data lineage for the crawler</p> </li> <li> <p>DISABLE: disables data lineage for the crawler</p> </li> </ul>'
-      description: Specifies data lineage configuration settings for the crawler.
-    NullableDouble:
-      type: number
-      format: double
-    PathList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Path'
-    EventQueueArn:
-      type: string
-    CatalogTarget:
-      type: object
-      required:
-      - DatabaseName
-      - Tables
-      properties:
-        DatabaseName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the database to be synchronized.
-        Tables:
-          allOf:
-          - $ref: '#/components/schemas/CatalogTablesList'
-          - description: A list of the tables to be synchronized.
+          - $ref: '#/components/schemas/PathList'
+          - description: A list of glob patterns used to exclude from the crawl. For more information, see <a href="https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html">Catalog Tables with a Crawler</a>.
         ConnectionName:
           allOf:
           - $ref: '#/components/schemas/ConnectionName'
-          - description: The name of the connection for an Amazon S3-backed Data Catalog table to be a target of the crawl when using a <code>Catalog</code> connection type paired with a <code>NETWORK</code> Connection type.
+          - description: The name of a connection which allows a job or crawler to access data in Amazon S3 within an Amazon Virtual Private Cloud environment (Amazon VPC).
+        SampleSize:
+          allOf:
+          - $ref: '#/components/schemas/NullableInteger'
+          - description: Sets the number of files in each leaf folder to be crawled when crawling sample files in a dataset. If not set, all the files are crawled. A valid value is an integer between 1 and 249.
         EventQueueArn:
           allOf:
           - $ref: '#/components/schemas/EventQueueArn'
@@ -380,60 +262,33 @@ components:
           allOf:
           - $ref: '#/components/schemas/EventQueueArn'
           - description: A valid Amazon dead-letter SQS ARN. For example, <code>arn:aws:sqs:region:account:deadLetterQueue</code>.
-      description: Specifies an Glue Data Catalog target.
-    NullableBoolean:
-      type: boolean
-    JdbcMetadataEntry:
+      description: Specifies a data store in Amazon Simple Storage Service (Amazon S3).
+    CronExpression:
+      type: string
+    UpdateBehavior:
       type: string
       enum:
-      - COMMENTS
-      - RAWTYPES
-    UpdateCrawlerResponse:
-      type: object
-      properties: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    DynamoDBTargetList:
-      type: array
-      items:
-        $ref: '#/components/schemas/DynamoDBTarget'
-    EnableAdditionalMetadata:
-      type: array
-      items:
-        $ref: '#/components/schemas/JdbcMetadataEntry'
-    CrawlerTargets:
+      - LOG
+      - UPDATE_IN_DATABASE
+    LakeFormationConfiguration:
       type: object
       properties:
-        S3Targets:
+        UseLakeFormationCredentials:
           allOf:
-          - $ref: '#/components/schemas/S3TargetList'
-          - description: Specifies Amazon Simple Storage Service (Amazon S3) targets.
-        JdbcTargets:
+          - $ref: '#/components/schemas/NullableBoolean'
+          - description: Specifies whether to use Lake Formation credentials for the crawler instead of the IAM role credentials.
+        AccountId:
           allOf:
-          - $ref: '#/components/schemas/JdbcTargetList'
-          - description: Specifies JDBC targets.
-        MongoDBTargets:
-          allOf:
-          - $ref: '#/components/schemas/MongoDBTargetList'
-          - description: Specifies Amazon DocumentDB or MongoDB targets.
-        DynamoDBTargets:
-          allOf:
-          - $ref: '#/components/schemas/DynamoDBTargetList'
-          - description: Specifies Amazon DynamoDB targets.
-        CatalogTargets:
-          allOf:
-          - $ref: '#/components/schemas/CatalogTargetList'
-          - description: Specifies Glue Data Catalog targets.
-        DeltaTargets:
-          allOf:
-          - $ref: '#/components/schemas/DeltaTargetList'
-          - description: Specifies Delta data store targets.
-      description: Specifies data stores to crawl.
-    DatabaseName:
+          - $ref: '#/components/schemas/AccountId'
+          - description: Required for cross account crawls. For same account crawls as the target data, this can be left as null.
+      description: Specifies Lake Formation configuration settings for the crawler.
+    EventQueueArn:
       type: string
+    CrawlerLineageSettings:
+      type: string
+      enum:
+      - ENABLE
+      - DISABLE
     UpdateCrawlerRequest:
       type: object
       required:
@@ -496,25 +351,31 @@ components:
           allOf:
           - $ref: '#/components/schemas/CrawlerSecurityConfiguration'
           - description: The name of the <code>SecurityConfiguration</code> structure to be used by this crawler.
-    CrawlerLineageSettings:
+    RecrawlPolicy:
+      type: object
+      properties:
+        RecrawlBehavior:
+          allOf:
+          - $ref: '#/components/schemas/RecrawlBehavior'
+          - description: <p>Specifies whether to crawl the entire dataset again or to crawl only folders that were added since the last crawler run.</p> <p>A value of <code>CRAWL_EVERYTHING</code> specifies crawling the entire dataset again.</p> <p>A value of <code>CRAWL_NEW_FOLDERS_ONLY</code> specifies crawling only folders that were added since the last crawler run.</p> <p>A value of <code>CRAWL_EVENT_MODE</code> specifies crawling only the changes identified by Amazon S3 events.</p>
+      description: When crawling an Amazon S3 data source after the first crawl is complete, specifies whether to crawl the entire dataset again or to crawl only folders that were added since the last crawler run. For more information, see <a href="https://docs.aws.amazon.com/glue/latest/dg/incremental-crawls.html">Incremental Crawls in Glue</a> in the developer guide.
+    JdbcMetadataEntry:
       type: string
       enum:
-      - ENABLE
-      - DISABLE
-    CrawlerRunningException: {}
-    AccountId:
+      - COMMENTS
+      - RAWTYPES
+    RecrawlBehavior:
       type: string
-      minLength: 0
-      maxLength: 12
-    UpdateBehavior:
+      enum:
+      - CRAWL_EVERYTHING
+      - CRAWL_NEW_FOLDERS_ONLY
+      - CRAWL_EVENT_MODE
+    DeleteBehavior:
       type: string
       enum:
       - LOG
-      - UPDATE_IN_DATABASE
-    ClassifierNameList:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
+      - DELETE_FROM_DATABASE
+      - DEPRECATE_IN_DATABASE
     JdbcTarget:
       type: object
       properties:
@@ -535,6 +396,69 @@ components:
           - $ref: '#/components/schemas/EnableAdditionalMetadata'
           - description: <p>Specify a value of <code>RAWTYPES</code> or <code>COMMENTS</code> to enable additional metadata in table responses. <code>RAWTYPES</code> provides the native-level datatype. <code>COMMENTS</code> provides comments associated with a column or table in the database.</p> <p>If you do not need additional metadata, keep the field empty.</p>
       description: Specifies a JDBC data store to crawl.
+    DatabaseName:
+      type: string
+    ClassifierNameList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+    CatalogTargetList:
+      type: array
+      items:
+        $ref: '#/components/schemas/CatalogTarget'
+    NullableInteger:
+      type: integer
+    NullableBoolean:
+      type: boolean
+    MongoDBTargetList:
+      type: array
+      items:
+        $ref: '#/components/schemas/MongoDBTarget'
+    CrawlerConfiguration:
+      type: string
+    DescriptionStringRemovable:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    ConnectionName:
+      type: string
+    MongoDBTarget:
+      type: object
+      properties:
+        ConnectionName:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionName'
+          - description: The name of the connection to use to connect to the Amazon DocumentDB or MongoDB target.
+        Path:
+          allOf:
+          - $ref: '#/components/schemas/Path'
+          - description: The path of the Amazon DocumentDB or MongoDB target (database/collection).
+        ScanAll:
+          allOf:
+          - $ref: '#/components/schemas/NullableBoolean'
+          - description: <p>Indicates whether to scan all the records, or to sample rows from the table. Scanning all the records can take a long time when the table is not a high throughput table.</p> <p>A value of <code>true</code> means to scan all records, while a value of <code>false</code> means to sample the records. If no value is specified, the value defaults to <code>true</code>.</p>
+      description: Specifies an Amazon DocumentDB or MongoDB data store to crawl.
+    DynamoDBTargetList:
+      type: array
+      items:
+        $ref: '#/components/schemas/DynamoDBTarget'
+    Role:
+      type: string
+    VersionMismatchException: {}
+    TablePrefix:
+      type: string
+      minLength: 0
+      maxLength: 128
+    CrawlerSecurityConfiguration:
+      type: string
+      minLength: 0
+      maxLength: 128
+    CatalogTablesList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 1
     DeltaTarget:
       type: object
       properties:
@@ -555,59 +479,69 @@ components:
           - $ref: '#/components/schemas/NullableBoolean'
           - description: Specifies whether the crawler will create native tables, to allow integration with query engines that support querying of the Delta transaction log directly.
       description: Specifies a Delta data store to crawl one or more Delta tables.
-    CrawlerSecurityConfiguration:
-      type: string
-      minLength: 0
-      maxLength: 128
-    DescriptionStringRemovable:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    InvalidInputException: {}
-    LakeFormationConfiguration:
+    SchemaChangePolicy:
       type: object
       properties:
-        UseLakeFormationCredentials:
+        UpdateBehavior:
           allOf:
-          - $ref: '#/components/schemas/NullableBoolean'
-          - description: Specifies whether to use Lake Formation credentials for the crawler instead of the IAM role credentials.
-        AccountId:
+          - $ref: '#/components/schemas/UpdateBehavior'
+          - description: The update behavior when the crawler finds a changed schema.
+        DeleteBehavior:
           allOf:
-          - $ref: '#/components/schemas/AccountId'
-          - description: Required for cross account crawls. For same account crawls as the target data, this can be left as null.
-      description: Specifies Lake Formation configuration settings for the crawler.
-    DeleteBehavior:
-      type: string
-      enum:
-      - LOG
-      - DELETE_FROM_DATABASE
-      - DEPRECATE_IN_DATABASE
-    Path:
-      type: string
+          - $ref: '#/components/schemas/DeleteBehavior'
+          - description: The deletion behavior when the crawler finds a deleted object.
+      description: A policy that specifies update and deletion behaviors for the crawler.
     DeltaTargetList:
       type: array
       items:
         $ref: '#/components/schemas/DeltaTarget'
-    S3Target:
+    PathList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Path'
+    NullableDouble:
+      type: number
+      format: double
+    LineageConfiguration:
       type: object
       properties:
-        Path:
+        CrawlerLineageSettings:
           allOf:
-          - $ref: '#/components/schemas/Path'
-          - description: The path to the Amazon S3 target.
-        Exclusions:
+          - $ref: '#/components/schemas/CrawlerLineageSettings'
+          - description: '<p>Specifies whether data lineage is enabled for the crawler. Valid values are:</p> <ul> <li> <p>ENABLE: enables data lineage for the crawler</p> </li> <li> <p>DISABLE: disables data lineage for the crawler</p> </li> </ul>'
+      description: Specifies data lineage configuration settings for the crawler.
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    AccountId:
+      type: string
+      minLength: 0
+      maxLength: 12
+    UpdateCrawlerResponse:
+      type: object
+      properties: {}
+    Path:
+      type: string
+    CatalogTarget:
+      type: object
+      required:
+      - DatabaseName
+      - Tables
+      properties:
+        DatabaseName:
           allOf:
-          - $ref: '#/components/schemas/PathList'
-          - description: A list of glob patterns used to exclude from the crawl. For more information, see <a href="https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html">Catalog Tables with a Crawler</a>.
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the database to be synchronized.
+        Tables:
+          allOf:
+          - $ref: '#/components/schemas/CatalogTablesList'
+          - description: A list of the tables to be synchronized.
         ConnectionName:
           allOf:
           - $ref: '#/components/schemas/ConnectionName'
-          - description: The name of a connection which allows a job or crawler to access data in Amazon S3 within an Amazon Virtual Private Cloud environment (Amazon VPC).
-        SampleSize:
-          allOf:
-          - $ref: '#/components/schemas/NullableInteger'
-          - description: Sets the number of files in each leaf folder to be crawled when crawling sample files in a dataset. If not set, all the files are crawled. A valid value is an integer between 1 and 249.
+          - description: The name of the connection for an Amazon S3-backed Data Catalog table to be a target of the crawl when using a <code>Catalog</code> connection type paired with a <code>NETWORK</code> Connection type.
         EventQueueArn:
           allOf:
           - $ref: '#/components/schemas/EventQueueArn'
@@ -616,22 +550,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/EventQueueArn'
           - description: A valid Amazon dead-letter SQS ARN. For example, <code>arn:aws:sqs:region:account:deadLetterQueue</code>.
-      description: Specifies a data store in Amazon Simple Storage Service (Amazon S3).
-    MongoDBTargetList:
+      description: Specifies an Glue Data Catalog target.
+    JdbcTargetList:
       type: array
       items:
-        $ref: '#/components/schemas/MongoDBTarget'
+        $ref: '#/components/schemas/JdbcTarget'
+    OperationTimeoutException: {}
     S3TargetList:
       type: array
       items:
         $ref: '#/components/schemas/S3Target'
-    OperationTimeoutException: {}
-    RecrawlBehavior:
-      type: string
-      enum:
-      - CRAWL_EVERYTHING
-      - CRAWL_NEW_FOLDERS_ONLY
-      - CRAWL_EVENT_MODE
     DynamoDBTarget:
       type: object
       properties:
@@ -648,6 +576,78 @@ components:
           - $ref: '#/components/schemas/NullableDouble'
           - description: <p>The percentage of the configured read capacity units to use by the Glue crawler. Read capacity units is a term defined by DynamoDB, and is a numeric value that acts as rate limiter for the number of reads that can be performed on that table per second.</p> <p>The valid values are null or a value between 0.1 to 1.5. A null value is used when user does not provide a value, and defaults to 0.5 of the configured Read Capacity Unit (for provisioned tables), or 0.25 of the max configured Read Capacity Unit (for tables using on-demand mode).</p>
       description: Specifies an Amazon DynamoDB table to crawl.
+    CrawlerTargets:
+      type: object
+      properties:
+        S3Targets:
+          allOf:
+          - $ref: '#/components/schemas/S3TargetList'
+          - description: Specifies Amazon Simple Storage Service (Amazon S3) targets.
+        JdbcTargets:
+          allOf:
+          - $ref: '#/components/schemas/JdbcTargetList'
+          - description: Specifies JDBC targets.
+        MongoDBTargets:
+          allOf:
+          - $ref: '#/components/schemas/MongoDBTargetList'
+          - description: Specifies Amazon DocumentDB or MongoDB targets.
+        DynamoDBTargets:
+          allOf:
+          - $ref: '#/components/schemas/DynamoDBTargetList'
+          - description: Specifies Amazon DynamoDB targets.
+        CatalogTargets:
+          allOf:
+          - $ref: '#/components/schemas/CatalogTargetList'
+          - description: Specifies Glue Data Catalog targets.
+        DeltaTargets:
+          allOf:
+          - $ref: '#/components/schemas/DeltaTargetList'
+          - description: Specifies Delta data store targets.
+      description: Specifies data stores to crawl.
+    CrawlerRunningException: {}
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

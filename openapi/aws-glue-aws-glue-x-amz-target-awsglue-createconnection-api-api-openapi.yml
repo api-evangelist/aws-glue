@@ -228,73 +228,13 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.CreateConnection API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    TagsMap:
-      type: object
-      minProperties: 0
-      maxProperties: 50
-      additionalProperties:
-        $ref: '#/components/schemas/TagValue'
-    ConnectionType:
+    InvalidInputException: {}
+    DescriptionString:
       type: string
-      enum:
-      - JDBC
-      - SFTP
-      - MONGODB
-      - KAFKA
-      - NETWORK
-      - MARKETPLACE
-      - CUSTOM
-    AlreadyExistsException: {}
-    SecurityGroupIdList:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 0
-      maxItems: 50
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
     PhysicalConnectionRequirements:
       type: object
       properties:
@@ -311,16 +251,20 @@ components:
           - $ref: '#/components/schemas/NameString'
           - description: The connection's Availability Zone. This field is redundant because the specified subnet implies the Availability Zone to be used. Currently the field must be populated, but it will be deprecated in the future.
       description: Specifies the physical requirements for a connection.
-    CatalogIdString:
+    ValueString:
       type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+      maxLength: 1024
+    CreateConnectionResponse:
+      type: object
+      properties: {}
+    GlueEncryptionException: {}
+    ResourceNumberLimitExceededException: {}
+    SecurityGroupIdList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 0
+      maxItems: 50
     CreateConnectionRequest:
       type: object
       required:
@@ -339,29 +283,38 @@ components:
           allOf:
           - $ref: '#/components/schemas/TagsMap'
           - description: The tags you assign to the connection.
+    AlreadyExistsException: {}
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
+    TagsMap:
+      type: object
+      minProperties: 0
+      maxProperties: 50
+      additionalProperties:
+        $ref: '#/components/schemas/TagValue'
     ConnectionProperties:
       type: object
       minProperties: 0
       maxProperties: 100
       additionalProperties:
         $ref: '#/components/schemas/ValueString'
-    ResourceNumberLimitExceededException: {}
-    GlueEncryptionException: {}
-    InvalidInputException: {}
-    DescriptionString:
+    NameString:
       type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    MatchCriteria:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 0
-      maxItems: 10
-    ValueString:
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    ConnectionType:
       type: string
-      maxLength: 1024
+      enum:
+      - JDBC
+      - SFTP
+      - MONGODB
+      - KAFKA
+      - NETWORK
+      - MARKETPLACE
+      - CUSTOM
     ConnectionInput:
       type: object
       required:
@@ -394,14 +347,61 @@ components:
           - $ref: '#/components/schemas/PhysicalConnectionRequirements'
           - description: A map of physical connection requirements, such as virtual private cloud (VPC) and <code>SecurityGroup</code>, that are needed to successfully make this connection.
       description: A structure that is used to specify a connection to create or update.
-    TagValue:
+    CatalogIdString:
       type: string
-      minLength: 0
-      maxLength: 256
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     OperationTimeoutException: {}
-    CreateConnectionResponse:
-      type: object
-      properties: {}
+    MatchCriteria:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 0
+      maxItems: 10
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

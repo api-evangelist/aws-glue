@@ -214,63 +214,13 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.ListBlueprints API'
 components:
-  schemas:
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
-    InvalidInputException: {}
-    TagsMap:
-      type: object
-      minProperties: 0
-      maxProperties: 50
-      additionalProperties:
-        $ref: '#/components/schemas/TagValue'
-    BlueprintNames:
-      type: array
-      items:
-        $ref: '#/components/schemas/OrchestrationNameString'
-    ListBlueprintsRequest:
-      type: object
-      title: ListBlueprintsRequest
-      properties:
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/GenericString'
-          - description: A continuation token, if this is a continuation request.
-        MaxResults:
-          allOf:
-          - $ref: '#/components/schemas/PageSize'
-          - description: The maximum size of a list to return.
-        Tags:
-          allOf:
-          - $ref: '#/components/schemas/TagsMap'
-          - description: Filters the list by an Amazon Web Services resource tag.
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
-    GenericString:
-      type: string
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
-    OperationTimeoutException: {}
-    InternalServiceException: {}
-    ListBlueprintsResponse:
-      type: object
-      properties:
-        Blueprints:
-          allOf:
-          - $ref: '#/components/schemas/BlueprintNames'
-          - description: List of names of blueprints in the account.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/GenericString'
-          - description: A continuation token, if not all blueprint names have been returned.
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-SignedHeaders:
       name: X-Amz-SignedHeaders
       in: header
@@ -283,20 +233,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -313,6 +257,62 @@ components:
       schema:
         type: string
       required: false
+  schemas:
+    ListBlueprintsRequest:
+      type: object
+      title: ListBlueprintsRequest
+      properties:
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/GenericString'
+          - description: A continuation token, if this is a continuation request.
+        MaxResults:
+          allOf:
+          - $ref: '#/components/schemas/PageSize'
+          - description: The maximum size of a list to return.
+        Tags:
+          allOf:
+          - $ref: '#/components/schemas/TagsMap'
+          - description: Filters the list by an Amazon Web Services resource tag.
+    InvalidInputException: {}
+    ListBlueprintsResponse:
+      type: object
+      properties:
+        Blueprints:
+          allOf:
+          - $ref: '#/components/schemas/BlueprintNames'
+          - description: List of names of blueprints in the account.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/GenericString'
+          - description: A continuation token, if not all blueprint names have been returned.
+    OperationTimeoutException: {}
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
+    TagsMap:
+      type: object
+      minProperties: 0
+      maxProperties: 50
+      additionalProperties:
+        $ref: '#/components/schemas/TagValue'
+    InternalServiceException: {}
+    BlueprintNames:
+      type: array
+      items:
+        $ref: '#/components/schemas/OrchestrationNameString'
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
+    GenericString:
+      type: string
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
   securitySchemes:
     hmac:
       type: apiKey

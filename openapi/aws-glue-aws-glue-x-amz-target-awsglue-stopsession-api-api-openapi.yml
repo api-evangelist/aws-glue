@@ -241,53 +241,15 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.StopSession API'
 components:
-  schemas:
-    StopSessionResponse:
-      type: object
-      properties:
-        Id:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: Returns the Id of the stopped session.
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
-    InvalidInputException: {}
-    ConcurrentModificationException: {}
-    StopSessionRequest:
-      type: object
-      required:
-      - Id
-      title: StopSessionRequest
-      properties:
-        Id:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The ID of the session to be stopped.
-        RequestOrigin:
-          allOf:
-          - $ref: '#/components/schemas/OrchestrationNameString'
-          - description: The origin of the request.
-    IllegalSessionStateException: {}
-    OperationTimeoutException: {}
-    AccessDeniedException: {}
-    InternalServiceException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -298,14 +260,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Credential:
+      name: X-Amz-Credential
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -322,6 +284,44 @@ components:
       schema:
         type: string
       required: false
+  schemas:
+    InvalidInputException: {}
+    OperationTimeoutException: {}
+    StopSessionRequest:
+      type: object
+      required:
+      - Id
+      title: StopSessionRequest
+      properties:
+        Id:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The ID of the session to be stopped.
+        RequestOrigin:
+          allOf:
+          - $ref: '#/components/schemas/OrchestrationNameString'
+          - description: The origin of the request.
+    InternalServiceException: {}
+    StopSessionResponse:
+      type: object
+      properties:
+        Id:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: Returns the Id of the stopped session.
+    IllegalSessionStateException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    AccessDeniedException: {}
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+    ConcurrentModificationException: {}
   securitySchemes:
     hmac:
       type: apiKey

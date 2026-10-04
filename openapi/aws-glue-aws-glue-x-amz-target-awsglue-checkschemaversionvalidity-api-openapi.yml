@@ -202,7 +202,60 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.CheckSchemaVersionValidity…'
 components:
+  schemas:
+    CheckSchemaVersionValidityInput:
+      type: object
+      required:
+      - DataFormat
+      - SchemaDefinition
+      title: CheckSchemaVersionValidityInput
+      properties:
+        DataFormat:
+          allOf:
+          - $ref: '#/components/schemas/DataFormat'
+          - description: The data format of the schema definition. Currently <code>AVRO</code>, <code>JSON</code> and <code>PROTOBUF</code> are supported.
+        SchemaDefinition:
+          allOf:
+          - $ref: '#/components/schemas/SchemaDefinitionString'
+          - description: The definition of the schema that has to be validated.
+    InvalidInputException: {}
+    SchemaValidationError:
+      type: string
+      minLength: 1
+      maxLength: 5000
+    CheckSchemaVersionValidityResponse:
+      type: object
+      properties:
+        Valid:
+          allOf:
+          - $ref: '#/components/schemas/IsVersionValid'
+          - description: Return true, if the schema is valid and false otherwise.
+        Error:
+          allOf:
+          - $ref: '#/components/schemas/SchemaValidationError'
+          - description: A validation failure error message.
+    InternalServiceException: {}
+    IsVersionValid:
+      type: boolean
+    DataFormat:
+      type: string
+      enum:
+      - AVRO
+      - JSON
+      - PROTOBUF
+    AccessDeniedException: {}
+    SchemaDefinitionString:
+      type: string
+      pattern: .*\S.*
+      minLength: 1
+      maxLength: 170000
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-SignedHeaders:
       name: X-Amz-SignedHeaders
       in: header
@@ -215,20 +268,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -245,53 +292,6 @@ components:
       schema:
         type: string
       required: false
-  schemas:
-    SchemaDefinitionString:
-      type: string
-      pattern: .*\S.*
-      minLength: 1
-      maxLength: 170000
-    InvalidInputException: {}
-    IsVersionValid:
-      type: boolean
-    SchemaValidationError:
-      type: string
-      minLength: 1
-      maxLength: 5000
-    DataFormat:
-      type: string
-      enum:
-      - AVRO
-      - JSON
-      - PROTOBUF
-    CheckSchemaVersionValidityInput:
-      type: object
-      required:
-      - DataFormat
-      - SchemaDefinition
-      title: CheckSchemaVersionValidityInput
-      properties:
-        DataFormat:
-          allOf:
-          - $ref: '#/components/schemas/DataFormat'
-          - description: The data format of the schema definition. Currently <code>AVRO</code>, <code>JSON</code> and <code>PROTOBUF</code> are supported.
-        SchemaDefinition:
-          allOf:
-          - $ref: '#/components/schemas/SchemaDefinitionString'
-          - description: The definition of the schema that has to be validated.
-    CheckSchemaVersionValidityResponse:
-      type: object
-      properties:
-        Valid:
-          allOf:
-          - $ref: '#/components/schemas/IsVersionValid'
-          - description: Return true, if the schema is valid and false otherwise.
-        Error:
-          allOf:
-          - $ref: '#/components/schemas/SchemaValidationError'
-          - description: A validation failure error message.
-    AccessDeniedException: {}
-    InternalServiceException: {}
   securitySchemes:
     hmac:
       type: apiKey

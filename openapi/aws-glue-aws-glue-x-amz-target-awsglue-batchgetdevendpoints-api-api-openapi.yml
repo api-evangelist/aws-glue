@@ -215,67 +215,29 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.BatchGetDevEndpoints API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    GlueVersionString:
+    InvalidInputException: {}
+    DevEndpointNames:
+      type: array
+      items:
+        $ref: '#/components/schemas/GenericString'
+      minItems: 1
+      maxItems: 25
+    InternalServiceException: {}
+    TimestampValue:
       type: string
-      pattern: ^\w+\.\w+$
-      minLength: 1
-      maxLength: 255
+      format: date-time
+    RoleArn:
+      type: string
+      pattern: arn:aws:iam::\d{12}:role/.*
     NullableInteger:
       type: integer
-    BatchGetDevEndpointsRequest:
-      type: object
-      required:
-      - DevEndpointNames
-      title: BatchGetDevEndpointsRequest
-      properties:
-        DevEndpointNames:
-          allOf:
-          - $ref: '#/components/schemas/DevEndpointNames'
-          - description: The list of <code>DevEndpoint</code> names, which might be the names returned from the <code>ListDevEndpoint</code> operation.
+    DevEndpointList:
+      type: array
+      items:
+        $ref: '#/components/schemas/DevEndpoint'
+    IntegerValue:
+      type: integer
     BatchGetDevEndpointsResponse:
       type: object
       properties:
@@ -287,6 +249,47 @@ components:
           allOf:
           - $ref: '#/components/schemas/DevEndpointNames'
           - description: A list of <code>DevEndpoints</code> not found.
+    StringList:
+      type: array
+      items:
+        $ref: '#/components/schemas/GenericString'
+    PublicKeysList:
+      type: array
+      items:
+        $ref: '#/components/schemas/GenericString'
+      maxItems: 5
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    GenericString:
+      type: string
+    MapValue:
+      type: object
+      minProperties: 0
+      maxProperties: 100
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    OperationTimeoutException: {}
+    WorkerType:
+      type: string
+      enum:
+      - Standard
+      - G.1X
+      - G.2X
+      - G.025X
+    AccessDeniedException: {}
+    BatchGetDevEndpointsRequest:
+      type: object
+      required:
+      - DevEndpointNames
+      title: BatchGetDevEndpointsRequest
+      properties:
+        DevEndpointNames:
+          allOf:
+          - $ref: '#/components/schemas/DevEndpointNames'
+          - description: The list of <code>DevEndpoint</code> names, which might be the names returned from the <code>ListDevEndpoint</code> operation.
     DevEndpoint:
       type: object
       properties:
@@ -391,57 +394,54 @@ components:
           - $ref: '#/components/schemas/MapValue'
           - description: '<p>A map of arguments used to configure the <code>DevEndpoint</code>.</p> <p>Valid arguments are:</p> <ul> <li> <p> <code>"--enable-glue-datacatalog": ""</code> </p> </li> </ul> <p>You can specify a version of Python support for development endpoints by using the <code>Arguments</code> parameter in the <code>CreateDevEndpoint</code> or <code>UpdateDevEndpoint</code> APIs. If no arguments are provided, the version defaults to Python 2.</p>'
       description: A development endpoint where a developer can remotely debug extract, transform, and load (ETL) scripts.
-    TimestampValue:
+    GlueVersionString:
       type: string
-      format: date-time
-    NameString:
-      type: string
+      pattern: ^\w+\.\w+$
       minLength: 1
       maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    IntegerValue:
-      type: integer
-    StringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/GenericString'
-    DevEndpointList:
-      type: array
-      items:
-        $ref: '#/components/schemas/DevEndpoint'
-    WorkerType:
-      type: string
-      enum:
-      - Standard
-      - G.1X
-      - G.2X
-      - G.025X
-    GenericString:
-      type: string
-    AccessDeniedException: {}
-    InternalServiceException: {}
-    PublicKeysList:
-      type: array
-      items:
-        $ref: '#/components/schemas/GenericString'
-      maxItems: 5
-    RoleArn:
-      type: string
-      pattern: arn:aws:iam::\d{12}:role/.*
-    DevEndpointNames:
-      type: array
-      items:
-        $ref: '#/components/schemas/GenericString'
-      minItems: 1
-      maxItems: 25
-    InvalidInputException: {}
-    MapValue:
-      type: object
-      minProperties: 0
-      maxProperties: 100
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
-    OperationTimeoutException: {}
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

@@ -248,7 +248,16 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.StartMLEvaluationTaskRun API'
 components:
   schemas:
+    MLTransformNotReadyException: {}
+    InvalidInputException: {}
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    OperationTimeoutException: {}
     EntityNotFoundException: {}
+    InternalServiceException: {}
     StartMLEvaluationTaskRunRequest:
       type: object
       required:
@@ -259,10 +268,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/HashString'
           - description: The unique identifier of the machine learning transform.
-    InvalidInputException: {}
-    ConcurrentRunsExceededException: {}
-    OperationTimeoutException: {}
-    InternalServiceException: {}
     StartMLEvaluationTaskRunResponse:
       type: object
       properties:
@@ -270,13 +275,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/HashString'
           - description: The unique identifier associated with this run.
-    MLTransformNotReadyException: {}
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    ConcurrentRunsExceededException: {}
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-SignedHeaders:
       name: X-Amz-SignedHeaders
       in: header
@@ -289,20 +295,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string

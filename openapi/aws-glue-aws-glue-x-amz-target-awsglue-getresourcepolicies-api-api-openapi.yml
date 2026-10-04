@@ -231,39 +231,10 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetResourcePolicies API'
 components:
   schemas:
-    GetResourcePoliciesResponseList:
-      type: array
-      items:
-        $ref: '#/components/schemas/GluePolicy'
-    Token:
+    InvalidInputException: {}
+    PolicyJsonString:
       type: string
-    GetResourcePoliciesResponse:
-      type: object
-      properties:
-        GetResourcePoliciesResponseList:
-          allOf:
-          - $ref: '#/components/schemas/GetResourcePoliciesResponseList'
-          - description: A list of the individual resource policies and the account-level resource policy.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/Token'
-          - description: A continuation token, if the returned list does not contain the last resource policy available.
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
-    GetResourcePoliciesRequest:
-      type: object
-      title: GetResourcePoliciesRequest
-      properties:
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/Token'
-          - description: A continuation token, if this is a continuation request.
-        MaxResults:
-          allOf:
-          - $ref: '#/components/schemas/PageSize'
-          - description: The maximum size of a list to return.
+      minLength: 2
     GluePolicy:
       type: object
       properties:
@@ -285,29 +256,58 @@ components:
           - description: The date and time at which the policy was last updated.
       description: A structure for returning a resource policy.
     InternalServiceException: {}
-    PolicyJsonString:
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
+    GlueEncryptionException: {}
+    Timestamp:
       type: string
-      minLength: 2
+      format: date-time
+    Token:
+      type: string
+    GetResourcePoliciesResponseList:
+      type: array
+      items:
+        $ref: '#/components/schemas/GluePolicy'
+    GetResourcePoliciesRequest:
+      type: object
+      title: GetResourcePoliciesRequest
+      properties:
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/Token'
+          - description: A continuation token, if this is a continuation request.
+        MaxResults:
+          allOf:
+          - $ref: '#/components/schemas/PageSize'
+          - description: The maximum size of a list to return.
     HashString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GlueEncryptionException: {}
-    InvalidInputException: {}
-    Timestamp:
-      type: string
-      format: date-time
     OperationTimeoutException: {}
+    GetResourcePoliciesResponse:
+      type: object
+      properties:
+        GetResourcePoliciesResponseList:
+          allOf:
+          - $ref: '#/components/schemas/GetResourcePoliciesResponseList'
+          - description: A list of the individual resource policies and the account-level resource policy.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/Token'
+          - description: A continuation token, if the returned list does not contain the last resource policy available.
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -324,20 +324,20 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Content-Sha256:
       name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

@@ -247,19 +247,58 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteTable API'
 components:
+  parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
   schemas:
-    EntityNotFoundException: {}
-    InvalidInputException: {}
-    TransactionIdString:
+    CatalogIdString:
       type: string
-      pattern: '[\p{L}\p{N}\p{P}]*'
       minLength: 1
       maxLength: 255
-    ConcurrentModificationException: {}
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    InvalidInputException: {}
+    EntityNotFoundException: {}
     ResourceNotReadyException: {}
-    DeleteTableResponse:
-      type: object
-      properties: {}
     DeleteTableRequest:
       type: object
       required:
@@ -283,11 +322,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/TransactionIdString'
           - description: The transaction ID at which to delete the table contents.
-    CatalogIdString:
+    TransactionIdString:
       type: string
+      pattern: '[\p{L}\p{N}\p{P}]*'
       minLength: 1
       maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     OperationTimeoutException: {}
     InternalServiceException: {}
     NameString:
@@ -295,49 +334,10 @@ components:
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
+    DeleteTableResponse:
+      type: object
+      properties: {}
+    ConcurrentModificationException: {}
   securitySchemes:
     hmac:
       type: apiKey

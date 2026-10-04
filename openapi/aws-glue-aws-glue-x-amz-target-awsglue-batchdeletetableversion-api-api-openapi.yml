@@ -215,86 +215,33 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.BatchDeleteTableVersion API'
 components:
-  parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    TableVersionErrors:
-      type: array
-      items:
-        $ref: '#/components/schemas/TableVersionError'
-    TableVersionError:
+    InvalidInputException: {}
+    ErrorDetail:
       type: object
       properties:
-        TableName:
+        ErrorCode:
           allOf:
           - $ref: '#/components/schemas/NameString'
-          - description: The name of the table in question.
-        VersionId:
+          - description: The code associated with this error.
+        ErrorMessage:
           allOf:
-          - $ref: '#/components/schemas/VersionString'
-          - description: The ID value of the version in question. A <code>VersionID</code> is a string representation of an integer. Each version is incremented by 1.
-        ErrorDetail:
-          allOf:
-          - $ref: '#/components/schemas/ErrorDetail'
-          - description: The details about the error.
-      description: An error record for table-version operations.
+          - $ref: '#/components/schemas/DescriptionString'
+          - description: A message describing the error.
+      description: Contains details about an error.
     EntityNotFoundException: {}
-    VersionString:
+    DescriptionString:
       type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    CatalogIdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    InternalServiceException: {}
+    BatchDeleteTableVersionList:
+      type: array
+      items:
+        $ref: '#/components/schemas/VersionString'
+      minItems: 0
+      maxItems: 100
     BatchDeleteTableVersionRequest:
       type: object
       required:
@@ -319,31 +266,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/BatchDeleteTableVersionList'
           - description: A list of the IDs of versions to be deleted. A <code>VersionId</code> is a string representation of an integer. Each version is incremented by 1.
-    BatchDeleteTableVersionList:
-      type: array
-      items:
-        $ref: '#/components/schemas/VersionString'
-      minItems: 0
-      maxItems: 100
-    ErrorDetail:
-      type: object
-      properties:
-        ErrorCode:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The code associated with this error.
-        ErrorMessage:
-          allOf:
-          - $ref: '#/components/schemas/DescriptionString'
-          - description: A message describing the error.
-      description: Contains details about an error.
-    InternalServiceException: {}
-    InvalidInputException: {}
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
     BatchDeleteTableVersionResponse:
       type: object
       properties:
@@ -351,7 +273,85 @@ components:
           allOf:
           - $ref: '#/components/schemas/TableVersionErrors'
           - description: A list of errors encountered while trying to delete the specified table versions.
+    TableVersionError:
+      type: object
+      properties:
+        TableName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the table in question.
+        VersionId:
+          allOf:
+          - $ref: '#/components/schemas/VersionString'
+          - description: The ID value of the version in question. A <code>VersionID</code> is a string representation of an integer. Each version is incremented by 1.
+        ErrorDetail:
+          allOf:
+          - $ref: '#/components/schemas/ErrorDetail'
+          - description: The details about the error.
+      description: An error record for table-version operations.
+    TableVersionErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/TableVersionError'
+    VersionString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    CatalogIdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     OperationTimeoutException: {}
+  parameters:
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey
