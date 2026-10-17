@@ -232,33 +232,79 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetColumnStatisticsForPartiti…'
 components:
   schemas:
-    ValueStringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/ValueString'
-    InvalidInputException: {}
-    ErrorDetail:
+    ColumnStatisticsType:
+      type: string
+      enum:
+      - BOOLEAN
+      - DATE
+      - DECIMAL
+      - DOUBLE
+      - LONG
+      - STRING
+      - BINARY
+    ColumnError:
       type: object
       properties:
-        ErrorCode:
+        ColumnName:
           allOf:
           - $ref: '#/components/schemas/NameString'
-          - description: The code associated with this error.
-        ErrorMessage:
+          - description: The name of the column that failed.
+        Error:
           allOf:
-          - $ref: '#/components/schemas/DescriptionString'
-          - description: A message describing the error.
-      description: Contains details about an error.
-    EntityNotFoundException: {}
-    DescriptionString:
+          - $ref: '#/components/schemas/ErrorDetail'
+          - description: An error message with the reason for the failure of an operation.
+      description: Encapsulates a column name that failed and the reason for failure.
+    BooleanColumnStatisticsData:
+      type: object
+      required:
+      - NumberOfTrues
+      - NumberOfFalses
+      - NumberOfNulls
+      properties:
+        NumberOfTrues:
+          allOf:
+          - $ref: '#/components/schemas/NonNegativeLong'
+          - description: The number of true values in the column.
+        NumberOfFalses:
+          allOf:
+          - $ref: '#/components/schemas/NonNegativeLong'
+          - description: The number of false values in the column.
+        NumberOfNulls:
+          allOf:
+          - $ref: '#/components/schemas/NonNegativeLong'
+          - description: The number of null values in the column.
+      description: Defines column statistics supported for Boolean data columns.
+    InvalidInputException: {}
+    TypeString:
       type: string
       minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    NonNegativeDouble:
-      type: number
-      format: double
-      minimum: 0
+      maxLength: 20000
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    StringColumnStatisticsData:
+      type: object
+      required:
+      - MaximumLength
+      - AverageLength
+      - NumberOfNulls
+      - NumberOfDistinctValues
+      properties:
+        MaximumLength:
+          allOf:
+          - $ref: '#/components/schemas/NonNegativeLong'
+          - description: The size of the longest string in the column.
+        AverageLength:
+          allOf:
+          - $ref: '#/components/schemas/NonNegativeDouble'
+          - description: The average string length in the column.
+        NumberOfNulls:
+          allOf:
+          - $ref: '#/components/schemas/NonNegativeLong'
+          - description: The number of null values in the column.
+        NumberOfDistinctValues:
+          allOf:
+          - $ref: '#/components/schemas/NonNegativeLong'
+          - description: The number of distinct values in a column.
+      description: Defines column statistics supported for character sequence data values.
     DateColumnStatisticsData:
       type: object
       required:
@@ -282,100 +328,33 @@ components:
           - $ref: '#/components/schemas/NonNegativeLong'
           - description: The number of distinct values in a column.
       description: Defines column statistics supported for timestamp data columns.
-    InternalServiceException: {}
-    ColumnStatisticsData:
-      type: object
-      required:
-      - Type
-      properties:
-        Type:
-          allOf:
-          - $ref: '#/components/schemas/ColumnStatisticsType'
-          - description: The type of column statistics data.
-        BooleanColumnStatisticsData:
-          allOf:
-          - $ref: '#/components/schemas/BooleanColumnStatisticsData'
-          - description: Boolean column statistics data.
-        DateColumnStatisticsData:
-          allOf:
-          - $ref: '#/components/schemas/DateColumnStatisticsData'
-          - description: Date column statistics data.
-        DecimalColumnStatisticsData:
-          allOf:
-          - $ref: '#/components/schemas/DecimalColumnStatisticsData'
-          - description: ' Decimal column statistics data. UnscaledValues within are Base64-encoded binary objects storing big-endian, two''s complement representations of the decimal''s unscaled value. '
-        DoubleColumnStatisticsData:
-          allOf:
-          - $ref: '#/components/schemas/DoubleColumnStatisticsData'
-          - description: Double column statistics data.
-        LongColumnStatisticsData:
-          allOf:
-          - $ref: '#/components/schemas/LongColumnStatisticsData'
-          - description: Long column statistics data.
-        StringColumnStatisticsData:
-          allOf:
-          - $ref: '#/components/schemas/StringColumnStatisticsData'
-          - description: String column statistics data.
-        BinaryColumnStatisticsData:
-          allOf:
-          - $ref: '#/components/schemas/BinaryColumnStatisticsData'
-          - description: Binary column statistics data.
-      description: Contains the individual types of column statistics data. Only one data object should be set and indicated by the <code>Type</code> attribute.
-    DecimalNumber:
-      type: object
-      required:
-      - UnscaledValue
-      - Scale
-      properties:
-        UnscaledValue:
-          allOf:
-          - $ref: '#/components/schemas/Blob'
-          - description: The unscaled numeric value.
-        Scale:
-          allOf:
-          - $ref: '#/components/schemas/Integer'
-          - description: The scale that determines where the decimal point falls in the unscaled value.
-      description: Contains a numeric value in decimal format.
-    BinaryColumnStatisticsData:
-      type: object
-      required:
-      - MaximumLength
-      - AverageLength
-      - NumberOfNulls
-      properties:
-        MaximumLength:
-          allOf:
-          - $ref: '#/components/schemas/NonNegativeLong'
-          - description: The size of the longest bit sequence in the column.
-        AverageLength:
-          allOf:
-          - $ref: '#/components/schemas/NonNegativeDouble'
-          - description: The average bit sequence length in the column.
-        NumberOfNulls:
-          allOf:
-          - $ref: '#/components/schemas/NonNegativeLong'
-          - description: The number of null values in the column.
-      description: Defines column statistics supported for bit sequence data values.
-    ColumnErrors:
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    GetColumnNamesList:
       type: array
       items:
-        $ref: '#/components/schemas/ColumnError'
-    ColumnError:
+        $ref: '#/components/schemas/NameString'
+      minItems: 0
+      maxItems: 100
+    GetColumnStatisticsForPartitionResponse:
       type: object
       properties:
-        ColumnName:
+        ColumnStatisticsList:
           allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the column that failed.
-        Error:
+          - $ref: '#/components/schemas/ColumnStatisticsList'
+          - description: List of ColumnStatistics that failed to be retrieved.
+        Errors:
           allOf:
-          - $ref: '#/components/schemas/ErrorDetail'
-          - description: An error message with the reason for the failure of an operation.
-      description: Encapsulates a column name that failed and the reason for failure.
-    ValueString:
+          - $ref: '#/components/schemas/ColumnErrors'
+          - description: Error occurred during retrieving column statistics data.
+    CatalogIdString:
       type: string
-      maxLength: 1024
-    GlueEncryptionException: {}
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     DecimalColumnStatisticsData:
       type: object
       required:
@@ -422,37 +401,29 @@ components:
           - $ref: '#/components/schemas/NonNegativeLong'
           - description: The number of distinct values in a column.
       description: Defines column statistics supported for integer data columns.
-    Timestamp:
-      type: string
-      format: date-time
-    BooleanColumnStatisticsData:
+    DoubleColumnStatisticsData:
       type: object
       required:
-      - NumberOfTrues
-      - NumberOfFalses
       - NumberOfNulls
+      - NumberOfDistinctValues
       properties:
-        NumberOfTrues:
+        MinimumValue:
           allOf:
-          - $ref: '#/components/schemas/NonNegativeLong'
-          - description: The number of true values in the column.
-        NumberOfFalses:
+          - $ref: '#/components/schemas/Double'
+          - description: The lowest value in the column.
+        MaximumValue:
           allOf:
-          - $ref: '#/components/schemas/NonNegativeLong'
-          - description: The number of false values in the column.
+          - $ref: '#/components/schemas/Double'
+          - description: The highest value in the column.
         NumberOfNulls:
           allOf:
           - $ref: '#/components/schemas/NonNegativeLong'
           - description: The number of null values in the column.
-      description: Defines column statistics supported for Boolean data columns.
-    ColumnStatisticsList:
-      type: array
-      items:
-        $ref: '#/components/schemas/ColumnStatistics'
-    Blob:
-      type: string
-    Integer:
-      type: integer
+        NumberOfDistinctValues:
+          allOf:
+          - $ref: '#/components/schemas/NonNegativeLong'
+          - description: The number of distinct values in a column.
+      description: Defines column statistics supported for floating-point number data columns.
     ColumnStatistics:
       type: object
       required:
@@ -478,105 +449,133 @@ components:
           - $ref: '#/components/schemas/ColumnStatisticsData'
           - description: A <code>ColumnStatisticData</code> object that contains the statistics data values.
       description: Represents the generated column-level statistics for a table or partition.
-    GetColumnNamesList:
+    Timestamp:
+      type: string
+      format: date-time
+    ValueString:
+      type: string
+      maxLength: 1024
+    ColumnStatisticsData:
+      type: object
+      required:
+      - Type
+      properties:
+        Type:
+          allOf:
+          - $ref: '#/components/schemas/ColumnStatisticsType'
+          - description: The type of column statistics data.
+        BooleanColumnStatisticsData:
+          allOf:
+          - $ref: '#/components/schemas/BooleanColumnStatisticsData'
+          - description: Boolean column statistics data.
+        DateColumnStatisticsData:
+          allOf:
+          - $ref: '#/components/schemas/DateColumnStatisticsData'
+          - description: Date column statistics data.
+        DecimalColumnStatisticsData:
+          allOf:
+          - $ref: '#/components/schemas/DecimalColumnStatisticsData'
+          - description: ' Decimal column statistics data. UnscaledValues within are Base64-encoded binary objects storing big-endian, two''s complement representations of the decimal''s unscaled value. '
+        DoubleColumnStatisticsData:
+          allOf:
+          - $ref: '#/components/schemas/DoubleColumnStatisticsData'
+          - description: Double column statistics data.
+        LongColumnStatisticsData:
+          allOf:
+          - $ref: '#/components/schemas/LongColumnStatisticsData'
+          - description: Long column statistics data.
+        StringColumnStatisticsData:
+          allOf:
+          - $ref: '#/components/schemas/StringColumnStatisticsData'
+          - description: String column statistics data.
+        BinaryColumnStatisticsData:
+          allOf:
+          - $ref: '#/components/schemas/BinaryColumnStatisticsData'
+          - description: Binary column statistics data.
+      description: Contains the individual types of column statistics data. Only one data object should be set and indicated by the <code>Type</code> attribute.
+    ColumnStatisticsList:
       type: array
       items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 0
-      maxItems: 100
-    ColumnStatisticsType:
-      type: string
-      enum:
-      - BOOLEAN
-      - DATE
-      - DECIMAL
-      - DOUBLE
-      - LONG
-      - STRING
-      - BINARY
-    TypeString:
-      type: string
-      minLength: 0
-      maxLength: 20000
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    Long:
+        $ref: '#/components/schemas/ColumnStatistics'
+    Integer:
       type: integer
+    ValueStringList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ValueString'
+    EntityNotFoundException: {}
+    ErrorDetail:
+      type: object
+      properties:
+        ErrorCode:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The code associated with this error.
+        ErrorMessage:
+          allOf:
+          - $ref: '#/components/schemas/DescriptionString'
+          - description: A message describing the error.
+      description: Contains details about an error.
+    ColumnErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/ColumnError'
+    Blob:
+      type: string
+    OperationTimeoutException: {}
+    NonNegativeDouble:
+      type: number
+      format: double
+      minimum: 0
+    Double:
+      type: number
+      format: double
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    Double:
-      type: number
-      format: double
     NonNegativeLong:
       type: integer
       minimum: 0
-    CatalogIdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    StringColumnStatisticsData:
+    BinaryColumnStatisticsData:
       type: object
       required:
       - MaximumLength
       - AverageLength
       - NumberOfNulls
-      - NumberOfDistinctValues
       properties:
         MaximumLength:
           allOf:
           - $ref: '#/components/schemas/NonNegativeLong'
-          - description: The size of the longest string in the column.
+          - description: The size of the longest bit sequence in the column.
         AverageLength:
           allOf:
           - $ref: '#/components/schemas/NonNegativeDouble'
-          - description: The average string length in the column.
+          - description: The average bit sequence length in the column.
         NumberOfNulls:
           allOf:
           - $ref: '#/components/schemas/NonNegativeLong'
           - description: The number of null values in the column.
-        NumberOfDistinctValues:
-          allOf:
-          - $ref: '#/components/schemas/NonNegativeLong'
-          - description: The number of distinct values in a column.
-      description: Defines column statistics supported for character sequence data values.
-    OperationTimeoutException: {}
-    DoubleColumnStatisticsData:
+      description: Defines column statistics supported for bit sequence data values.
+    Long:
+      type: integer
+    DecimalNumber:
       type: object
       required:
-      - NumberOfNulls
-      - NumberOfDistinctValues
+      - UnscaledValue
+      - Scale
       properties:
-        MinimumValue:
+        UnscaledValue:
           allOf:
-          - $ref: '#/components/schemas/Double'
-          - description: The lowest value in the column.
-        MaximumValue:
+          - $ref: '#/components/schemas/Blob'
+          - description: The unscaled numeric value.
+        Scale:
           allOf:
-          - $ref: '#/components/schemas/Double'
-          - description: The highest value in the column.
-        NumberOfNulls:
-          allOf:
-          - $ref: '#/components/schemas/NonNegativeLong'
-          - description: The number of null values in the column.
-        NumberOfDistinctValues:
-          allOf:
-          - $ref: '#/components/schemas/NonNegativeLong'
-          - description: The number of distinct values in a column.
-      description: Defines column statistics supported for floating-point number data columns.
-    GetColumnStatisticsForPartitionResponse:
-      type: object
-      properties:
-        ColumnStatisticsList:
-          allOf:
-          - $ref: '#/components/schemas/ColumnStatisticsList'
-          - description: List of ColumnStatistics that failed to be retrieved.
-        Errors:
-          allOf:
-          - $ref: '#/components/schemas/ColumnErrors'
-          - description: Error occurred during retrieving column statistics data.
+          - $ref: '#/components/schemas/Integer'
+          - description: The scale that determines where the decimal point falls in the unscaled value.
+      description: Contains a numeric value in decimal format.
+    InternalServiceException: {}
     GetColumnStatisticsForPartitionRequest:
       type: object
       required:
@@ -606,15 +605,28 @@ components:
           allOf:
           - $ref: '#/components/schemas/GetColumnNamesList'
           - description: A list of the column names.
+    GlueEncryptionException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -631,20 +643,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string

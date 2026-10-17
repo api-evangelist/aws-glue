@@ -219,23 +219,17 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetSchemaVersionsDiff API'
 components:
   schemas:
-    SchemaDiffType:
+    SchemaDefinitionDiff:
       type: string
-      enum:
-      - SYNTAX_DIFF
+      pattern: .*\S.*
+      minLength: 1
+      maxLength: 340000
     InvalidInputException: {}
     GlueResourceArn:
       type: string
       pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
       minLength: 1
       maxLength: 10240
-    SchemaDefinitionDiff:
-      type: string
-      pattern: .*\S.*
-      minLength: 1
-      maxLength: 340000
-    EntityNotFoundException: {}
-    InternalServiceException: {}
     SchemaId:
       type: object
       properties:
@@ -259,13 +253,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaDefinitionDiff'
           - description: The difference between schemas as a string in JsonPatch format.
-    LatestSchemaVersionBoolean:
-      type: boolean
-    SchemaRegistryNameString:
+    EntityNotFoundException: {}
+    SchemaDiffType:
       type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
+      enum:
+      - SYNTAX_DIFF
     VersionLongNumber:
       type: integer
       minimum: 1
@@ -295,6 +287,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaDiffType'
           - description: Refers to <code>SYNTAX_DIFF</code>, which is the currently supported diff type.
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
     SchemaVersionNumber:
       type: object
       properties:
@@ -307,16 +304,31 @@ components:
           - $ref: '#/components/schemas/VersionLongNumber'
           - description: The version number of the schema.
       description: A structure containing the schema version information.
+    InternalServiceException: {}
     AccessDeniedException: {}
+    LatestSchemaVersionBoolean:
+      type: boolean
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -333,20 +345,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

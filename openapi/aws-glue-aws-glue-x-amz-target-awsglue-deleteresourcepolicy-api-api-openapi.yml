@@ -228,9 +228,40 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteResourcePolicy API'
 components:
+  schemas:
+    DeleteResourcePolicyRequest:
+      type: object
+      title: DeleteResourcePolicyRequest
+      properties:
+        PolicyHashCondition:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The hash value returned when this policy was set.
+        ResourceArn:
+          allOf:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: The ARN of the Glue resource for the resource policy to be deleted.
+    DeleteResourcePolicyResponse:
+      type: object
+      properties: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    ConditionCheckFailureException: {}
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    OperationTimeoutException: {}
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -247,8 +278,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -259,49 +302,6 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-  schemas:
-    InvalidInputException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    EntityNotFoundException: {}
-    ConditionCheckFailureException: {}
-    InternalServiceException: {}
-    DeleteResourcePolicyResponse:
-      type: object
-      properties: {}
-    DeleteResourcePolicyRequest:
-      type: object
-      title: DeleteResourcePolicyRequest
-      properties:
-        PolicyHashCondition:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The hash value returned when this policy was set.
-        ResourceArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: The ARN of the Glue resource for the resource policy to be deleted.
   securitySchemes:
     hmac:
       type: apiKey

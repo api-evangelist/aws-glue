@@ -222,6 +222,12 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-SignedHeaders:
       name: X-Amz-SignedHeaders
       in: header
@@ -230,6 +236,12 @@ components:
       required: false
     X-Amz-Date:
       name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
       in: header
       schema:
         type: string
@@ -246,27 +258,22 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
     InvalidInputException: {}
+    DeleteMLTransformResponse:
+      type: object
+      properties:
+        TransformId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The unique identifier of the transform that was deleted.
+    EntityNotFoundException: {}
+    InternalServiceException: {}
     HashString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    EntityNotFoundException: {}
     DeleteMLTransformRequest:
       type: object
       required:
@@ -277,14 +284,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/HashString'
           - description: The unique identifier of the transform to delete.
-    InternalServiceException: {}
-    DeleteMLTransformResponse:
-      type: object
-      properties:
-        TransformId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The unique identifier of the transform that was deleted.
+    OperationTimeoutException: {}
   securitySchemes:
     hmac:
       type: apiKey

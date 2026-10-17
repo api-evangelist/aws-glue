@@ -215,56 +215,13 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.GetResourcePolicy API'
 components:
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    InvalidInputException: {}
+    Timestamp:
+      type: string
+      format: date-time
     PolicyJsonString:
       type: string
       minLength: 2
-    EntityNotFoundException: {}
-    OperationTimeoutException: {}
     GetResourcePolicyResponse:
       type: object
       properties:
@@ -284,11 +241,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/Timestamp'
           - description: The date and time at which the policy was last updated.
-    HashString:
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    GlueResourceArn:
       type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
       minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+      maxLength: 10240
     GetResourcePolicyRequest:
       type: object
       title: GetResourcePolicyRequest
@@ -297,15 +257,55 @@ components:
           allOf:
           - $ref: '#/components/schemas/GlueResourceArn'
           - description: 'The ARN of the Glue resource for which to retrieve the resource policy. If not supplied, the Data Catalog resource policy is returned. Use <code>GetResourcePolicies</code> to view all existing resource policies. For more information see <a href="https://docs.aws.amazon.com/glue/latest/dg/glue-specifying-resource-arns.html">Specifying Glue Resource ARNs</a>. '
-    InternalServiceException: {}
-    GlueResourceArn:
+    OperationTimeoutException: {}
+    HashString:
       type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
       minLength: 1
-      maxLength: 10240
-    Timestamp:
-      type: string
-      format: date-time
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+  parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

@@ -215,9 +215,32 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.CancelDataQualityRuleRecommen…'
 components:
+  schemas:
+    CancelDataQualityRuleRecommendationRunResponse:
+      type: object
+      properties: {}
+    CancelDataQualityRuleRecommendationRunRequest:
+      type: object
+      required:
+      - RunId
+      title: CancelDataQualityRuleRecommendationRunRequest
+      properties:
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The unique run identifier associated with this run.
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    OperationTimeoutException: {}
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -234,8 +257,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -246,41 +281,6 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-  schemas:
-    InvalidInputException: {}
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    EntityNotFoundException: {}
-    InternalServiceException: {}
-    CancelDataQualityRuleRecommendationRunRequest:
-      type: object
-      required:
-      - RunId
-      title: CancelDataQualityRuleRecommendationRunRequest
-      properties:
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The unique run identifier associated with this run.
-    CancelDataQualityRuleRecommendationRunResponse:
-      type: object
-      properties: {}
   securitySchemes:
     hmac:
       type: apiKey

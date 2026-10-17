@@ -215,54 +215,16 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteDevEndpoint API'
 components:
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
+    GenericString:
+      type: string
+    InternalServiceException: {}
     InvalidInputException: {}
     EntityNotFoundException: {}
+    DeleteDevEndpointResponse:
+      type: object
+      properties: {}
     OperationTimeoutException: {}
-    InternalServiceException: {}
     DeleteDevEndpointRequest:
       type: object
       required:
@@ -273,11 +235,49 @@ components:
           allOf:
           - $ref: '#/components/schemas/GenericString'
           - description: The name of the <code>DevEndpoint</code>.
-    DeleteDevEndpointResponse:
-      type: object
-      properties: {}
-    GenericString:
-      type: string
+  parameters:
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

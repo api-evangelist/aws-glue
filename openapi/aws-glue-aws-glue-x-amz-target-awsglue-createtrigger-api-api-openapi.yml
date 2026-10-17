@@ -268,63 +268,95 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.CreateTrigger API'
 components:
   schemas:
-    ConditionList:
+    EventBatchingCondition:
+      type: object
+      required:
+      - BatchSize
+      properties:
+        BatchSize:
+          allOf:
+          - $ref: '#/components/schemas/BatchSize'
+          - description: Number of events that must be received from Amazon EventBridge before EventBridge event trigger fires.
+        BatchWindow:
+          allOf:
+          - $ref: '#/components/schemas/BatchWindow'
+          - description: Window of time in seconds after which EventBridge event trigger fires. Window starts when first event is received.
+      description: Batch condition that must be met (specified number of events received or batch time window expired) before EventBridge event trigger fires.
+    Logical:
+      type: string
+      enum:
+      - AND
+      - ANY
+    InvalidInputException: {}
+    TagsMap:
+      type: object
+      minProperties: 0
+      maxProperties: 50
+      additionalProperties:
+        $ref: '#/components/schemas/TagValue'
+    BooleanValue:
+      type: boolean
+    ActionList:
       type: array
       items:
-        $ref: '#/components/schemas/Condition'
-    InvalidInputException: {}
-    EntityNotFoundException: {}
+        $ref: '#/components/schemas/Action'
     DescriptionString:
       type: string
       minLength: 0
       maxLength: 2048
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    InternalServiceException: {}
-    Condition:
-      type: object
-      properties:
-        LogicalOperator:
-          allOf:
-          - $ref: '#/components/schemas/LogicalOperator'
-          - description: A logical operator.
-        JobName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the job whose <code>JobRuns</code> this condition applies to, and on which this trigger waits.
-        State:
-          allOf:
-          - $ref: '#/components/schemas/JobRunState'
-          - description: The condition state. Currently, the only job states that a trigger can listen for are <code>SUCCEEDED</code>, <code>STOPPED</code>, <code>FAILED</code>, and <code>TIMEOUT</code>. The only crawler states that a trigger can listen for are <code>SUCCEEDED</code>, <code>FAILED</code>, and <code>CANCELLED</code>.
-        CrawlerName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the crawler to which this condition applies.
-        CrawlState:
-          allOf:
-          - $ref: '#/components/schemas/CrawlState'
-          - description: The state of the crawler to which this condition applies.
-      description: Defines a condition under which a trigger fires.
-    Timeout:
+    JobRunState:
+      type: string
+      enum:
+      - STARTING
+      - RUNNING
+      - STOPPING
+      - STOPPED
+      - SUCCEEDED
+      - FAILED
+      - TIMEOUT
+      - ERROR
+      - WAITING
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
+    AlreadyExistsException: {}
+    BatchWindow:
       type: integer
       minimum: 1
-    CreateTriggerResponse:
-      type: object
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the trigger.
+      maximum: 900
+    NotifyDelayAfter:
+      type: integer
+      minimum: 1
     LogicalOperator:
       type: string
       enum:
       - EQUALS
-    TriggerType:
+    GenericString:
       type: string
-      enum:
-      - SCHEDULED
-      - CONDITIONAL
-      - ON_DEMAND
-      - EVENT
+    ConcurrentModificationException: {}
+    BatchSize:
+      type: integer
+      minimum: 1
+      maximum: 100
+    ConditionList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Condition'
+    EntityNotFoundException: {}
+    Predicate:
+      type: object
+      properties:
+        Logical:
+          allOf:
+          - $ref: '#/components/schemas/Logical'
+          - description: An optional field if only one condition is listed. If multiple conditions are listed, then this field is required.
+        Conditions:
+          allOf:
+          - $ref: '#/components/schemas/ConditionList'
+          - description: A list of the conditions that determine when the trigger will fire.
+      description: Defines the predicate of the trigger, which determines when it fires.
     NotificationProperty:
       type: object
       properties:
@@ -333,12 +365,6 @@ components:
           - $ref: '#/components/schemas/NotifyDelayAfter'
           - description: After a job run starts, the number of minutes to wait before sending a job run delay notification.
       description: Specifies configuration properties of a notification.
-    ResourceNumberLimitExceededException: {}
-    Logical:
-      type: string
-      enum:
-      - AND
-      - ANY
     CreateTriggerRequest:
       type: object
       required:
@@ -387,34 +413,50 @@ components:
           allOf:
           - $ref: '#/components/schemas/EventBatchingCondition'
           - description: Batch condition that must be met (specified number of events received or batch time window expired) before EventBridge event trigger fires.
-    GenericMap:
+    OperationTimeoutException: {}
+    Condition:
       type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
-    AlreadyExistsException: {}
-    IdempotentParameterMismatchException: {}
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
-    JobRunState:
+      properties:
+        LogicalOperator:
+          allOf:
+          - $ref: '#/components/schemas/LogicalOperator'
+          - description: A logical operator.
+        JobName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the job whose <code>JobRuns</code> this condition applies to, and on which this trigger waits.
+        State:
+          allOf:
+          - $ref: '#/components/schemas/JobRunState'
+          - description: The condition state. Currently, the only job states that a trigger can listen for are <code>SUCCEEDED</code>, <code>STOPPED</code>, <code>FAILED</code>, and <code>TIMEOUT</code>. The only crawler states that a trigger can listen for are <code>SUCCEEDED</code>, <code>FAILED</code>, and <code>CANCELLED</code>.
+        CrawlerName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the crawler to which this condition applies.
+        CrawlState:
+          allOf:
+          - $ref: '#/components/schemas/CrawlState'
+          - description: The state of the crawler to which this condition applies.
+      description: Defines a condition under which a trigger fires.
+    CrawlState:
       type: string
       enum:
-      - STARTING
       - RUNNING
-      - STOPPING
-      - STOPPED
+      - CANCELLING
+      - CANCELLED
       - SUCCEEDED
       - FAILED
-      - TIMEOUT
       - ERROR
-      - WAITING
-    TagsMap:
-      type: object
-      minProperties: 0
-      maxProperties: 50
-      additionalProperties:
-        $ref: '#/components/schemas/TagValue'
+    ResourceNumberLimitExceededException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    IdempotentParameterMismatchException: {}
+    Timeout:
+      type: integer
+      minimum: 1
     Action:
       type: object
       properties:
@@ -443,76 +485,46 @@ components:
           - $ref: '#/components/schemas/NameString'
           - description: The name of the crawler to be used with this action.
       description: Defines an action to be initiated by a trigger.
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GenericString:
-      type: string
-    EventBatchingCondition:
-      type: object
-      required:
-      - BatchSize
-      properties:
-        BatchSize:
-          allOf:
-          - $ref: '#/components/schemas/BatchSize'
-          - description: Number of events that must be received from Amazon EventBridge before EventBridge event trigger fires.
-        BatchWindow:
-          allOf:
-          - $ref: '#/components/schemas/BatchWindow'
-          - description: Window of time in seconds after which EventBridge event trigger fires. Window starts when first event is received.
-      description: Batch condition that must be met (specified number of events received or batch time window expired) before EventBridge event trigger fires.
-    BatchWindow:
-      type: integer
-      minimum: 1
-      maximum: 900
-    ActionList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Action'
-    ConcurrentModificationException: {}
-    BatchSize:
-      type: integer
-      minimum: 1
-      maximum: 100
-    OperationTimeoutException: {}
-    BooleanValue:
-      type: boolean
-    NotifyDelayAfter:
-      type: integer
-      minimum: 1
-    Predicate:
+    CreateTriggerResponse:
       type: object
       properties:
-        Logical:
+        Name:
           allOf:
-          - $ref: '#/components/schemas/Logical'
-          - description: An optional field if only one condition is listed. If multiple conditions are listed, then this field is required.
-        Conditions:
-          allOf:
-          - $ref: '#/components/schemas/ConditionList'
-          - description: A list of the conditions that determine when the trigger will fire.
-      description: Defines the predicate of the trigger, which determines when it fires.
-    CrawlState:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the trigger.
+    InternalServiceException: {}
+    GenericMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    TriggerType:
       type: string
       enum:
-      - RUNNING
-      - CANCELLING
-      - CANCELLED
-      - SUCCEEDED
-      - FAILED
-      - ERROR
+      - SCHEDULED
+      - CONDITIONAL
+      - ON_DEMAND
+      - EVENT
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -529,20 +541,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

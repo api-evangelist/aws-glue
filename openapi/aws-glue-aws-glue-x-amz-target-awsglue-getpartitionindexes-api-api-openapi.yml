@@ -235,29 +235,7 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetPartitionIndexes API'
 components:
   schemas:
-    ValueStringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/ValueString'
     InvalidInputException: {}
-    PartitionIndexDescriptorList:
-      type: array
-      items:
-        $ref: '#/components/schemas/PartitionIndexDescriptor'
-    PartitionIndexStatus:
-      type: string
-      enum:
-      - CREATING
-      - ACTIVE
-      - DELETING
-      - FAILED
-    EntityNotFoundException: {}
-    ColumnTypeString:
-      type: string
-      minLength: 0
-      maxLength: 131072
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    InternalServiceException: {}
     PartitionIndexDescriptor:
       type: object
       required:
@@ -282,14 +260,6 @@ components:
           - $ref: '#/components/schemas/BackfillErrors'
           - description: A list of errors that can occur when registering partition indexes for an existing table.
       description: A descriptor for a partition index in a table.
-    ValueString:
-      type: string
-      maxLength: 1024
-    ConflictException: {}
-    BackfillErrors:
-      type: array
-      items:
-        $ref: '#/components/schemas/BackfillError'
     PartitionValueList:
       type: object
       required:
@@ -300,8 +270,19 @@ components:
           - $ref: '#/components/schemas/ValueStringList'
           - description: The list of values.
       description: Contains a list of values defining partitions.
-    Token:
+    CatalogIdString:
       type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    BackfillErrorCode:
+      type: string
+      enum:
+      - ENCRYPTED_PARTITION_ERROR
+      - INTERNAL_ERROR
+      - INVALID_PARTITION_TYPE_DATA_ERROR
+      - MISSING_PARTITION_VALUE_ERROR
+      - UNSUPPORTED_PARTITION_CHARACTER_ERROR
     BackfillError:
       type: object
       properties:
@@ -314,6 +295,56 @@ components:
           - $ref: '#/components/schemas/BackfillErroredPartitionsList'
           - description: A list of a limited number of partitions in the response.
       description: '<p>A list of errors that can occur when registering partition indexes for an existing table.</p> <p>These errors give the details about why an index registration failed and provide a limited number of partitions in the response, so that you can fix the partitions at fault and try registering the index again. The most common set of errors that can occur are categorized as follows:</p> <ul> <li> <p>EncryptedPartitionError: The partitions are encrypted.</p> </li> <li> <p>InvalidPartitionTypeDataError: The partition value doesn''t match the data type for that partition column.</p> </li> <li> <p>MissingPartitionValueError: The partitions are encrypted.</p> </li> <li> <p>UnsupportedPartitionCharacterError: Characters inside the partition value are not supported. For example: U+0000 , U+0001, U+0002.</p> </li> <li> <p>InternalError: Any error which does not belong to other error codes.</p> </li> </ul>'
+    BackfillErrors:
+      type: array
+      items:
+        $ref: '#/components/schemas/BackfillError'
+    KeySchemaElementList:
+      type: array
+      items:
+        $ref: '#/components/schemas/KeySchemaElement'
+      minItems: 1
+    ColumnTypeString:
+      type: string
+      minLength: 0
+      maxLength: 131072
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    ValueString:
+      type: string
+      maxLength: 1024
+    BackfillErroredPartitionsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/PartitionValueList'
+    PartitionIndexDescriptorList:
+      type: array
+      items:
+        $ref: '#/components/schemas/PartitionIndexDescriptor'
+    Token:
+      type: string
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
+    ConflictException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    KeySchemaElement:
+      type: object
+      required:
+      - Name
+      - Type
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of a partition key.
+        Type:
+          allOf:
+          - $ref: '#/components/schemas/ColumnTypeString'
+          - description: The type of a partition key.
+      description: A partition key pair consisting of a name and a type.
     GetPartitionIndexesResponse:
       type: object
       properties:
@@ -348,58 +379,33 @@ components:
           allOf:
           - $ref: '#/components/schemas/Token'
           - description: A continuation token, included if this is a continuation call.
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    KeySchemaElementList:
-      type: array
-      items:
-        $ref: '#/components/schemas/KeySchemaElement'
-      minItems: 1
-    BackfillErroredPartitionsList:
-      type: array
-      items:
-        $ref: '#/components/schemas/PartitionValueList'
-    BackfillErrorCode:
+    PartitionIndexStatus:
       type: string
       enum:
-      - ENCRYPTED_PARTITION_ERROR
-      - INTERNAL_ERROR
-      - INVALID_PARTITION_TYPE_DATA_ERROR
-      - MISSING_PARTITION_VALUE_ERROR
-      - UNSUPPORTED_PARTITION_CHARACTER_ERROR
-    CatalogIdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    KeySchemaElement:
-      type: object
-      required:
-      - Name
-      - Type
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of a partition key.
-        Type:
-          allOf:
-          - $ref: '#/components/schemas/ColumnTypeString'
-          - description: The type of a partition key.
-      description: A partition key pair consisting of a name and a type.
+      - CREATING
+      - ACTIVE
+      - DELETING
+      - FAILED
+    InternalServiceException: {}
+    ValueStringList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ValueString'
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -416,20 +422,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

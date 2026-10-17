@@ -222,8 +222,53 @@ components:
       pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
       minLength: 1
       maxLength: 10240
+    SchemaId:
+      type: object
+      properties:
+        SchemaArn:
+          allOf:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: The Amazon Resource Name (ARN) of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
+        SchemaName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
+        RegistryName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the schema registry that contains the schema.
+      description: The unique ID of the schema in the Glue schema registry.
+    SchemaVersionIdString:
+      type: string
+      pattern: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
+      minLength: 36
+      maxLength: 36
+    CreatedTimestamp:
+      type: string
     EntityNotFoundException: {}
-    InternalServiceException: {}
+    SchemaVersionStatus:
+      type: string
+      enum:
+      - AVAILABLE
+      - PENDING
+      - FAILURE
+      - DELETING
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    SchemaDefinitionString:
+      type: string
+      pattern: .*\S.*
+      minLength: 1
+      maxLength: 170000
+    DataFormat:
+      type: string
+      enum:
+      - AVRO
+      - JSON
+      - PROTOBUF
     GetSchemaByDefinitionResponse:
       type: object
       properties:
@@ -247,38 +292,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/CreatedTimestamp'
           - description: The date and time the schema was created.
-    SchemaId:
-      type: object
-      properties:
-        SchemaArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: The Amazon Resource Name (ARN) of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
-        SchemaName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
-        RegistryName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the schema registry that contains the schema.
-      description: The unique ID of the schema in the Glue schema registry.
-    SchemaVersionIdString:
-      type: string
-      pattern: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
-      minLength: 36
-      maxLength: 36
-    SchemaDefinitionString:
-      type: string
-      pattern: .*\S.*
-      minLength: 1
-      maxLength: 170000
-    DataFormat:
-      type: string
-      enum:
-      - AVRO
-      - JSON
-      - PROTOBUF
     GetSchemaByDefinitionInput:
       type: object
       required:
@@ -294,30 +307,29 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaDefinitionString'
           - description: The definition of the schema for which schema details are required.
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    SchemaVersionStatus:
-      type: string
-      enum:
-      - AVAILABLE
-      - PENDING
-      - FAILURE
-      - DELETING
-    CreatedTimestamp:
-      type: string
+    InternalServiceException: {}
     AccessDeniedException: {}
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -334,20 +346,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

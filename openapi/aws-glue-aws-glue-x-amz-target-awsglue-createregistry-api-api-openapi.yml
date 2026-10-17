@@ -243,6 +243,12 @@ paths:
 components:
   schemas:
     InvalidInputException: {}
+    TagsMap:
+      type: object
+      minProperties: 0
+      maxProperties: 50
+      additionalProperties:
+        $ref: '#/components/schemas/TagValue'
     GlueResourceArn:
       type: string
       pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
@@ -253,8 +259,12 @@ components:
       minLength: 0
       maxLength: 2048
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    InternalServiceException: {}
-    ResourceNumberLimitExceededException: {}
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
+    AlreadyExistsException: {}
+    ConcurrentModificationException: {}
     CreateRegistryResponse:
       type: object
       properties:
@@ -274,23 +284,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/TagsMap'
           - description: The tags for the registry.
+    ResourceNumberLimitExceededException: {}
     SchemaRegistryNameString:
       type: string
       pattern: '[a-zA-Z0-9-_$#.]+'
       minLength: 1
       maxLength: 255
-    AlreadyExistsException: {}
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
-    TagsMap:
-      type: object
-      minProperties: 0
-      maxProperties: 50
-      additionalProperties:
-        $ref: '#/components/schemas/TagValue'
-    ConcurrentModificationException: {}
     CreateRegistryInput:
       type: object
       required:
@@ -309,16 +308,29 @@ components:
           allOf:
           - $ref: '#/components/schemas/TagsMap'
           - description: Amazon Web Services tags that contain a key value pair and may be searched by console, command line, or API.
+    InternalServiceException: {}
     AccessDeniedException: {}
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -335,20 +347,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

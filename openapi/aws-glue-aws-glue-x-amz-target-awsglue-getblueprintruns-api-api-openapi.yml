@@ -228,61 +228,48 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetBlueprintRuns API'
 components:
   schemas:
-    InvalidInputException: {}
-    EntityNotFoundException: {}
-    BlueprintParameters:
-      type: string
-      minLength: 1
-      maxLength: 131072
-    InternalServiceException: {}
-    GetBlueprintRunsRequest:
+    GetBlueprintRunsResponse:
       type: object
-      required:
-      - BlueprintName
-      title: GetBlueprintRunsRequest
       properties:
-        BlueprintName:
+        BlueprintRuns:
           allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the blueprint.
+          - $ref: '#/components/schemas/BlueprintRuns'
+          - description: Returns a list of <code>BlueprintRun</code> objects.
         NextToken:
           allOf:
           - $ref: '#/components/schemas/GenericString'
-          - description: A continuation token, if this is a continuation request.
-        MaxResults:
-          allOf:
-          - $ref: '#/components/schemas/PageSize'
-          - description: The maximum size of a list to return.
-    TimestampValue:
-      type: string
-      format: date-time
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
+          - description: A continuation token, if not all blueprint runs have been returned.
     OrchestrationIAMRoleArn:
       type: string
       pattern: arn:aws[^:]*:iam::[0-9]*:role/.+
       minLength: 1
       maxLength: 1024
-    BlueprintRuns:
-      type: array
-      items:
-        $ref: '#/components/schemas/BlueprintRun'
-    MessageString:
+    InvalidInputException: {}
+    OrchestrationNameString:
       type: string
-    NameString:
-      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
       minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GenericString:
+      maxLength: 128
+    BlueprintRunState:
       type: string
+      enum:
+      - RUNNING
+      - SUCCEEDED
+      - FAILED
+      - ROLLING_BACK
     IdString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    BlueprintRuns:
+      type: array
+      items:
+        $ref: '#/components/schemas/BlueprintRun'
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
     BlueprintRun:
       type: object
       properties:
@@ -327,39 +314,58 @@ components:
           - $ref: '#/components/schemas/OrchestrationIAMRoleArn'
           - description: The role ARN. This role will be assumed by the Glue service and will be used to create the workflow and other entities of a workflow.
       description: The details of a blueprint run.
-    BlueprintRunState:
+    GenericString:
       type: string
-      enum:
-      - RUNNING
-      - SUCCEEDED
-      - FAILED
-      - ROLLING_BACK
-    GetBlueprintRunsResponse:
+    EntityNotFoundException: {}
+    GetBlueprintRunsRequest:
       type: object
+      required:
+      - BlueprintName
+      title: GetBlueprintRunsRequest
       properties:
-        BlueprintRuns:
+        BlueprintName:
           allOf:
-          - $ref: '#/components/schemas/BlueprintRuns'
-          - description: Returns a list of <code>BlueprintRun</code> objects.
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the blueprint.
         NextToken:
           allOf:
           - $ref: '#/components/schemas/GenericString'
-          - description: A continuation token, if not all blueprint runs have been returned.
-    OperationTimeoutException: {}
-    OrchestrationNameString:
+          - description: A continuation token, if this is a continuation request.
+        MaxResults:
+          allOf:
+          - $ref: '#/components/schemas/PageSize'
+          - description: The maximum size of a list to return.
+    TimestampValue:
       type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
+      format: date-time
+    OperationTimeoutException: {}
+    NameString:
+      type: string
       minLength: 1
-      maxLength: 128
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    MessageString:
+      type: string
+    BlueprintParameters:
+      type: string
+      minLength: 1
+      maxLength: 131072
+    InternalServiceException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -376,20 +382,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

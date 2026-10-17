@@ -192,23 +192,44 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.ListCrawlers API'
 components:
   schemas:
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    PageSize:
+      type: integer
+      minimum: 1
+      maximum: 1000
+    Token:
+      type: string
     CrawlerNameList:
       type: array
       items:
         $ref: '#/components/schemas/NameString'
       minItems: 0
       maxItems: 100
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
-    OperationTimeoutException: {}
     TagsMap:
       type: object
       minProperties: 0
       maxProperties: 50
       additionalProperties:
         $ref: '#/components/schemas/TagValue'
+    ListCrawlersResponse:
+      type: object
+      properties:
+        CrawlerNames:
+          allOf:
+          - $ref: '#/components/schemas/CrawlerNameList'
+          - description: The names of all crawlers in the account, or the crawlers with the specified tags.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/Token'
+          - description: A continuation token, if the returned list does not contain the last metric available.
     ListCrawlersRequest:
       type: object
       title: ListCrawlersRequest
@@ -225,55 +246,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/TagsMap'
           - description: Specifies to return only these tagged resources.
-    ListCrawlersResponse:
-      type: object
-      properties:
-        CrawlerNames:
-          allOf:
-          - $ref: '#/components/schemas/CrawlerNameList'
-          - description: The names of all crawlers in the account, or the crawlers with the specified tags.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/Token'
-          - description: A continuation token, if the returned list does not contain the last metric available.
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    PageSize:
-      type: integer
-      minimum: 1
-      maximum: 1000
-    Token:
-      type: string
+    OperationTimeoutException: {}
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-SignedHeaders:
       name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
       in: header
       schema:
         type: string
@@ -286,6 +262,30 @@ components:
       required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string

@@ -217,7 +217,16 @@ paths:
 components:
   schemas:
     InvalidInputException: {}
-    EntityNotFoundException: {}
+    DataSource:
+      type: object
+      required:
+      - GlueTable
+      properties:
+        GlueTable:
+          allOf:
+          - $ref: '#/components/schemas/GlueTable'
+          - description: An Glue table.
+      description: A data source (an Glue table) for which you want data quality results.
     GlueTable:
       type: object
       required:
@@ -250,72 +259,10 @@ components:
       minLength: 0
       maxLength: 2048
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    InternalServiceException: {}
     RoleString:
       type: string
-    Timeout:
-      type: integer
-      minimum: 1
     NullableInteger:
       type: integer
-    DataQualityRulesetString:
-      type: string
-      minLength: 1
-      maxLength: 65536
-    DataSource:
-      type: object
-      required:
-      - GlueTable
-      properties:
-        GlueTable:
-          allOf:
-          - $ref: '#/components/schemas/GlueTable'
-          - description: An Glue table.
-      description: A data source (an Glue table) for which you want data quality results.
-    Timestamp:
-      type: string
-      format: date-time
-    TaskStatusType:
-      type: string
-      enum:
-      - STARTING
-      - RUNNING
-      - STOPPING
-      - STOPPED
-      - SUCCEEDED
-      - FAILED
-      - TIMEOUT
-    ExecutionTime:
-      type: integer
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GlueTableAdditionalOptions:
-      type: object
-      minProperties: 1
-      maxProperties: 10
-      additionalProperties:
-        $ref: '#/components/schemas/DescriptionString'
-    GenericString:
-      type: string
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    GetDataQualityRuleRecommendationRunRequest:
-      type: object
-      required:
-      - RunId
-      title: GetDataQualityRuleRecommendationRunRequest
-      properties:
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The unique run identifier associated with this run.
     GetDataQualityRuleRecommendationRunResponse:
       type: object
       properties:
@@ -371,15 +318,74 @@ components:
           allOf:
           - $ref: '#/components/schemas/NameString'
           - description: The name of the ruleset that was created by the run.
+    Timestamp:
+      type: string
+      format: date-time
+    GenericString:
+      type: string
+    GetDataQualityRuleRecommendationRunRequest:
+      type: object
+      required:
+      - RunId
+      title: GetDataQualityRuleRecommendationRunRequest
+      properties:
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The unique run identifier associated with this run.
+    ExecutionTime:
+      type: integer
+    GlueTableAdditionalOptions:
+      type: object
+      minProperties: 1
+      maxProperties: 10
+      additionalProperties:
+        $ref: '#/components/schemas/DescriptionString'
+    EntityNotFoundException: {}
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    TaskStatusType:
+      type: string
+      enum:
+      - STARTING
+      - RUNNING
+      - STOPPING
+      - STOPPED
+      - SUCCEEDED
+      - FAILED
+      - TIMEOUT
+    OperationTimeoutException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    DataQualityRulesetString:
+      type: string
+      minLength: 1
+      maxLength: 65536
+    Timeout:
+      type: integer
+      minimum: 1
+    InternalServiceException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -396,20 +402,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

@@ -202,9 +202,31 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.StartCrawler API'
 components:
+  schemas:
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    StartCrawlerResponse:
+      type: object
+      properties: {}
+    EntityNotFoundException: {}
+    StartCrawlerRequest:
+      type: object
+      required:
+      - Name
+      title: StartCrawlerRequest
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: Name of the crawler to start.
+    CrawlerRunningException: {}
+    OperationTimeoutException: {}
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -221,8 +243,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -233,40 +267,6 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-  schemas:
-    EntityNotFoundException: {}
-    OperationTimeoutException: {}
-    StartCrawlerResponse:
-      type: object
-      properties: {}
-    StartCrawlerRequest:
-      type: object
-      required:
-      - Name
-      title: StartCrawlerRequest
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: Name of the crawler to start.
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    CrawlerRunningException: {}
   securitySchemes:
     hmac:
       type: apiKey

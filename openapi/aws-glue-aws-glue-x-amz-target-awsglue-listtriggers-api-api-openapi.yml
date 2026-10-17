@@ -231,17 +231,39 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.ListTriggers API'
 components:
   schemas:
+    ListTriggersResponse:
+      type: object
+      properties:
+        TriggerNames:
+          allOf:
+          - $ref: '#/components/schemas/TriggerNameList'
+          - description: The names of all triggers in the account, or the triggers with the specified tags.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/GenericString'
+          - description: A continuation token, if the returned list does not contain the last metric available.
     InvalidInputException: {}
-    EntityNotFoundException: {}
-    TriggerNameList:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-    InternalServiceException: {}
+    TagsMap:
+      type: object
+      minProperties: 0
+      maxProperties: 50
+      additionalProperties:
+        $ref: '#/components/schemas/TagValue'
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
     PageSize:
       type: integer
       minimum: 1
       maximum: 1000
+    TriggerNameList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+    GenericString:
+      type: string
+    EntityNotFoundException: {}
     ListTriggersRequest:
       type: object
       title: ListTriggersRequest
@@ -262,44 +284,28 @@ components:
           allOf:
           - $ref: '#/components/schemas/TagsMap'
           - description: Specifies to return only these tagged resources.
-    ListTriggersResponse:
-      type: object
-      properties:
-        TriggerNames:
-          allOf:
-          - $ref: '#/components/schemas/TriggerNameList'
-          - description: The names of all triggers in the account, or the triggers with the specified tags.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/GenericString'
-          - description: A continuation token, if the returned list does not contain the last metric available.
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
-    TagsMap:
-      type: object
-      minProperties: 0
-      maxProperties: 50
-      additionalProperties:
-        $ref: '#/components/schemas/TagValue'
+    OperationTimeoutException: {}
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GenericString:
-      type: string
-    OperationTimeoutException: {}
+    InternalServiceException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -316,20 +322,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

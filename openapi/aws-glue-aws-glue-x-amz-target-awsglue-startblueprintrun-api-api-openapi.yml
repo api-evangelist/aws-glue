@@ -242,19 +242,23 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.StartBlueprintRun API'
 components:
   schemas:
-    InvalidInputException: {}
-    EntityNotFoundException: {}
-    BlueprintParameters:
-      type: string
-      minLength: 1
-      maxLength: 131072
-    InternalServiceException: {}
-    ResourceNumberLimitExceededException: {}
     OrchestrationIAMRoleArn:
       type: string
       pattern: arn:aws[^:]*:iam::[0-9]*:role/.+
       minLength: 1
       maxLength: 1024
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
+    InvalidInputException: {}
+    IdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    EntityNotFoundException: {}
     StartBlueprintRunRequest:
       type: object
       required:
@@ -281,27 +285,29 @@ components:
           allOf:
           - $ref: '#/components/schemas/IdString'
           - description: The run ID for this blueprint run.
-    IllegalBlueprintStateException: {}
-    IdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    ResourceNumberLimitExceededException: {}
     OperationTimeoutException: {}
-    OrchestrationNameString:
+    IllegalBlueprintStateException: {}
+    BlueprintParameters:
       type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
       minLength: 1
-      maxLength: 128
+      maxLength: 131072
+    InternalServiceException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -318,20 +324,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

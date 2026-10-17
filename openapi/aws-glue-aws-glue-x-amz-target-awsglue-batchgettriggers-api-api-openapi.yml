@@ -203,206 +203,6 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.BatchGetTriggers API'
 components:
   schemas:
-    ConditionList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Condition'
-    InvalidInputException: {}
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    TriggerNameList:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-    InternalServiceException: {}
-    Condition:
-      type: object
-      properties:
-        LogicalOperator:
-          allOf:
-          - $ref: '#/components/schemas/LogicalOperator'
-          - description: A logical operator.
-        JobName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the job whose <code>JobRuns</code> this condition applies to, and on which this trigger waits.
-        State:
-          allOf:
-          - $ref: '#/components/schemas/JobRunState'
-          - description: The condition state. Currently, the only job states that a trigger can listen for are <code>SUCCEEDED</code>, <code>STOPPED</code>, <code>FAILED</code>, and <code>TIMEOUT</code>. The only crawler states that a trigger can listen for are <code>SUCCEEDED</code>, <code>FAILED</code>, and <code>CANCELLED</code>.
-        CrawlerName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the crawler to which this condition applies.
-        CrawlState:
-          allOf:
-          - $ref: '#/components/schemas/CrawlState'
-          - description: The state of the crawler to which this condition applies.
-      description: Defines a condition under which a trigger fires.
-    Timeout:
-      type: integer
-      minimum: 1
-    LogicalOperator:
-      type: string
-      enum:
-      - EQUALS
-    TriggerList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Trigger'
-    BatchGetTriggersRequest:
-      type: object
-      required:
-      - TriggerNames
-      title: BatchGetTriggersRequest
-      properties:
-        TriggerNames:
-          allOf:
-          - $ref: '#/components/schemas/TriggerNameList'
-          - description: A list of trigger names, which may be the names returned from the <code>ListTriggers</code> operation.
-    TriggerType:
-      type: string
-      enum:
-      - SCHEDULED
-      - CONDITIONAL
-      - ON_DEMAND
-      - EVENT
-    NotificationProperty:
-      type: object
-      properties:
-        NotifyDelayAfter:
-          allOf:
-          - $ref: '#/components/schemas/NotifyDelayAfter'
-          - description: After a job run starts, the number of minutes to wait before sending a job run delay notification.
-      description: Specifies configuration properties of a notification.
-    Logical:
-      type: string
-      enum:
-      - AND
-      - ANY
-    GenericMap:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
-    JobRunState:
-      type: string
-      enum:
-      - STARTING
-      - RUNNING
-      - STOPPING
-      - STOPPED
-      - SUCCEEDED
-      - FAILED
-      - TIMEOUT
-      - ERROR
-      - WAITING
-    Action:
-      type: object
-      properties:
-        JobName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of a job to be run.
-        Arguments:
-          allOf:
-          - $ref: '#/components/schemas/GenericMap'
-          - description: <p>The job arguments used when this trigger fires. For this job run, they replace the default arguments set in the job definition itself.</p> <p>You can specify arguments here that your own job-execution script consumes, as well as arguments that Glue itself consumes.</p> <p>For information about how to specify and consume your own Job arguments, see the <a href="https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html">Calling Glue APIs in Python</a> topic in the developer guide.</p> <p>For information about the key-value pairs that Glue consumes to set up your job, see the <a href="https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html">Special Parameters Used by Glue</a> topic in the developer guide.</p>
-        Timeout:
-          allOf:
-          - $ref: '#/components/schemas/Timeout'
-          - description: The <code>JobRun</code> timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours). This overrides the timeout value set in the parent job.
-        SecurityConfiguration:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the <code>SecurityConfiguration</code> structure to be used with this action.
-        NotificationProperty:
-          allOf:
-          - $ref: '#/components/schemas/NotificationProperty'
-          - description: Specifies configuration properties of a job run notification.
-        CrawlerName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the crawler to be used with this action.
-      description: Defines an action to be initiated by a trigger.
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    EventBatchingCondition:
-      type: object
-      required:
-      - BatchSize
-      properties:
-        BatchSize:
-          allOf:
-          - $ref: '#/components/schemas/BatchSize'
-          - description: Number of events that must be received from Amazon EventBridge before EventBridge event trigger fires.
-        BatchWindow:
-          allOf:
-          - $ref: '#/components/schemas/BatchWindow'
-          - description: Window of time in seconds after which EventBridge event trigger fires. Window starts when first event is received.
-      description: Batch condition that must be met (specified number of events received or batch time window expired) before EventBridge event trigger fires.
-    GenericString:
-      type: string
-    IdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ActionList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Action'
-    BatchWindow:
-      type: integer
-      minimum: 1
-      maximum: 900
-    BatchSize:
-      type: integer
-      minimum: 1
-      maximum: 100
-    OperationTimeoutException: {}
-    BatchGetTriggersResponse:
-      type: object
-      properties:
-        Triggers:
-          allOf:
-          - $ref: '#/components/schemas/TriggerList'
-          - description: A list of trigger definitions.
-        TriggersNotFound:
-          allOf:
-          - $ref: '#/components/schemas/TriggerNameList'
-          - description: A list of names of triggers not found.
-    NotifyDelayAfter:
-      type: integer
-      minimum: 1
-    Predicate:
-      type: object
-      properties:
-        Logical:
-          allOf:
-          - $ref: '#/components/schemas/Logical'
-          - description: An optional field if only one condition is listed. If multiple conditions are listed, then this field is required.
-        Conditions:
-          allOf:
-          - $ref: '#/components/schemas/ConditionList'
-          - description: A list of the conditions that determine when the trigger will fire.
-      description: Defines the predicate of the trigger, which determines when it fires.
-    TriggerState:
-      type: string
-      enum:
-      - CREATING
-      - CREATED
-      - ACTIVATING
-      - ACTIVATED
-      - DEACTIVATING
-      - DEACTIVATED
-      - DELETING
-      - UPDATING
     Trigger:
       type: object
       properties:
@@ -447,6 +247,151 @@ components:
           - $ref: '#/components/schemas/EventBatchingCondition'
           - description: Batch condition that must be met (specified number of events received or batch time window expired) before EventBridge event trigger fires.
       description: Information about a specific trigger.
+    EventBatchingCondition:
+      type: object
+      required:
+      - BatchSize
+      properties:
+        BatchSize:
+          allOf:
+          - $ref: '#/components/schemas/BatchSize'
+          - description: Number of events that must be received from Amazon EventBridge before EventBridge event trigger fires.
+        BatchWindow:
+          allOf:
+          - $ref: '#/components/schemas/BatchWindow'
+          - description: Window of time in seconds after which EventBridge event trigger fires. Window starts when first event is received.
+      description: Batch condition that must be met (specified number of events received or batch time window expired) before EventBridge event trigger fires.
+    Logical:
+      type: string
+      enum:
+      - AND
+      - ANY
+    InternalServiceException: {}
+    InvalidInputException: {}
+    BatchGetTriggersRequest:
+      type: object
+      required:
+      - TriggerNames
+      title: BatchGetTriggersRequest
+      properties:
+        TriggerNames:
+          allOf:
+          - $ref: '#/components/schemas/TriggerNameList'
+          - description: A list of trigger names, which may be the names returned from the <code>ListTriggers</code> operation.
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    JobRunState:
+      type: string
+      enum:
+      - STARTING
+      - RUNNING
+      - STOPPING
+      - STOPPED
+      - SUCCEEDED
+      - FAILED
+      - TIMEOUT
+      - ERROR
+      - WAITING
+    IdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    BatchWindow:
+      type: integer
+      minimum: 1
+      maximum: 900
+    NotifyDelayAfter:
+      type: integer
+      minimum: 1
+    LogicalOperator:
+      type: string
+      enum:
+      - EQUALS
+    TriggerNameList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+    GenericString:
+      type: string
+    TriggerState:
+      type: string
+      enum:
+      - CREATING
+      - CREATED
+      - ACTIVATING
+      - ACTIVATED
+      - DEACTIVATING
+      - DEACTIVATED
+      - DELETING
+      - UPDATING
+    BatchGetTriggersResponse:
+      type: object
+      properties:
+        Triggers:
+          allOf:
+          - $ref: '#/components/schemas/TriggerList'
+          - description: A list of trigger definitions.
+        TriggersNotFound:
+          allOf:
+          - $ref: '#/components/schemas/TriggerNameList'
+          - description: A list of names of triggers not found.
+    BatchSize:
+      type: integer
+      minimum: 1
+      maximum: 100
+    ConditionList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Condition'
+    Predicate:
+      type: object
+      properties:
+        Logical:
+          allOf:
+          - $ref: '#/components/schemas/Logical'
+          - description: An optional field if only one condition is listed. If multiple conditions are listed, then this field is required.
+        Conditions:
+          allOf:
+          - $ref: '#/components/schemas/ConditionList'
+          - description: A list of the conditions that determine when the trigger will fire.
+      description: Defines the predicate of the trigger, which determines when it fires.
+    NotificationProperty:
+      type: object
+      properties:
+        NotifyDelayAfter:
+          allOf:
+          - $ref: '#/components/schemas/NotifyDelayAfter'
+          - description: After a job run starts, the number of minutes to wait before sending a job run delay notification.
+      description: Specifies configuration properties of a notification.
+    OperationTimeoutException: {}
+    Condition:
+      type: object
+      properties:
+        LogicalOperator:
+          allOf:
+          - $ref: '#/components/schemas/LogicalOperator'
+          - description: A logical operator.
+        JobName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the job whose <code>JobRuns</code> this condition applies to, and on which this trigger waits.
+        State:
+          allOf:
+          - $ref: '#/components/schemas/JobRunState'
+          - description: The condition state. Currently, the only job states that a trigger can listen for are <code>SUCCEEDED</code>, <code>STOPPED</code>, <code>FAILED</code>, and <code>TIMEOUT</code>. The only crawler states that a trigger can listen for are <code>SUCCEEDED</code>, <code>FAILED</code>, and <code>CANCELLED</code>.
+        CrawlerName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the crawler to which this condition applies.
+        CrawlState:
+          allOf:
+          - $ref: '#/components/schemas/CrawlState'
+          - description: The state of the crawler to which this condition applies.
+      description: Defines a condition under which a trigger fires.
     CrawlState:
       type: string
       enum:
@@ -456,15 +401,76 @@ components:
       - SUCCEEDED
       - FAILED
       - ERROR
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    TriggerList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Trigger'
+    Timeout:
+      type: integer
+      minimum: 1
+    Action:
+      type: object
+      properties:
+        JobName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of a job to be run.
+        Arguments:
+          allOf:
+          - $ref: '#/components/schemas/GenericMap'
+          - description: <p>The job arguments used when this trigger fires. For this job run, they replace the default arguments set in the job definition itself.</p> <p>You can specify arguments here that your own job-execution script consumes, as well as arguments that Glue itself consumes.</p> <p>For information about how to specify and consume your own Job arguments, see the <a href="https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html">Calling Glue APIs in Python</a> topic in the developer guide.</p> <p>For information about the key-value pairs that Glue consumes to set up your job, see the <a href="https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html">Special Parameters Used by Glue</a> topic in the developer guide.</p>
+        Timeout:
+          allOf:
+          - $ref: '#/components/schemas/Timeout'
+          - description: The <code>JobRun</code> timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours). This overrides the timeout value set in the parent job.
+        SecurityConfiguration:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the <code>SecurityConfiguration</code> structure to be used with this action.
+        NotificationProperty:
+          allOf:
+          - $ref: '#/components/schemas/NotificationProperty'
+          - description: Specifies configuration properties of a job run notification.
+        CrawlerName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the crawler to be used with this action.
+      description: Defines an action to be initiated by a trigger.
+    ActionList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Action'
+    GenericMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    TriggerType:
+      type: string
+      enum:
+      - SCHEDULED
+      - CONDITIONAL
+      - ON_DEMAND
+      - EVENT
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -481,20 +487,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

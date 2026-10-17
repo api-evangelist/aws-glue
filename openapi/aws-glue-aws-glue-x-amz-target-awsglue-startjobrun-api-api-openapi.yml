@@ -243,7 +243,16 @@ paths:
 components:
   schemas:
     InvalidInputException: {}
-    EntityNotFoundException: {}
+    NullableDouble:
+      type: number
+      format: double
+    IdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    NullableInteger:
+      type: integer
     StartJobRunRequest:
       type: object
       required:
@@ -295,20 +304,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/ExecutionClass'
           - description: <p>Indicates whether the job is run with a standard or flexible execution class. The standard execution-class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>
-    ExecutionClass:
-      type: string
-      enum:
-      - FLEX
-      - STANDARD
-      maxLength: 16
-    InternalServiceException: {}
-    ConcurrentRunsExceededException: {}
-    Timeout:
+    NotifyDelayAfter:
       type: integer
       minimum: 1
-    NullableInteger:
-      type: integer
-    ResourceNumberLimitExceededException: {}
+    GenericString:
+      type: string
+    EntityNotFoundException: {}
     NotificationProperty:
       type: object
       properties:
@@ -317,12 +318,21 @@ components:
           - $ref: '#/components/schemas/NotifyDelayAfter'
           - description: After a job run starts, the number of minutes to wait before sending a job run delay notification.
       description: Specifies configuration properties of a notification.
+    OperationTimeoutException: {}
     IntegerValue:
       type: integer
-    GenericMap:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
+    ExecutionClass:
+      type: string
+      enum:
+      - FLEX
+      - STANDARD
+      maxLength: 16
+    ResourceNumberLimitExceededException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     StartJobRunResponse:
       type: object
       properties:
@@ -330,22 +340,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/IdString'
           - description: The ID assigned to this job run.
-    NullableDouble:
-      type: number
-      format: double
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GenericString:
-      type: string
-    IdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
     WorkerType:
       type: string
       enum:
@@ -353,18 +347,30 @@ components:
       - G.1X
       - G.2X
       - G.025X
-    NotifyDelayAfter:
+    Timeout:
       type: integer
       minimum: 1
+    InternalServiceException: {}
+    GenericMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    ConcurrentRunsExceededException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -381,20 +387,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

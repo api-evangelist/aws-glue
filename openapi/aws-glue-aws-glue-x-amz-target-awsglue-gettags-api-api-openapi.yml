@@ -215,76 +215,20 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.GetTags API'
 components:
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    InvalidInputException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    EntityNotFoundException: {}
     TagValue:
       type: string
       minLength: 0
       maxLength: 256
     OperationTimeoutException: {}
+    InvalidInputException: {}
     TagsMap:
       type: object
       minProperties: 0
       maxProperties: 50
       additionalProperties:
         $ref: '#/components/schemas/TagValue'
-    InternalServiceException: {}
-    GetTagsResponse:
-      type: object
-      properties:
-        Tags:
-          allOf:
-          - $ref: '#/components/schemas/TagsMap'
-          - description: The requested tags.
+    EntityNotFoundException: {}
     GetTagsRequest:
       type: object
       required:
@@ -295,6 +239,62 @@ components:
           allOf:
           - $ref: '#/components/schemas/GlueResourceArn'
           - description: The Amazon Resource Name (ARN) of the resource for which to retrieve tags.
+    InternalServiceException: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    GetTagsResponse:
+      type: object
+      properties:
+        Tags:
+          allOf:
+          - $ref: '#/components/schemas/TagsMap'
+          - description: The requested tags.
+  parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

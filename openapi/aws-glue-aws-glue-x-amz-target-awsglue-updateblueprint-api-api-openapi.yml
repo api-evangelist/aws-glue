@@ -243,20 +243,15 @@ paths:
 components:
   schemas:
     InvalidInputException: {}
-    EntityNotFoundException: {}
-    InternalServiceException: {}
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
     Generic512CharString:
       type: string
       minLength: 1
       maxLength: 512
-    IllegalBlueprintStateException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ConcurrentModificationException: {}
-    OperationTimeoutException: {}
     UpdateBlueprintRequest:
       type: object
       required:
@@ -276,11 +271,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/OrchestrationS3Location'
           - description: Specifies a path in Amazon S3 where the blueprint is published.
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
+    ConcurrentModificationException: {}
     UpdateBlueprintResponse:
       type: object
       properties:
@@ -288,20 +279,35 @@ components:
           allOf:
           - $ref: '#/components/schemas/NameString'
           - description: Returns the name of the blueprint that was updated.
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    IllegalBlueprintStateException: {}
     OrchestrationS3Location:
       type: string
       pattern: ^s3://([^/]+)/([^/]+/)*([^/]+)$
       minLength: 1
       maxLength: 8192
+    InternalServiceException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -318,20 +324,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

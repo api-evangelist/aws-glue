@@ -269,6 +269,32 @@ paths:
 components:
   schemas:
     InvalidInputException: {}
+    TagsMap:
+      type: object
+      minProperties: 0
+      maxProperties: 50
+      additionalProperties:
+        $ref: '#/components/schemas/TagValue'
+    GlueVersionString:
+      type: string
+      pattern: ^\w+\.\w+$
+      minLength: 1
+      maxLength: 255
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
+    AlreadyExistsException: {}
+    RoleArn:
+      type: string
+      pattern: arn:aws:iam::\d{12}:role/.*
+    StringList:
+      type: array
+      items:
+        $ref: '#/components/schemas/GenericString'
+    NullableInteger:
+      type: integer
+    AccessDeniedException: {}
     CreateDevEndpointResponse:
       type: object
       properties:
@@ -348,61 +374,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/MapValue'
           - description: '<p>The map of arguments used to configure this <code>DevEndpoint</code>.</p> <p>Valid arguments are:</p> <ul> <li> <p> <code>"--enable-glue-datacatalog": ""</code> </p> </li> </ul> <p>You can specify a version of Python support for development endpoints by using the <code>Arguments</code> parameter in the <code>CreateDevEndpoint</code> or <code>UpdateDevEndpoint</code> APIs. If no arguments are provided, the version defaults to Python 2.</p>'
-    InternalServiceException: {}
+    GenericString:
+      type: string
+    ValidationException: {}
     TimestampValue:
       type: string
       format: date-time
-    RoleArn:
-      type: string
-      pattern: arn:aws:iam::\d{12}:role/.*
-    NullableInteger:
-      type: integer
-    ResourceNumberLimitExceededException: {}
-    IntegerValue:
-      type: integer
-    AlreadyExistsException: {}
-    IdempotentParameterMismatchException: {}
-    ValidationException: {}
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
-    TagsMap:
-      type: object
-      minProperties: 0
-      maxProperties: 50
-      additionalProperties:
-        $ref: '#/components/schemas/TagValue'
-    StringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/GenericString'
-    PublicKeysList:
-      type: array
-      items:
-        $ref: '#/components/schemas/GenericString'
-      maxItems: 5
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GenericString:
-      type: string
-    MapValue:
-      type: object
-      minProperties: 0
-      maxProperties: 100
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
-    OperationTimeoutException: {}
-    WorkerType:
-      type: string
-      enum:
-      - Standard
-      - G.1X
-      - G.2X
-      - G.025X
     CreateDevEndpointRequest:
       type: object
       required:
@@ -470,21 +447,50 @@ components:
           allOf:
           - $ref: '#/components/schemas/MapValue'
           - description: A map of arguments used to configure the <code>DevEndpoint</code>.
-    AccessDeniedException: {}
-    GlueVersionString:
+    PublicKeysList:
+      type: array
+      items:
+        $ref: '#/components/schemas/GenericString'
+      maxItems: 5
+    IntegerValue:
+      type: integer
+    OperationTimeoutException: {}
+    ResourceNumberLimitExceededException: {}
+    NameString:
       type: string
-      pattern: ^\w+\.\w+$
       minLength: 1
       maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    IdempotentParameterMismatchException: {}
+    WorkerType:
+      type: string
+      enum:
+      - Standard
+      - G.1X
+      - G.2X
+      - G.025X
+    MapValue:
+      type: object
+      minProperties: 0
+      maxProperties: 100
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    InternalServiceException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -501,20 +507,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

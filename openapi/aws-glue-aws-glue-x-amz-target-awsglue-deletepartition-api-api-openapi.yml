@@ -216,22 +216,25 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.DeletePartition API'
 components:
   schemas:
-    ValueStringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/ValueString'
+    ValueString:
+      type: string
+      maxLength: 1024
     CatalogIdString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    InvalidInputException: {}
-    EntityNotFoundException: {}
-    OperationTimeoutException: {}
-    InternalServiceException: {}
-    ValueString:
+    NameString:
       type: string
-      maxLength: 1024
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    OperationTimeoutException: {}
+    InvalidInputException: {}
+    DeletePartitionResponse:
+      type: object
+      properties: {}
+    EntityNotFoundException: {}
     DeletePartitionRequest:
       type: object
       required:
@@ -256,29 +259,38 @@ components:
           allOf:
           - $ref: '#/components/schemas/ValueStringList'
           - description: The values that define the partition.
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    DeletePartitionResponse:
-      type: object
-      properties: {}
+    InternalServiceException: {}
+    ValueStringList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ValueString'
   parameters:
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-SignedHeaders:
       name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Date:
+      name: X-Amz-Date
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Date:
-      name: X-Amz-Date
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -291,18 +303,6 @@ components:
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string

@@ -242,13 +242,90 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetStatement API'
 components:
   schemas:
+    OrchestrationNameString:
+      type: string
+      pattern: '[\.\-_A-Za-z0-9]+'
+      minLength: 1
+      maxLength: 128
     InvalidInputException: {}
-    EntityNotFoundException: {}
-    InternalServiceException: {}
+    GetStatementResponse:
+      type: object
+      properties:
+        Statement:
+          allOf:
+          - $ref: '#/components/schemas/Statement'
+          - description: Returns the statement.
+    GenericString:
+      type: string
     LongValue:
       type: integer
+    OrchestrationStringList:
+      type: array
+      items:
+        $ref: '#/components/schemas/GenericString'
+    EntityNotFoundException: {}
+    Statement:
+      type: object
+      properties:
+        Id:
+          allOf:
+          - $ref: '#/components/schemas/IntegerValue'
+          - description: The ID of the statement.
+        Code:
+          allOf:
+          - $ref: '#/components/schemas/GenericString'
+          - description: The execution code of the statement.
+        State:
+          allOf:
+          - $ref: '#/components/schemas/StatementState'
+          - description: The state while request is actioned.
+        Output:
+          allOf:
+          - $ref: '#/components/schemas/StatementOutput'
+          - description: The output in JSON.
+        Progress:
+          allOf:
+          - $ref: '#/components/schemas/DoubleValue'
+          - description: The code execution progress.
+        StartedOn:
+          allOf:
+          - $ref: '#/components/schemas/LongValue'
+          - description: The unix time and date that the job definition was started.
+        CompletedOn:
+          allOf:
+          - $ref: '#/components/schemas/LongValue'
+          - description: The unix time and date that the job definition was completed.
+      description: The statement or request for a particular action to occur in a session.
+    DoubleValue:
+      type: number
+      format: double
+    GetStatementRequest:
+      type: object
+      required:
+      - SessionId
+      - Id
+      title: GetStatementRequest
+      properties:
+        SessionId:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The Session ID of the statement.
+        Id:
+          allOf:
+          - $ref: '#/components/schemas/IntegerValue'
+          - description: The Id of the statement.
+        RequestOrigin:
+          allOf:
+          - $ref: '#/components/schemas/OrchestrationNameString'
+          - description: The origin of the request.
     IntegerValue:
       type: integer
+    OperationTimeoutException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     StatementOutput:
       type: object
       properties:
@@ -286,81 +363,7 @@ components:
       - CANCELLING
       - CANCELLED
       - ERROR
-    DoubleValue:
-      type: number
-      format: double
     IllegalSessionStateException: {}
-    Statement:
-      type: object
-      properties:
-        Id:
-          allOf:
-          - $ref: '#/components/schemas/IntegerValue'
-          - description: The ID of the statement.
-        Code:
-          allOf:
-          - $ref: '#/components/schemas/GenericString'
-          - description: The execution code of the statement.
-        State:
-          allOf:
-          - $ref: '#/components/schemas/StatementState'
-          - description: The state while request is actioned.
-        Output:
-          allOf:
-          - $ref: '#/components/schemas/StatementOutput'
-          - description: The output in JSON.
-        Progress:
-          allOf:
-          - $ref: '#/components/schemas/DoubleValue'
-          - description: The code execution progress.
-        StartedOn:
-          allOf:
-          - $ref: '#/components/schemas/LongValue'
-          - description: The unix time and date that the job definition was started.
-        CompletedOn:
-          allOf:
-          - $ref: '#/components/schemas/LongValue'
-          - description: The unix time and date that the job definition was completed.
-      description: The statement or request for a particular action to occur in a session.
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GenericString:
-      type: string
-    OperationTimeoutException: {}
-    OrchestrationStringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/GenericString'
-    GetStatementRequest:
-      type: object
-      required:
-      - SessionId
-      - Id
-      title: GetStatementRequest
-      properties:
-        SessionId:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The Session ID of the statement.
-        Id:
-          allOf:
-          - $ref: '#/components/schemas/IntegerValue'
-          - description: The Id of the statement.
-        RequestOrigin:
-          allOf:
-          - $ref: '#/components/schemas/OrchestrationNameString'
-          - description: The origin of the request.
-    GetStatementResponse:
-      type: object
-      properties:
-        Statement:
-          allOf:
-          - $ref: '#/components/schemas/Statement'
-          - description: Returns the statement.
-    AccessDeniedException: {}
     StatementOutputData:
       type: object
       properties:
@@ -369,20 +372,29 @@ components:
           - $ref: '#/components/schemas/GenericString'
           - description: The code execution output in text format.
       description: The code execution output in JSON format.
-    OrchestrationNameString:
-      type: string
-      pattern: '[\.\-_A-Za-z0-9]+'
-      minLength: 1
-      maxLength: 128
+    InternalServiceException: {}
+    AccessDeniedException: {}
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -399,20 +411,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

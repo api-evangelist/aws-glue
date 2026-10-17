@@ -228,9 +228,39 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateCrawlerSchedule API'
 components:
+  schemas:
+    SchedulerTransitioningException: {}
+    UpdateCrawlerScheduleRequest:
+      type: object
+      required:
+      - CrawlerName
+      title: UpdateCrawlerScheduleRequest
+      properties:
+        CrawlerName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the crawler whose schedule to update.
+        Schedule:
+          allOf:
+          - $ref: '#/components/schemas/CronExpression'
+          - description: 'The updated <code>cron</code> expression used to specify the schedule (see <a href="https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html">Time-Based Schedules for Jobs and Crawlers</a>. For example, to run something every day at 12:15 UTC, you would specify: <code>cron(15 12 * * ? *)</code>.'
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    UpdateCrawlerScheduleResponse:
+      type: object
+      properties: {}
+    VersionMismatchException: {}
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    CronExpression:
+      type: string
+    OperationTimeoutException: {}
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -247,8 +277,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -259,48 +301,6 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-  schemas:
-    InvalidInputException: {}
-    EntityNotFoundException: {}
-    OperationTimeoutException: {}
-    CronExpression:
-      type: string
-    UpdateCrawlerScheduleResponse:
-      type: object
-      properties: {}
-    SchedulerTransitioningException: {}
-    VersionMismatchException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    UpdateCrawlerScheduleRequest:
-      type: object
-      required:
-      - CrawlerName
-      title: UpdateCrawlerScheduleRequest
-      properties:
-        CrawlerName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the crawler whose schedule to update.
-        Schedule:
-          allOf:
-          - $ref: '#/components/schemas/CronExpression'
-          - description: 'The updated <code>cron</code> expression used to specify the schedule (see <a href="https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html">Time-Based Schedules for Jobs and Crawlers</a>. For example, to run something every day at 12:15 UTC, you would specify: <code>cron(15 12 * * ? *)</code>.'
   securitySchemes:
     hmac:
       type: apiKey

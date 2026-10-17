@@ -228,9 +228,74 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateRegistry API'
 components:
+  schemas:
+    ConcurrentModificationException: {}
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    UpdateRegistryResponse:
+      type: object
+      properties:
+        RegistryName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the updated registry.
+        RegistryArn:
+          allOf:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: The Amazon Resource name (ARN) of the updated registry.
+    AccessDeniedException: {}
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    UpdateRegistryInput:
+      type: object
+      required:
+      - RegistryId
+      - Description
+      title: UpdateRegistryInput
+      properties:
+        RegistryId:
+          allOf:
+          - $ref: '#/components/schemas/RegistryId'
+          - description: This is a wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
+        Description:
+          allOf:
+          - $ref: '#/components/schemas/DescriptionString'
+          - description: A description of the registry. If description is not provided, this field will not be updated.
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    RegistryId:
+      type: object
+      properties:
+        RegistryName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: 'Name of the registry. Used only for lookup. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided. '
+        RegistryArn:
+          allOf:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: Arn of the registry to be updated. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided.
+      description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
   parameters:
     X-Amz-Algorithm:
       name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -247,6 +312,12 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
       in: header
@@ -259,77 +330,6 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-  schemas:
-    InvalidInputException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    EntityNotFoundException: {}
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    UpdateRegistryInput:
-      type: object
-      required:
-      - RegistryId
-      - Description
-      title: UpdateRegistryInput
-      properties:
-        RegistryId:
-          allOf:
-          - $ref: '#/components/schemas/RegistryId'
-          - description: This is a wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
-        Description:
-          allOf:
-          - $ref: '#/components/schemas/DescriptionString'
-          - description: A description of the registry. If description is not provided, this field will not be updated.
-    RegistryId:
-      type: object
-      properties:
-        RegistryName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: 'Name of the registry. Used only for lookup. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided. '
-        RegistryArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: Arn of the registry to be updated. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided.
-      description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
-    InternalServiceException: {}
-    UpdateRegistryResponse:
-      type: object
-      properties:
-        RegistryName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the updated registry.
-        RegistryArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: The Amazon Resource name (ARN) of the updated registry.
-    AccessDeniedException: {}
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    ConcurrentModificationException: {}
   securitySchemes:
     hmac:
       type: apiKey

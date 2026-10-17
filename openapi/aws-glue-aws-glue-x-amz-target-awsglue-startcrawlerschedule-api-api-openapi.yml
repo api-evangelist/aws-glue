@@ -228,9 +228,33 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.StartCrawlerSchedule API'
 components:
+  schemas:
+    SchedulerTransitioningException: {}
+    StartCrawlerScheduleRequest:
+      type: object
+      required:
+      - CrawlerName
+      title: StartCrawlerScheduleRequest
+      properties:
+        CrawlerName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: Name of the crawler to schedule.
+    NoScheduleException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    OperationTimeoutException: {}
+    EntityNotFoundException: {}
+    SchedulerRunningException: {}
+    StartCrawlerScheduleResponse:
+      type: object
+      properties: {}
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -253,48 +277,24 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
-  schemas:
-    EntityNotFoundException: {}
-    OperationTimeoutException: {}
-    StartCrawlerScheduleResponse:
-      type: object
-      properties: {}
-    NoScheduleException: {}
-    SchedulerTransitioningException: {}
-    StartCrawlerScheduleRequest:
-      type: object
-      required:
-      - CrawlerName
-      title: StartCrawlerScheduleRequest
-      properties:
-        CrawlerName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: Name of the crawler to schedule.
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    SchedulerRunningException: {}
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

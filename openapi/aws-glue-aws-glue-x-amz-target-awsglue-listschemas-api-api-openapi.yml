@@ -231,79 +231,10 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.ListSchemas API'
 components:
   schemas:
-    InvalidInputException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    EntityNotFoundException: {}
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    InternalServiceException: {}
-    RegistryId:
-      type: object
-      properties:
-        RegistryName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: 'Name of the registry. Used only for lookup. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided. '
-        RegistryArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: Arn of the registry to be updated. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided.
-      description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
-    SchemaRegistryTokenString:
-      type: string
     MaxResultsNumber:
       type: integer
       minimum: 1
       maximum: 100
-    SchemaStatus:
-      type: string
-      enum:
-      - AVAILABLE
-      - PENDING
-      - DELETING
-    ListSchemasInput:
-      type: object
-      title: ListSchemasInput
-      properties:
-        RegistryId:
-          allOf:
-          - $ref: '#/components/schemas/RegistryId'
-          - description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
-        MaxResults:
-          allOf:
-          - $ref: '#/components/schemas/MaxResultsNumber'
-          - description: Maximum number of results required per page. If the value is not supplied, this will be defaulted to 25 per page.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryTokenString'
-          - description: A continuation token, if this is a continuation call.
-    ListSchemasResponse:
-      type: object
-      properties:
-        Schemas:
-          allOf:
-          - $ref: '#/components/schemas/SchemaListDefinition'
-          - description: An array of <code>SchemaListItem</code> objects containing details of each schema.
-        NextToken:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryTokenString'
-          - description: A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    CreatedTimestamp:
-      type: string
-    UpdatedTimestamp:
-      type: string
     SchemaListItem:
       type: object
       properties:
@@ -336,20 +267,101 @@ components:
           - $ref: '#/components/schemas/UpdatedTimestamp'
           - description: The date and time that a schema was updated.
       description: An object that contains minimal details for a schema.
-    AccessDeniedException: {}
+    UpdatedTimestamp:
+      type: string
+    InvalidInputException: {}
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    RegistryId:
+      type: object
+      properties:
+        RegistryName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: 'Name of the registry. Used only for lookup. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided. '
+        RegistryArn:
+          allOf:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: Arn of the registry to be updated. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided.
+      description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
+    CreatedTimestamp:
+      type: string
+    ListSchemasResponse:
+      type: object
+      properties:
+        Schemas:
+          allOf:
+          - $ref: '#/components/schemas/SchemaListDefinition'
+          - description: An array of <code>SchemaListItem</code> objects containing details of each schema.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryTokenString'
+          - description: A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
     SchemaListDefinition:
       type: array
       items:
         $ref: '#/components/schemas/SchemaListItem'
+    EntityNotFoundException: {}
+    SchemaStatus:
+      type: string
+      enum:
+      - AVAILABLE
+      - PENDING
+      - DELETING
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    ListSchemasInput:
+      type: object
+      title: ListSchemasInput
+      properties:
+        RegistryId:
+          allOf:
+          - $ref: '#/components/schemas/RegistryId'
+          - description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
+        MaxResults:
+          allOf:
+          - $ref: '#/components/schemas/MaxResultsNumber'
+          - description: Maximum number of results required per page. If the value is not supplied, this will be defaulted to 25 per page.
+        NextToken:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryTokenString'
+          - description: A continuation token, if this is a continuation call.
+    InternalServiceException: {}
+    AccessDeniedException: {}
+    SchemaRegistryTokenString:
+      type: string
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -366,20 +378,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

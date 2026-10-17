@@ -225,18 +225,41 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteSchemaVersions API'
 components:
   schemas:
-    InvalidInputException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    EntityNotFoundException: {}
     VersionsString:
       type: string
       pattern: '[1-9][0-9]*|[1-9][0-9]*-[1-9][0-9]*'
       minLength: 1
       maxLength: 100000
+    DeleteSchemaVersionsInput:
+      type: object
+      required:
+      - SchemaId
+      - Versions
+      title: DeleteSchemaVersionsInput
+      properties:
+        SchemaId:
+          allOf:
+          - $ref: '#/components/schemas/SchemaId'
+          - description: This is a wrapper structure that may contain the schema name and Amazon Resource Name (ARN).
+        Versions:
+          allOf:
+          - $ref: '#/components/schemas/VersionsString'
+          - description: '<p>A version range may be supplied which may be of the format:</p> <ul> <li> <p>a single version number, 5</p> </li> <li> <p>a range, 5-8 : deletes versions 5, 6, 7, 8</p> </li> </ul>'
+    InvalidInputException: {}
+    DeleteSchemaVersionsResponse:
+      type: object
+      properties:
+        SchemaVersionErrors:
+          allOf:
+          - $ref: '#/components/schemas/SchemaVersionErrorList'
+          - description: A list of <code>SchemaVersionErrorItem</code> objects, each containing an error and schema version.
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    ErrorMessageString:
+      type: string
     SchemaId:
       type: object
       properties:
@@ -265,35 +288,10 @@ components:
           - $ref: '#/components/schemas/ErrorMessageString'
           - description: The error message for an error.
       description: An object containing error details.
-    DeleteSchemaVersionsResponse:
-      type: object
-      properties:
-        SchemaVersionErrors:
-          allOf:
-          - $ref: '#/components/schemas/SchemaVersionErrorList'
-          - description: A list of <code>SchemaVersionErrorItem</code> objects, each containing an error and schema version.
-    ErrorMessageString:
+    ConcurrentModificationException: {}
+    EntityNotFoundException: {}
+    ErrorCodeString:
       type: string
-    DeleteSchemaVersionsInput:
-      type: object
-      required:
-      - SchemaId
-      - Versions
-      title: DeleteSchemaVersionsInput
-      properties:
-        SchemaId:
-          allOf:
-          - $ref: '#/components/schemas/SchemaId'
-          - description: This is a wrapper structure that may contain the schema name and Amazon Resource Name (ARN).
-        Versions:
-          allOf:
-          - $ref: '#/components/schemas/VersionsString'
-          - description: '<p>A version range may be supplied which may be of the format:</p> <ul> <li> <p>a single version number, 5</p> </li> <li> <p>a range, 5-8 : deletes versions 5, 6, 7, 8</p> </li> </ul>'
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
     VersionLongNumber:
       type: integer
       minimum: 1
@@ -302,7 +300,6 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/SchemaVersionErrorItem'
-    ConcurrentModificationException: {}
     SchemaVersionErrorItem:
       type: object
       properties:
@@ -315,18 +312,33 @@ components:
           - $ref: '#/components/schemas/ErrorDetails'
           - description: The details of the error for the schema version.
       description: An object that contains the error details for an operation on a schema version.
-    ErrorCodeString:
+    SchemaRegistryNameString:
       type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
     AccessDeniedException: {}
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -343,20 +355,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

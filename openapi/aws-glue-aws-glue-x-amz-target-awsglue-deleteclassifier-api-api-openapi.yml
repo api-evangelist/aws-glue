@@ -189,9 +189,30 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteClassifier API'
 components:
+  schemas:
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    DeleteClassifierResponse:
+      type: object
+      properties: {}
+    DeleteClassifierRequest:
+      type: object
+      required:
+      - Name
+      title: DeleteClassifierRequest
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: Name of the classifier to remove.
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -208,8 +229,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -220,39 +253,6 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-  schemas:
-    EntityNotFoundException: {}
-    OperationTimeoutException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    DeleteClassifierRequest:
-      type: object
-      required:
-      - Name
-      title: DeleteClassifierRequest
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: Name of the classifier to remove.
-    DeleteClassifierResponse:
-      type: object
-      properties: {}
   securitySchemes:
     hmac:
       type: apiKey

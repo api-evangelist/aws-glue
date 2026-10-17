@@ -241,50 +241,31 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.ResumeWorkflowRun API'
 components:
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    NodeIdList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+    ResumeWorkflowRunResponse:
+      type: object
+      properties:
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/IdString'
+          - description: The new ID assigned to the resumed workflow run. Each resume of a workflow run will have a new run ID.
+        NodeIds:
+          allOf:
+          - $ref: '#/components/schemas/NodeIdList'
+          - description: A list of the node IDs for the nodes that were actually restarted.
+    InternalServiceException: {}
+    IllegalWorkflowStateException: {}
+    InvalidInputException: {}
+    EntityNotFoundException: {}
     ResumeWorkflowRunRequest:
       type: object
       required:
@@ -305,37 +286,56 @@ components:
           allOf:
           - $ref: '#/components/schemas/NodeIdList'
           - description: A list of the node IDs for the nodes you want to restart. The nodes that are to be restarted must have a run attempt in the original run.
-    InvalidInputException: {}
-    EntityNotFoundException: {}
-    OperationTimeoutException: {}
-    ResumeWorkflowRunResponse:
-      type: object
-      properties:
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/IdString'
-          - description: The new ID assigned to the resumed workflow run. Each resume of a workflow run will have a new run ID.
-        NodeIds:
-          allOf:
-          - $ref: '#/components/schemas/NodeIdList'
-          - description: A list of the node IDs for the nodes that were actually restarted.
-    InternalServiceException: {}
-    IllegalWorkflowStateException: {}
-    NodeIdList:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
     ConcurrentRunsExceededException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     IdString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    OperationTimeoutException: {}
+  parameters:
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

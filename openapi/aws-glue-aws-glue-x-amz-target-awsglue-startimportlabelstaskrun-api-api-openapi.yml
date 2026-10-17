@@ -237,51 +237,8 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.StartImportLabelsTaskRun API'
 components:
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    InvalidInputException: {}
+    ResourceNumberLimitExceededException: {}
     StartImportLabelsTaskRunResponse:
       type: object
       properties:
@@ -289,17 +246,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/HashString'
           - description: The unique identifier for the task run.
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    EntityNotFoundException: {}
-    ResourceNumberLimitExceededException: {}
-    InternalServiceException: {}
     UriString:
       type: string
+    ReplaceBoolean:
+      type: boolean
+    InvalidInputException: {}
     StartImportLabelsTaskRunRequest:
       type: object
       required:
@@ -319,8 +270,57 @@ components:
           allOf:
           - $ref: '#/components/schemas/ReplaceBoolean'
           - description: Indicates whether to overwrite your existing labels.
-    ReplaceBoolean:
-      type: boolean
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    OperationTimeoutException: {}
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+  parameters:
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

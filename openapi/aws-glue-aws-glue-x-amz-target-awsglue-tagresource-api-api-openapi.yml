@@ -215,9 +215,47 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.TagResource API'
 components:
+  schemas:
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
+    TagResourceResponse:
+      type: object
+      properties: {}
+    TagResourceRequest:
+      type: object
+      required:
+      - ResourceArn
+      - TagsToAdd
+      title: TagResourceRequest
+      properties:
+        ResourceArn:
+          allOf:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: The ARN of the Glue resource to which to add the tags. For more information about Glue resource ARNs, see the <a href="https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-common.html#aws-glue-api-regex-aws-glue-arn-id">Glue ARN string pattern</a>.
+        TagsToAdd:
+          allOf:
+          - $ref: '#/components/schemas/TagsMap'
+          - description: Tags to add to this resource.
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    TagsMap:
+      type: object
+      minProperties: 0
+      maxProperties: 50
+      additionalProperties:
+        $ref: '#/components/schemas/TagValue'
+    OperationTimeoutException: {}
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -234,8 +272,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -246,56 +296,6 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-  schemas:
-    InvalidInputException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    EntityNotFoundException: {}
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
-    OperationTimeoutException: {}
-    TagResourceResponse:
-      type: object
-      properties: {}
-    TagsMap:
-      type: object
-      minProperties: 0
-      maxProperties: 50
-      additionalProperties:
-        $ref: '#/components/schemas/TagValue'
-    TagResourceRequest:
-      type: object
-      required:
-      - ResourceArn
-      - TagsToAdd
-      title: TagResourceRequest
-      properties:
-        ResourceArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: The ARN of the Glue resource to which to add the tags. For more information about Glue resource ARNs, see the <a href="https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-common.html#aws-glue-api-regex-aws-glue-arn-id">Glue ARN string pattern</a>.
-        TagsToAdd:
-          allOf:
-          - $ref: '#/components/schemas/TagsMap'
-          - description: Tags to add to this resource.
-    InternalServiceException: {}
   securitySchemes:
     hmac:
       type: apiKey

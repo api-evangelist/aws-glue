@@ -215,15 +215,32 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.StopCrawlerSchedule API'
 components:
+  schemas:
+    SchedulerTransitioningException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    StopCrawlerScheduleResponse:
+      type: object
+      properties: {}
+    EntityNotFoundException: {}
+    StopCrawlerScheduleRequest:
+      type: object
+      required:
+      - CrawlerName
+      title: StopCrawlerScheduleRequest
+      properties:
+        CrawlerName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: Name of the crawler whose schedule state to set.
+    SchedulerNotRunningException: {}
+    OperationTimeoutException: {}
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -246,41 +263,24 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-  schemas:
-    StopCrawlerScheduleRequest:
-      type: object
-      required:
-      - CrawlerName
-      title: StopCrawlerScheduleRequest
-      properties:
-        CrawlerName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: Name of the crawler whose schedule state to set.
-    OperationTimeoutException: {}
-    EntityNotFoundException: {}
-    StopCrawlerScheduleResponse:
-      type: object
-      properties: {}
-    SchedulerTransitioningException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    SchedulerNotRunningException: {}
   securitySchemes:
     hmac:
       type: apiKey

@@ -259,31 +259,22 @@ paths:
 components:
   schemas:
     InvalidInputException: {}
-    AuthTokenString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    EntityNotFoundException: {}
-    UpdateSourceControlFromJobResponse:
-      type: object
-      properties:
-        JobName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the Glue job.
-    InternalServiceException: {}
     CommitIdString:
       type: string
       minLength: 1
       maxLength: 40
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    SourceControlAuthStrategy:
+    AlreadyExistsException: {}
+    SourceControlProvider:
       type: string
       enum:
-      - PERSONAL_ACCESS_TOKEN
-      - AWS_SECRETS_MANAGER
-    AlreadyExistsException: {}
+      - GITHUB
+      - AWS_CODE_COMMIT
+    AuthTokenString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     ValidationException: {}
     UpdateSourceControlFromJobRequest:
       type: object
@@ -325,27 +316,48 @@ components:
           allOf:
           - $ref: '#/components/schemas/AuthTokenString'
           - description: The value of the authorization token.
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    SourceControlProvider:
+    SourceControlAuthStrategy:
       type: string
       enum:
-      - GITHUB
-      - AWS_CODE_COMMIT
+      - PERSONAL_ACCESS_TOKEN
+      - AWS_SECRETS_MANAGER
+    InternalServiceException: {}
     AccessDeniedException: {}
+    UpdateSourceControlFromJobResponse:
+      type: object
+      properties:
+        JobName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the Glue job.
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -362,20 +374,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

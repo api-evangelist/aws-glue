@@ -216,18 +216,19 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetDataQualityRulesetEvaluati…'
 components:
   schemas:
-    GetDataQualityRulesetEvaluationRunRequest:
+    UriString:
+      type: string
+    InvalidInputException: {}
+    DataSource:
       type: object
       required:
-      - RunId
-      title: GetDataQualityRulesetEvaluationRunRequest
+      - GlueTable
       properties:
-        RunId:
+        GlueTable:
           allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The unique run identifier associated with this run.
-    InvalidInputException: {}
-    EntityNotFoundException: {}
+          - $ref: '#/components/schemas/GlueTable'
+          - description: An Glue table.
+      description: A data source (an Glue table) for which you want data quality results.
     GlueTable:
       type: object
       required:
@@ -260,34 +261,25 @@ components:
       minLength: 0
       maxLength: 2048
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    InternalServiceException: {}
     RoleString:
       type: string
-    Timeout:
-      type: integer
-      minimum: 1
-    DataQualityEvaluationRunAdditionalRunOptions:
-      type: object
-      properties:
-        CloudWatchMetricsEnabled:
-          allOf:
-          - $ref: '#/components/schemas/NullableBoolean'
-          - description: Whether or not to enable CloudWatch metrics.
-        ResultsS3Prefix:
-          allOf:
-          - $ref: '#/components/schemas/UriString'
-          - description: Prefix for Amazon S3 to store results.
-      description: Additional run options you can specify for an evaluation run.
     NullableInteger:
       type: integer
-    NullableBoolean:
-      type: boolean
-    DataQualityResultIdList:
-      type: array
-      items:
-        $ref: '#/components/schemas/HashString'
-      minItems: 1
-      maxItems: 10
+    GetDataQualityRulesetEvaluationRunRequest:
+      type: object
+      required:
+      - RunId
+      title: GetDataQualityRulesetEvaluationRunRequest
+      properties:
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The unique run identifier associated with this run.
+    Timestamp:
+      type: string
+      format: date-time
+    GenericString:
+      type: string
     GetDataQualityRulesetEvaluationRunResponse:
       type: object
       properties:
@@ -347,19 +339,20 @@ components:
           allOf:
           - $ref: '#/components/schemas/DataQualityResultIdList'
           - description: A list of result IDs for the data quality results for the run.
-    DataSource:
+    ExecutionTime:
+      type: integer
+    GlueTableAdditionalOptions:
       type: object
-      required:
-      - GlueTable
-      properties:
-        GlueTable:
-          allOf:
-          - $ref: '#/components/schemas/GlueTable'
-          - description: An Glue table.
-      description: A data source (an Glue table) for which you want data quality results.
-    Timestamp:
+      minProperties: 1
+      maxProperties: 10
+      additionalProperties:
+        $ref: '#/components/schemas/DescriptionString'
+    EntityNotFoundException: {}
+    HashString:
       type: string
-      format: date-time
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     TaskStatusType:
       type: string
       enum:
@@ -370,44 +363,57 @@ components:
       - SUCCEEDED
       - FAILED
       - TIMEOUT
-    ExecutionTime:
-      type: integer
+    DataQualityEvaluationRunAdditionalRunOptions:
+      type: object
+      properties:
+        CloudWatchMetricsEnabled:
+          allOf:
+          - $ref: '#/components/schemas/NullableBoolean'
+          - description: Whether or not to enable CloudWatch metrics.
+        ResultsS3Prefix:
+          allOf:
+          - $ref: '#/components/schemas/UriString'
+          - description: Prefix for Amazon S3 to store results.
+      description: Additional run options you can specify for an evaluation run.
+    OperationTimeoutException: {}
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GlueTableAdditionalOptions:
-      type: object
-      minProperties: 1
-      maxProperties: 10
-      additionalProperties:
-        $ref: '#/components/schemas/DescriptionString'
-    GenericString:
-      type: string
+    DataQualityResultIdList:
+      type: array
+      items:
+        $ref: '#/components/schemas/HashString'
+      minItems: 1
+      maxItems: 10
+    Timeout:
+      type: integer
+      minimum: 1
+    NullableBoolean:
+      type: boolean
+    InternalServiceException: {}
     RulesetNames:
       type: array
       items:
         $ref: '#/components/schemas/NameString'
       minItems: 1
       maxItems: 10
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    UriString:
-      type: string
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -424,20 +430,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

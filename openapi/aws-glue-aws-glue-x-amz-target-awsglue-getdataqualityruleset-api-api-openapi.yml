@@ -216,18 +216,6 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetDataQualityRuleset API'
 components:
   schemas:
-    InvalidInputException: {}
-    EntityNotFoundException: {}
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    InternalServiceException: {}
-    DataQualityRulesetString:
-      type: string
-      minLength: 1
-      maxLength: 65536
     GetDataQualityRulesetRequest:
       type: object
       required:
@@ -238,35 +226,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/NameString'
           - description: The name of the ruleset.
-    Timestamp:
-      type: string
-      format: date-time
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    DataQualityTargetTable:
-      type: object
-      required:
-      - TableName
-      - DatabaseName
-      properties:
-        TableName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the Glue table.
-        DatabaseName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the database where the Glue table exists.
-      description: An object representing an Glue table.
     GetDataQualityRulesetResponse:
       type: object
       properties:
@@ -298,15 +257,62 @@ components:
           allOf:
           - $ref: '#/components/schemas/HashString'
           - description: When a ruleset was created from a recommendation run, this run ID is generated to link the two together.
+    InvalidInputException: {}
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    Timestamp:
+      type: string
+      format: date-time
+    EntityNotFoundException: {}
+    HashString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    OperationTimeoutException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    DataQualityTargetTable:
+      type: object
+      required:
+      - TableName
+      - DatabaseName
+      properties:
+        TableName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the Glue table.
+        DatabaseName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the database where the Glue table exists.
+      description: An object representing an Glue table.
+    DataQualityRulesetString:
+      type: string
+      minLength: 1
+      maxLength: 65536
+    InternalServiceException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -323,20 +329,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

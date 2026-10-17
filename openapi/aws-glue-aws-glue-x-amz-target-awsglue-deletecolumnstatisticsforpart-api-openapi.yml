@@ -232,23 +232,9 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteColumnStatisticsForPart…'
 components:
   schemas:
-    ValueStringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/ValueString'
-    CatalogIdString:
+    ValueString:
       type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    InvalidInputException: {}
-    EntityNotFoundException: {}
-    OperationTimeoutException: {}
-    DeleteColumnStatisticsForPartitionResponse:
-      type: object
-      properties: {}
-    GlueEncryptionException: {}
-    InternalServiceException: {}
+      maxLength: 1024
     DeleteColumnStatisticsForPartitionRequest:
       type: object
       required:
@@ -278,23 +264,37 @@ components:
           allOf:
           - $ref: '#/components/schemas/NameString'
           - description: Name of the column.
-    ValueString:
+    CatalogIdString:
       type: string
-      maxLength: 1024
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    GlueEncryptionException: {}
+    InvalidInputException: {}
+    ValueStringList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ValueString'
+    EntityNotFoundException: {}
+    InternalServiceException: {}
+    OperationTimeoutException: {}
+    DeleteColumnStatisticsForPartitionResponse:
+      type: object
+      properties: {}
   parameters:
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
@@ -305,26 +305,26 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string

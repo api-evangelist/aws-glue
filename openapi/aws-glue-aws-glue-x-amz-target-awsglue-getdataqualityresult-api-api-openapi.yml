@@ -216,8 +216,23 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetDataQualityResult API'
 components:
   schemas:
+    DataQualityRuleResultStatus:
+      type: string
+      enum:
+      - PASS
+      - FAIL
+      - ERROR
     InvalidInputException: {}
-    EntityNotFoundException: {}
+    DataSource:
+      type: object
+      required:
+      - GlueTable
+      properties:
+        GlueTable:
+          allOf:
+          - $ref: '#/components/schemas/GlueTable'
+          - description: An Glue table.
+      description: A data source (an Glue table) for which you want data quality results.
     GlueTable:
       type: object
       required:
@@ -245,36 +260,6 @@ components:
           - $ref: '#/components/schemas/GlueTableAdditionalOptions'
           - description: '<p>Additional options for the table. Currently there are two keys supported:</p> <ul> <li> <p> <code>pushDownPredicate</code>: to filter on partitions without having to list and read all the files in your dataset.</p> </li> <li> <p> <code>catalogPartitionPredicate</code>: to use server-side partition pruning using partition indexes in the Glue Data Catalog.</p> </li> </ul>'
       description: The database and table in the Glue Data Catalog that is used for input or output data.
-    DescriptionString:
-      type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    InternalServiceException: {}
-    GenericBoundedDouble:
-      type: number
-      format: double
-      minimum: 0
-      maximum: 1
-    DataSource:
-      type: object
-      required:
-      - GlueTable
-      properties:
-        GlueTable:
-          allOf:
-          - $ref: '#/components/schemas/GlueTable'
-          - description: An Glue table.
-      description: A data source (an Glue table) for which you want data quality results.
-    Timestamp:
-      type: string
-      format: date-time
-    DataQualityRuleResultStatus:
-      type: string
-      enum:
-      - PASS
-      - FAIL
-      - ERROR
     GetDataQualityResultRequest:
       type: object
       required:
@@ -285,19 +270,48 @@ components:
           allOf:
           - $ref: '#/components/schemas/HashString'
           - description: A unique result ID for the data quality result.
-    NameString:
+    DescriptionString:
       type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    Timestamp:
+      type: string
+      format: date-time
+    GenericString:
+      type: string
+    DataQualityRuleResult:
+      type: object
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the data quality rule.
+        Description:
+          allOf:
+          - $ref: '#/components/schemas/DescriptionString'
+          - description: A description of the data quality rule.
+        EvaluationMessage:
+          allOf:
+          - $ref: '#/components/schemas/DescriptionString'
+          - description: An evaluation message.
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/DataQualityRuleResultStatus'
+          - description: A pass or fail status for the rule.
+      description: Describes the result of the evaluation of a data quality rule.
     GlueTableAdditionalOptions:
       type: object
       minProperties: 1
       maxProperties: 10
       additionalProperties:
         $ref: '#/components/schemas/DescriptionString'
-    GenericString:
+    EntityNotFoundException: {}
+    HashString:
       type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     GetDataQualityResultResponse:
       type: object
       properties:
@@ -345,47 +359,39 @@ components:
           allOf:
           - $ref: '#/components/schemas/DataQualityRuleResults'
           - description: 'A list of <code>DataQualityRuleResult</code> objects representing the results for each rule. '
-    DataQualityRuleResult:
-      type: object
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the data quality rule.
-        Description:
-          allOf:
-          - $ref: '#/components/schemas/DescriptionString'
-          - description: A description of the data quality rule.
-        EvaluationMessage:
-          allOf:
-          - $ref: '#/components/schemas/DescriptionString'
-          - description: An evaluation message.
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/DataQualityRuleResultStatus'
-          - description: A pass or fail status for the rule.
-      description: Describes the result of the evaluation of a data quality rule.
+    OperationTimeoutException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    GenericBoundedDouble:
+      type: number
+      format: double
+      minimum: 0
+      maximum: 1
     DataQualityRuleResults:
       type: array
       items:
         $ref: '#/components/schemas/DataQualityRuleResult'
       minItems: 1
       maxItems: 2000
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
+    InternalServiceException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -402,20 +408,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

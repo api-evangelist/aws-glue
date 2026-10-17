@@ -216,13 +216,15 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetRegistry API'
 components:
   schemas:
+    UpdatedTimestamp:
+      type: string
+    InternalServiceException: {}
     InvalidInputException: {}
     GlueResourceArn:
       type: string
       pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
       minLength: 1
       maxLength: 10240
-    EntityNotFoundException: {}
     DescriptionString:
       type: string
       minLength: 0
@@ -240,12 +242,8 @@ components:
           - $ref: '#/components/schemas/GlueResourceArn'
           - description: Arn of the registry to be updated. One of <code>RegistryArn</code> or <code>RegistryName</code> has to be provided.
       description: A wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
-    InternalServiceException: {}
-    SchemaRegistryNameString:
+    CreatedTimestamp:
       type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
     GetRegistryResponse:
       type: object
       properties:
@@ -273,6 +271,17 @@ components:
           allOf:
           - $ref: '#/components/schemas/UpdatedTimestamp'
           - description: The date and time the registry was updated.
+    RegistryStatus:
+      type: string
+      enum:
+      - AVAILABLE
+      - DELETING
+    EntityNotFoundException: {}
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
     GetRegistryInput:
       type: object
       required:
@@ -283,25 +292,28 @@ components:
           allOf:
           - $ref: '#/components/schemas/RegistryId'
           - description: This is a wrapper structure that may contain the registry name and Amazon Resource Name (ARN).
-    RegistryStatus:
-      type: string
-      enum:
-      - AVAILABLE
-      - DELETING
-    CreatedTimestamp:
-      type: string
-    UpdatedTimestamp:
-      type: string
     AccessDeniedException: {}
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -318,20 +330,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

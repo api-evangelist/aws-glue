@@ -216,9 +216,9 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetMLTaskRun API'
 components:
   schemas:
+    UriString:
+      type: string
     InvalidInputException: {}
-    EntityNotFoundException: {}
-    InternalServiceException: {}
     ImportLabelsTaskRunProperties:
       type: object
       properties:
@@ -231,6 +231,46 @@ components:
           - $ref: '#/components/schemas/ReplaceBoolean'
           - description: Indicates whether to overwrite your existing labels.
       description: Specifies configuration properties for an importing labels task run.
+    GetMLTaskRunRequest:
+      type: object
+      required:
+      - TransformId
+      - TaskRunId
+      title: GetMLTaskRunRequest
+      properties:
+        TransformId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The unique identifier of the machine learning transform.
+        TaskRunId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The unique identifier of the task run.
+    ReplaceBoolean:
+      type: boolean
+    Timestamp:
+      type: string
+      format: date-time
+    GenericString:
+      type: string
+    ExecutionTime:
+      type: integer
+    FindMatchesTaskRunProperties:
+      type: object
+      properties:
+        JobId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The job ID for the Find Matches task run.
+        JobName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name assigned to the job for the Find Matches task run.
+        JobRunId:
+          allOf:
+          - $ref: '#/components/schemas/HashString'
+          - description: The job run ID for the Find Matches task run.
+      description: Specifies configuration properties for a Find Matches task run.
     LabelingSetGenerationTaskRunProperties:
       type: object
       properties:
@@ -239,11 +279,20 @@ components:
           - $ref: '#/components/schemas/UriString'
           - description: The Amazon Simple Storage Service (Amazon S3) path where you will generate the labeling set.
       description: Specifies configuration properties for a labeling set generation task run.
-    Timestamp:
+    ExportLabelsTaskRunProperties:
+      type: object
+      properties:
+        OutputS3Path:
+          allOf:
+          - $ref: '#/components/schemas/UriString'
+          - description: The Amazon Simple Storage Service (Amazon S3) path where you will export the labels.
+      description: Specifies configuration properties for an exporting labels task run.
+    EntityNotFoundException: {}
+    HashString:
       type: string
-      format: date-time
-    ReplaceBoolean:
-      type: boolean
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     TaskStatusType:
       type: string
       enum:
@@ -254,14 +303,6 @@ components:
       - SUCCEEDED
       - FAILED
       - TIMEOUT
-    TaskType:
-      type: string
-      enum:
-      - EVALUATION
-      - LABELING_SET_GENERATION
-      - IMPORT_LABELS
-      - EXPORT_LABELS
-      - FIND_MATCHES
     GetMLTaskRunResponse:
       type: object
       properties:
@@ -305,62 +346,20 @@ components:
           allOf:
           - $ref: '#/components/schemas/ExecutionTime'
           - description: The amount of time (in seconds) that the task run consumed resources.
-    ExecutionTime:
-      type: integer
+    OperationTimeoutException: {}
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    FindMatchesTaskRunProperties:
-      type: object
-      properties:
-        JobId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The job ID for the Find Matches task run.
-        JobName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name assigned to the job for the Find Matches task run.
-        JobRunId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The job run ID for the Find Matches task run.
-      description: Specifies configuration properties for a Find Matches task run.
-    GenericString:
+    TaskType:
       type: string
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GetMLTaskRunRequest:
-      type: object
-      required:
-      - TransformId
-      - TaskRunId
-      title: GetMLTaskRunRequest
-      properties:
-        TransformId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The unique identifier of the machine learning transform.
-        TaskRunId:
-          allOf:
-          - $ref: '#/components/schemas/HashString'
-          - description: The unique identifier of the task run.
-    OperationTimeoutException: {}
-    ExportLabelsTaskRunProperties:
-      type: object
-      properties:
-        OutputS3Path:
-          allOf:
-          - $ref: '#/components/schemas/UriString'
-          - description: The Amazon Simple Storage Service (Amazon S3) path where you will export the labels.
-      description: Specifies configuration properties for an exporting labels task run.
-    UriString:
-      type: string
+      enum:
+      - EVALUATION
+      - LABELING_SET_GENERATION
+      - IMPORT_LABELS
+      - EXPORT_LABELS
+      - FIND_MATCHES
     TaskRunProperties:
       type: object
       properties:
@@ -385,15 +384,22 @@ components:
           - $ref: '#/components/schemas/FindMatchesTaskRunProperties'
           - description: The configuration properties for a find matches task run.
       description: The configuration properties for the task run.
+    InternalServiceException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -410,20 +416,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

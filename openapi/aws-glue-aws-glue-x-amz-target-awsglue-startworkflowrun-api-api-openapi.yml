@@ -243,34 +243,13 @@ paths:
 components:
   schemas:
     InvalidInputException: {}
-    EntityNotFoundException: {}
-    InternalServiceException: {}
-    StartWorkflowRunResponse:
-      type: object
-      properties:
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/IdString'
-          - description: An Id for the new run.
-    ConcurrentRunsExceededException: {}
-    ResourceNumberLimitExceededException: {}
-    NameString:
+    IdString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     GenericString:
       type: string
-    IdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    WorkflowRunProperties:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
     StartWorkflowRunRequest:
       type: object
       required:
@@ -285,15 +264,48 @@ components:
           allOf:
           - $ref: '#/components/schemas/WorkflowRunProperties'
           - description: The workflow run properties for the new workflow run.
+    EntityNotFoundException: {}
+    ResourceNumberLimitExceededException: {}
+    OperationTimeoutException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    WorkflowRunProperties:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    InternalServiceException: {}
+    ConcurrentRunsExceededException: {}
+    StartWorkflowRunResponse:
+      type: object
+      properties:
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/IdString'
+          - description: An Id for the new run.
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -310,20 +322,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string

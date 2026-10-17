@@ -189,9 +189,28 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.ImportCatalogToGlue API'
 components:
+  schemas:
+    CatalogIdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    ImportCatalogToGlueResponse:
+      type: object
+      properties: {}
+    InternalServiceException: {}
+    ImportCatalogToGlueRequest:
+      type: object
+      title: ImportCatalogToGlueRequest
+      properties:
+        CatalogId:
+          allOf:
+          - $ref: '#/components/schemas/CatalogIdString'
+          - description: The ID of the catalog to import. Currently, this should be the Amazon Web Services account ID.
+    OperationTimeoutException: {}
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -208,8 +227,20 @@ components:
       schema:
         type: string
       required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Credential:
       name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -220,37 +251,6 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
-  schemas:
-    CatalogIdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ImportCatalogToGlueRequest:
-      type: object
-      title: ImportCatalogToGlueRequest
-      properties:
-        CatalogId:
-          allOf:
-          - $ref: '#/components/schemas/CatalogIdString'
-          - description: The ID of the catalog to import. Currently, this should be the Amazon Web Services account ID.
-    OperationTimeoutException: {}
-    InternalServiceException: {}
-    ImportCatalogToGlueResponse:
-      type: object
-      properties: {}
   securitySchemes:
     hmac:
       type: apiKey

@@ -215,63 +215,50 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.DeleteSchema API'
 components:
-  parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Date:
-      name: X-Amz-Date
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Security-Token:
-      name: X-Amz-Security-Token
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
   schemas:
-    InvalidInputException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
+    ConcurrentModificationException: {}
     SchemaStatus:
       type: string
       enum:
       - AVAILABLE
       - PENDING
       - DELETING
-    EntityNotFoundException: {}
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    DeleteSchemaResponse:
+      type: object
+      properties:
+        SchemaArn:
+          allOf:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: The Amazon Resource Name (ARN) of the schema being deleted.
+        SchemaName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the schema being deleted.
+        Status:
+          allOf:
+          - $ref: '#/components/schemas/SchemaStatus'
+          - description: The status of the schema.
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    DeleteSchemaInput:
+      type: object
+      required:
+      - SchemaId
+      title: DeleteSchemaInput
+      properties:
+        SchemaId:
+          allOf:
+          - $ref: '#/components/schemas/SchemaId'
+          - description: This is a wrapper structure that may contain the schema name and Amazon Resource Name (ARN).
+    AccessDeniedException: {}
     SchemaId:
       type: object
       properties:
@@ -288,38 +275,51 @@ components:
           - $ref: '#/components/schemas/SchemaRegistryNameString'
           - description: The name of the schema registry that contains the schema.
       description: The unique ID of the schema in the Glue schema registry.
-    DeleteSchemaResponse:
-      type: object
-      properties:
-        SchemaArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: The Amazon Resource Name (ARN) of the schema being deleted.
-        SchemaName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the schema being deleted.
-        Status:
-          allOf:
-          - $ref: '#/components/schemas/SchemaStatus'
-          - description: The status of the schema.
-    DeleteSchemaInput:
-      type: object
-      required:
-      - SchemaId
-      title: DeleteSchemaInput
-      properties:
-        SchemaId:
-          allOf:
-          - $ref: '#/components/schemas/SchemaId'
-          - description: This is a wrapper structure that may contain the schema name and Amazon Resource Name (ARN).
-    AccessDeniedException: {}
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    ConcurrentModificationException: {}
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+  parameters:
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Date:
+      name: X-Amz-Date
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Security-Token:
+      name: X-Amz-Security-Token
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

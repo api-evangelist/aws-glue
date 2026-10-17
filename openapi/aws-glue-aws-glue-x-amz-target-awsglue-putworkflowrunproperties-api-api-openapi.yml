@@ -256,22 +256,18 @@ paths:
 components:
   schemas:
     InvalidInputException: {}
-    EntityNotFoundException: {}
-    InternalServiceException: {}
-    ResourceNumberLimitExceededException: {}
-    AlreadyExistsException: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GenericString:
-      type: string
     IdString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    AlreadyExistsException: {}
+    GenericString:
+      type: string
+    ConcurrentModificationException: {}
+    EntityNotFoundException: {}
+    ResourceNumberLimitExceededException: {}
+    OperationTimeoutException: {}
     PutWorkflowRunPropertiesRequest:
       type: object
       required:
@@ -292,24 +288,34 @@ components:
           allOf:
           - $ref: '#/components/schemas/WorkflowRunProperties'
           - description: The properties to put for the specified run.
-    ConcurrentModificationException: {}
-    OperationTimeoutException: {}
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    PutWorkflowRunPropertiesResponse:
+      type: object
+      properties: {}
     WorkflowRunProperties:
       type: object
       additionalProperties:
         $ref: '#/components/schemas/GenericString'
-    PutWorkflowRunPropertiesResponse:
-      type: object
-      properties: {}
+    InternalServiceException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -326,20 +332,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

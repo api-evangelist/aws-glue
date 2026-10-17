@@ -268,110 +268,6 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.BatchGetPartition API'
 components:
   schemas:
-    ValueStringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/ValueString'
-    InvalidInputException: {}
-    GlueResourceArn:
-      type: string
-      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
-      minLength: 1
-      maxLength: 10240
-    EntityNotFoundException: {}
-    Partition:
-      type: object
-      properties:
-        Values:
-          allOf:
-          - $ref: '#/components/schemas/ValueStringList'
-          - description: The values of the partition.
-        DatabaseName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the catalog database in which to create the partition.
-        TableName:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the database table in which to create the partition.
-        CreationTime:
-          allOf:
-          - $ref: '#/components/schemas/Timestamp'
-          - description: The time at which the partition was created.
-        LastAccessTime:
-          allOf:
-          - $ref: '#/components/schemas/Timestamp'
-          - description: The last time at which the partition was accessed.
-        StorageDescriptor:
-          allOf:
-          - $ref: '#/components/schemas/StorageDescriptor'
-          - description: Provides information about the physical location where the partition is stored.
-        Parameters:
-          allOf:
-          - $ref: '#/components/schemas/ParametersMap'
-          - description: These key-value pairs define partition parameters.
-        LastAnalyzedTime:
-          allOf:
-          - $ref: '#/components/schemas/Timestamp'
-          - description: The last time at which column statistics were computed for this partition.
-        CatalogId:
-          allOf:
-          - $ref: '#/components/schemas/CatalogIdString'
-          - description: The ID of the Data Catalog in which the partition resides.
-      description: Represents a slice of table data.
-    ColumnTypeString:
-      type: string
-      minLength: 0
-      maxLength: 131072
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    InternalServiceException: {}
-    SchemaId:
-      type: object
-      properties:
-        SchemaArn:
-          allOf:
-          - $ref: '#/components/schemas/GlueResourceArn'
-          - description: The Amazon Resource Name (ARN) of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
-        SchemaName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
-        RegistryName:
-          allOf:
-          - $ref: '#/components/schemas/SchemaRegistryNameString'
-          - description: The name of the schema registry that contains the schema.
-      description: The unique ID of the schema in the Glue schema registry.
-    LocationString:
-      type: string
-      maxLength: 2056
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    Order:
-      type: object
-      required:
-      - Column
-      - SortOrder
-      properties:
-        Column:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the column.
-        SortOrder:
-          allOf:
-          - $ref: '#/components/schemas/IntegerFlag'
-          - description: Indicates that the column is sorted in ascending order (<code>== 1</code>), or in descending order (<code>==0</code>).
-      description: Specifies the sort order of a sorted column.
-    SchemaVersionIdString:
-      type: string
-      pattern: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
-      minLength: 36
-      maxLength: 36
-    ValueString:
-      type: string
-      maxLength: 1024
-    OrderList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Order'
     BatchGetPartitionResponse:
       type: object
       properties:
@@ -383,14 +279,55 @@ components:
           allOf:
           - $ref: '#/components/schemas/BatchGetPartitionValueList'
           - description: A list of the partition values in the request for which partitions were not returned.
-    GlueEncryptionException: {}
-    ColumnValuesString:
+    LocationString:
       type: string
+      maxLength: 2056
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    SkewedInfo:
+      type: object
+      properties:
+        SkewedColumnNames:
+          allOf:
+          - $ref: '#/components/schemas/NameStringList'
+          - description: A list of names of columns that contain skewed values.
+        SkewedColumnValues:
+          allOf:
+          - $ref: '#/components/schemas/ColumnValueStringList'
+          - description: A list of values that appear so frequently as to be considered skewed.
+        SkewedColumnValueLocationMaps:
+          allOf:
+          - $ref: '#/components/schemas/LocationMap'
+          - description: A mapping of skewed values to the columns that contain them.
+      description: Specifies skewed values in a table. Skewed values are those that occur with very high frequency.
+    InvalidInputException: {}
+    SchemaReference:
+      type: object
+      properties:
+        SchemaId:
+          allOf:
+          - $ref: '#/components/schemas/SchemaId'
+          - description: A structure that contains schema identity fields. Either this or the <code>SchemaVersionId</code> has to be provided.
+        SchemaVersionId:
+          allOf:
+          - $ref: '#/components/schemas/SchemaVersionIdString'
+          - description: The unique ID assigned to a version of the schema. Either this or the <code>SchemaId</code> has to be provided.
+        SchemaVersionNumber:
+          allOf:
+          - $ref: '#/components/schemas/VersionLongNumber'
+          - description: The version number of the schema.
+      description: An object that references a schema stored in the Glue Schema Registry.
     IntegerFlag:
       type: integer
       minimum: 0
       maximum: 1
-    InvalidStateException: {}
+    PartitionList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Partition'
+    NameStringList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
     PartitionValueList:
       type: object
       required:
@@ -401,6 +338,24 @@ components:
           - $ref: '#/components/schemas/ValueStringList'
           - description: The list of values.
       description: Contains a list of values defining partitions.
+    ColumnList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Column'
+    GlueResourceArn:
+      type: string
+      pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
+      minLength: 1
+      maxLength: 10240
+    CatalogIdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    FormatString:
+      type: string
+      maxLength: 128
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     StorageDescriptor:
       type: object
       properties:
@@ -461,82 +416,10 @@ components:
           - $ref: '#/components/schemas/SchemaReference'
           - description: <p>An object that references a schema stored in the Glue Schema Registry.</p> <p>When creating a table, you can pass an empty list of columns for the schema, and instead use a schema reference.</p>
       description: Describes the physical storage of table data.
-    Timestamp:
-      type: string
-      format: date-time
-    SchemaReference:
-      type: object
-      properties:
-        SchemaId:
-          allOf:
-          - $ref: '#/components/schemas/SchemaId'
-          - description: A structure that contains schema identity fields. Either this or the <code>SchemaVersionId</code> has to be provided.
-        SchemaVersionId:
-          allOf:
-          - $ref: '#/components/schemas/SchemaVersionIdString'
-          - description: The unique ID assigned to a version of the schema. Either this or the <code>SchemaId</code> has to be provided.
-        SchemaVersionNumber:
-          allOf:
-          - $ref: '#/components/schemas/VersionLongNumber'
-          - description: The version number of the schema.
-      description: An object that references a schema stored in the Glue Schema Registry.
-    ParametersMapValue:
-      type: string
-      maxLength: 512000
-    SkewedInfo:
-      type: object
-      properties:
-        SkewedColumnNames:
-          allOf:
-          - $ref: '#/components/schemas/NameStringList'
-          - description: A list of names of columns that contain skewed values.
-        SkewedColumnValues:
-          allOf:
-          - $ref: '#/components/schemas/ColumnValueStringList'
-          - description: A list of values that appear so frequently as to be considered skewed.
-        SkewedColumnValueLocationMaps:
-          allOf:
-          - $ref: '#/components/schemas/LocationMap'
-          - description: A mapping of skewed values to the columns that contain them.
-      description: Specifies skewed values in a table. Skewed values are those that occur with very high frequency.
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    VersionLongNumber:
-      type: integer
-      minimum: 1
-      maximum: 100000
-    CommentString:
-      type: string
-      minLength: 0
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    Integer:
-      type: integer
-    Column:
-      type: object
-      required:
-      - Name
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the <code>Column</code>.
-        Type:
-          allOf:
-          - $ref: '#/components/schemas/ColumnTypeString'
-          - description: The data type of the <code>Column</code>.
-        Comment:
-          allOf:
-          - $ref: '#/components/schemas/CommentString'
-          - description: A free-form text comment.
-        Parameters:
-          allOf:
-          - $ref: '#/components/schemas/ParametersMap'
-          - description: These key-value pairs define properties associated with the column.
-      description: A column in a <code>Table</code>.
+    OrderList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Order'
     SerDeInfo:
       type: object
       properties:
@@ -553,25 +436,110 @@ components:
           - $ref: '#/components/schemas/ParametersMap'
           - description: These key-value pairs define initialization parameters for the SerDe.
       description: Information about a serialization/deserialization program (SerDe) that serves as an extractor and loader.
-    BatchGetPartitionValueList:
+    FederationSourceRetryableException: {}
+    SchemaId:
+      type: object
+      properties:
+        SchemaArn:
+          allOf:
+          - $ref: '#/components/schemas/GlueResourceArn'
+          - description: The Amazon Resource Name (ARN) of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
+        SchemaName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the schema. One of <code>SchemaArn</code> or <code>SchemaName</code> has to be provided.
+        RegistryName:
+          allOf:
+          - $ref: '#/components/schemas/SchemaRegistryNameString'
+          - description: The name of the schema registry that contains the schema.
+      description: The unique ID of the schema in the Glue schema registry.
+    SchemaVersionIdString:
+      type: string
+      pattern: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
+      minLength: 36
+      maxLength: 36
+    Boolean:
+      type: boolean
+    ColumnTypeString:
+      type: string
+      minLength: 0
+      maxLength: 131072
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    Timestamp:
+      type: string
+      format: date-time
+    ValueString:
+      type: string
+      maxLength: 1024
+    ColumnValueStringList:
       type: array
       items:
-        $ref: '#/components/schemas/PartitionValueList'
-      minItems: 0
-      maxItems: 1000
+        $ref: '#/components/schemas/ColumnValuesString'
     LocationStringList:
       type: array
       items:
         $ref: '#/components/schemas/LocationString'
-    PartitionList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Partition'
-    NameString:
+    Order:
+      type: object
+      required:
+      - Column
+      - SortOrder
+      properties:
+        Column:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the column.
+        SortOrder:
+          allOf:
+          - $ref: '#/components/schemas/IntegerFlag'
+          - description: Indicates that the column is sorted in ascending order (<code>== 1</code>), or in descending order (<code>==0</code>).
+      description: Specifies the sort order of a sorted column.
+    Partition:
+      type: object
+      properties:
+        Values:
+          allOf:
+          - $ref: '#/components/schemas/ValueStringList'
+          - description: The values of the partition.
+        DatabaseName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the catalog database in which to create the partition.
+        TableName:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the database table in which to create the partition.
+        CreationTime:
+          allOf:
+          - $ref: '#/components/schemas/Timestamp'
+          - description: The time at which the partition was created.
+        LastAccessTime:
+          allOf:
+          - $ref: '#/components/schemas/Timestamp'
+          - description: The last time at which the partition was accessed.
+        StorageDescriptor:
+          allOf:
+          - $ref: '#/components/schemas/StorageDescriptor'
+          - description: Provides information about the physical location where the partition is stored.
+        Parameters:
+          allOf:
+          - $ref: '#/components/schemas/ParametersMap'
+          - description: These key-value pairs define partition parameters.
+        LastAnalyzedTime:
+          allOf:
+          - $ref: '#/components/schemas/Timestamp'
+          - description: The last time at which column statistics were computed for this partition.
+        CatalogId:
+          allOf:
+          - $ref: '#/components/schemas/CatalogIdString'
+          - description: The ID of the Data Catalog in which the partition resides.
+      description: Represents a slice of table data.
+    Integer:
+      type: integer
+    ParametersMapValue:
       type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+      maxLength: 512000
+    EntityNotFoundException: {}
     BatchGetPartitionRequest:
       type: object
       required:
@@ -596,49 +564,87 @@ components:
           allOf:
           - $ref: '#/components/schemas/BatchGetPartitionValueList'
           - description: A list of partition values identifying the partitions to retrieve.
-    ColumnValueStringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/ColumnValuesString'
-    CatalogIdString:
+    ColumnValuesString:
       type: string
-      minLength: 1
+    CommentString:
+      type: string
+      minLength: 0
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    Boolean:
-      type: boolean
     OperationTimeoutException: {}
+    VersionLongNumber:
+      type: integer
+      minimum: 1
+      maximum: 100000
     LocationMap:
       type: object
       additionalProperties:
         $ref: '#/components/schemas/ColumnValuesString'
-    FederationSourceRetryableException: {}
-    FormatString:
+    NameString:
       type: string
-      maxLength: 128
+      minLength: 1
+      maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    NameStringList:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    InvalidStateException: {}
     ParametersMap:
       type: object
       additionalProperties:
         $ref: '#/components/schemas/ParametersMapValue'
     FederationSourceException: {}
-    ColumnList:
+    GlueEncryptionException: {}
+    BatchGetPartitionValueList:
       type: array
       items:
-        $ref: '#/components/schemas/Column'
+        $ref: '#/components/schemas/PartitionValueList'
+      minItems: 0
+      maxItems: 1000
+    InternalServiceException: {}
+    ValueStringList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ValueString'
+    Column:
+      type: object
+      required:
+      - Name
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the <code>Column</code>.
+        Type:
+          allOf:
+          - $ref: '#/components/schemas/ColumnTypeString'
+          - description: The data type of the <code>Column</code>.
+        Comment:
+          allOf:
+          - $ref: '#/components/schemas/CommentString'
+          - description: A free-form text comment.
+        Parameters:
+          allOf:
+          - $ref: '#/components/schemas/ParametersMap'
+          - description: These key-value pairs define properties associated with the column.
+      description: A column in a <code>Table</code>.
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -655,20 +661,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

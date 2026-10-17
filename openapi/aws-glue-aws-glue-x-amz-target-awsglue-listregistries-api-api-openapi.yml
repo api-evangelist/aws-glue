@@ -215,6 +215,13 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.ListRegistries API'
 components:
   schemas:
+    MaxResultsNumber:
+      type: integer
+      minimum: 1
+      maximum: 100
+    UpdatedTimestamp:
+      type: string
+    InternalServiceException: {}
     InvalidInputException: {}
     GlueResourceArn:
       type: string
@@ -226,40 +233,18 @@ components:
       minLength: 0
       maxLength: 2048
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    InternalServiceException: {}
-    SchemaRegistryTokenString:
-      type: string
-    MaxResultsNumber:
-      type: integer
-      minimum: 1
-      maximum: 100
-    RegistryListDefinition:
-      type: array
-      items:
-        $ref: '#/components/schemas/RegistryListItem'
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    RegistryStatus:
-      type: string
-      enum:
-      - AVAILABLE
-      - DELETING
-    ListRegistriesResponse:
+    ListRegistriesInput:
       type: object
+      title: ListRegistriesInput
       properties:
-        Registries:
+        MaxResults:
           allOf:
-          - $ref: '#/components/schemas/RegistryListDefinition'
-          - description: An array of <code>RegistryDetailedListItem</code> objects containing minimal details of each registry.
+          - $ref: '#/components/schemas/MaxResultsNumber'
+          - description: Maximum number of results required per page. If the value is not supplied, this will be defaulted to 25 per page.
         NextToken:
           allOf:
           - $ref: '#/components/schemas/SchemaRegistryTokenString'
-          - description: A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
-    CreatedTimestamp:
-      type: string
+          - description: A continuation token, if this is a continuation call.
     RegistryListItem:
       type: object
       properties:
@@ -288,30 +273,57 @@ components:
           - $ref: '#/components/schemas/UpdatedTimestamp'
           - description: The date the registry was updated.
       description: A structure containing the details for a registry.
-    UpdatedTimestamp:
+    RegistryListDefinition:
+      type: array
+      items:
+        $ref: '#/components/schemas/RegistryListItem'
+    RegistryStatus:
       type: string
-    AccessDeniedException: {}
-    ListRegistriesInput:
+      enum:
+      - AVAILABLE
+      - DELETING
+    ListRegistriesResponse:
       type: object
-      title: ListRegistriesInput
       properties:
-        MaxResults:
+        Registries:
           allOf:
-          - $ref: '#/components/schemas/MaxResultsNumber'
-          - description: Maximum number of results required per page. If the value is not supplied, this will be defaulted to 25 per page.
+          - $ref: '#/components/schemas/RegistryListDefinition'
+          - description: An array of <code>RegistryDetailedListItem</code> objects containing minimal details of each registry.
         NextToken:
           allOf:
           - $ref: '#/components/schemas/SchemaRegistryTokenString'
-          - description: A continuation token, if this is a continuation call.
+          - description: A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    CreatedTimestamp:
+      type: string
+    AccessDeniedException: {}
+    SchemaRegistryTokenString:
+      type: string
   parameters:
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -328,20 +340,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

@@ -228,9 +228,43 @@ paths:
       tags:
       - 'AWS Glue #X Amz Target=AWSGlue.StopWorkflowRun API'
 components:
+  schemas:
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    InternalServiceException: {}
+    IllegalWorkflowStateException: {}
+    InvalidInputException: {}
+    EntityNotFoundException: {}
+    StopWorkflowRunResponse:
+      type: object
+      properties: {}
+    StopWorkflowRunRequest:
+      type: object
+      required:
+      - Name
+      - RunId
+      title: StopWorkflowRunRequest
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the workflow to stop.
+        RunId:
+          allOf:
+          - $ref: '#/components/schemas/IdString'
+          - description: The ID of the workflow run to stop.
+    IdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    OperationTimeoutException: {}
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -253,58 +287,24 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
-  schemas:
-    InvalidInputException: {}
-    EntityNotFoundException: {}
-    OperationTimeoutException: {}
-    InternalServiceException: {}
-    IllegalWorkflowStateException: {}
-    StopWorkflowRunResponse:
-      type: object
-      properties: {}
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    StopWorkflowRunRequest:
-      type: object
-      required:
-      - Name
-      - RunId
-      title: StopWorkflowRunRequest
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the workflow to stop.
-        RunId:
-          allOf:
-          - $ref: '#/components/schemas/IdString'
-          - description: The ID of the workflow run to stop.
-    IdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    X-Amz-Signature:
+      name: X-Amz-Signature
+      in: header
+      schema:
+        type: string
+      required: false
   securitySchemes:
     hmac:
       type: apiKey

@@ -254,8 +254,7 @@ components:
       pattern: arn:(aws|aws-us-gov|aws-cn):glue:.*
       minLength: 1
       maxLength: 10240
-    EntityNotFoundException: {}
-    InternalServiceException: {}
+    AccessDeniedException: {}
     SchemaId:
       type: object
       properties:
@@ -277,11 +276,7 @@ components:
       pattern: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
       minLength: 36
       maxLength: 36
-    SchemaDefinitionString:
-      type: string
-      pattern: .*\S.*
-      minLength: 1
-      maxLength: 170000
+    ConcurrentModificationException: {}
     RegisterSchemaVersionResponse:
       type: object
       properties:
@@ -297,23 +292,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaVersionStatus'
           - description: The status of the schema version.
-    ResourceNumberLimitExceededException: {}
-    SchemaRegistryNameString:
-      type: string
-      pattern: '[a-zA-Z0-9-_$#.]+'
-      minLength: 1
-      maxLength: 255
-    VersionLongNumber:
-      type: integer
-      minimum: 1
-      maximum: 100000
-    SchemaVersionStatus:
-      type: string
-      enum:
-      - AVAILABLE
-      - PENDING
-      - FAILURE
-      - DELETING
+    EntityNotFoundException: {}
     RegisterSchemaVersionInput:
       type: object
       required:
@@ -329,17 +308,44 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaDefinitionString'
           - description: The schema definition using the <code>DataFormat</code> setting for the <code>SchemaName</code>.
-    ConcurrentModificationException: {}
-    AccessDeniedException: {}
+    ResourceNumberLimitExceededException: {}
+    VersionLongNumber:
+      type: integer
+      minimum: 1
+      maximum: 100000
+    SchemaVersionStatus:
+      type: string
+      enum:
+      - AVAILABLE
+      - PENDING
+      - FAILURE
+      - DELETING
+    SchemaRegistryNameString:
+      type: string
+      pattern: '[a-zA-Z0-9-_$#.]+'
+      minLength: 1
+      maxLength: 255
+    SchemaDefinitionString:
+      type: string
+      pattern: .*\S.*
+      minLength: 1
+      maxLength: 170000
+    InternalServiceException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -356,20 +362,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

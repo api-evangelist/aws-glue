@@ -233,23 +233,27 @@ paths:
 components:
   schemas:
     InvalidInputException: {}
+    TagsMap:
+      type: object
+      minProperties: 0
+      maxProperties: 50
+      additionalProperties:
+        $ref: '#/components/schemas/TagValue'
     DescriptionString:
       type: string
       minLength: 0
       maxLength: 2048
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
-    InternalServiceException: {}
-    DataQualityRulesetString:
+    TagValue:
+      type: string
+      minLength: 0
+      maxLength: 256
+    AlreadyExistsException: {}
+    HashString:
       type: string
       minLength: 1
-      maxLength: 65536
-    CreateDataQualityRulesetResponse:
-      type: object
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: A unique name for the data quality ruleset.
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     ResourceNumberLimitExceededException: {}
     CreateDataQualityRulesetRequest:
       type: object
@@ -282,28 +286,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/HashString'
           - description: Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.
-    AlreadyExistsException: {}
-    TagValue:
-      type: string
-      minLength: 0
-      maxLength: 256
-    TagsMap:
-      type: object
-      minProperties: 0
-      maxProperties: 50
-      additionalProperties:
-        $ref: '#/components/schemas/TagValue'
+    OperationTimeoutException: {}
     NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    HashString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
     DataQualityTargetTable:
       type: object
       required:
@@ -319,15 +307,33 @@ components:
           - $ref: '#/components/schemas/NameString'
           - description: The name of the database where the Glue table exists.
       description: An object representing an Glue table.
+    CreateDataQualityRulesetResponse:
+      type: object
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: A unique name for the data quality ruleset.
+    DataQualityRulesetString:
+      type: string
+      minLength: 1
+      maxLength: 65536
+    InternalServiceException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -344,20 +350,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

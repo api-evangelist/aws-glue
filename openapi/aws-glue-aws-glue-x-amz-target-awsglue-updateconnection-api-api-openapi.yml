@@ -229,16 +229,32 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.UpdateConnection API'
 components:
   schemas:
-    InvalidInputException: {}
-    EntityNotFoundException: {}
-    DescriptionString:
+    ConnectionType:
       type: string
-      minLength: 0
-      maxLength: 2048
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+      enum:
+      - JDBC
+      - SFTP
+      - MONGODB
+      - KAFKA
+      - NETWORK
+      - MARKETPLACE
+      - CUSTOM
+    SecurityGroupIdList:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 0
+      maxItems: 50
+    MatchCriteria:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 0
+      maxItems: 10
     UpdateConnectionResponse:
       type: object
       properties: {}
+    InvalidInputException: {}
     PhysicalConnectionRequirements:
       type: object
       properties:
@@ -255,37 +271,46 @@ components:
           - $ref: '#/components/schemas/NameString'
           - description: The connection's Availability Zone. This field is redundant because the specified subnet implies the Availability Zone to be used. Currently the field must be populated, but it will be deprecated in the future.
       description: Specifies the physical requirements for a connection.
+    DescriptionString:
+      type: string
+      minLength: 0
+      maxLength: 2048
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*'
+    CatalogIdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     ValueString:
       type: string
       maxLength: 1024
-    GlueEncryptionException: {}
-    SecurityGroupIdList:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 0
-      maxItems: 50
     ConnectionProperties:
       type: object
       minProperties: 0
       maxProperties: 100
       additionalProperties:
         $ref: '#/components/schemas/ValueString'
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ConnectionType:
-      type: string
-      enum:
-      - JDBC
-      - SFTP
-      - MONGODB
-      - KAFKA
-      - NETWORK
-      - MARKETPLACE
-      - CUSTOM
+    EntityNotFoundException: {}
+    OperationTimeoutException: {}
+    UpdateConnectionRequest:
+      type: object
+      required:
+      - Name
+      - ConnectionInput
+      title: UpdateConnectionRequest
+      properties:
+        CatalogId:
+          allOf:
+          - $ref: '#/components/schemas/CatalogIdString'
+          - description: The ID of the Data Catalog in which the connection resides. If none is provided, the Amazon Web Services account ID is used by default.
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the connection definition to update.
+        ConnectionInput:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionInput'
+          - description: A <code>ConnectionInput</code> object that redefines the connection in question.
     ConnectionInput:
       type: object
       required:
@@ -318,46 +343,27 @@ components:
           - $ref: '#/components/schemas/PhysicalConnectionRequirements'
           - description: A map of physical connection requirements, such as virtual private cloud (VPC) and <code>SecurityGroup</code>, that are needed to successfully make this connection.
       description: A structure that is used to specify a connection to create or update.
-    CatalogIdString:
+    NameString:
       type: string
       minLength: 1
       maxLength: 255
       x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    OperationTimeoutException: {}
-    MatchCriteria:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 0
-      maxItems: 10
-    UpdateConnectionRequest:
-      type: object
-      required:
-      - Name
-      - ConnectionInput
-      title: UpdateConnectionRequest
-      properties:
-        CatalogId:
-          allOf:
-          - $ref: '#/components/schemas/CatalogIdString'
-          - description: The ID of the Data Catalog in which the connection resides. If none is provided, the Amazon Web Services account ID is used by default.
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the connection definition to update.
-        ConnectionInput:
-          allOf:
-          - $ref: '#/components/schemas/ConnectionInput'
-          - description: A <code>ConnectionInput</code> object that redefines the connection in question.
+    GlueEncryptionException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -374,20 +380,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

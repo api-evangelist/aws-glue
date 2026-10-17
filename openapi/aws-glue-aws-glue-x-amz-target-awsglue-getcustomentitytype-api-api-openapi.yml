@@ -229,32 +229,6 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetCustomEntityType API'
 components:
   schemas:
-    GetCustomEntityTypeRequest:
-      type: object
-      required:
-      - Name
-      title: GetCustomEntityTypeRequest
-      properties:
-        Name:
-          allOf:
-          - $ref: '#/components/schemas/NameString'
-          - description: The name of the custom pattern that you want to retrieve.
-    InvalidInputException: {}
-    EntityNotFoundException: {}
-    OperationTimeoutException: {}
-    InternalServiceException: {}
-    ContextWords:
-      type: array
-      items:
-        $ref: '#/components/schemas/NameString'
-      minItems: 1
-      maxItems: 20
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    AccessDeniedException: {}
     GetCustomEntityTypeResponse:
       type: object
       properties:
@@ -270,9 +244,35 @@ components:
           allOf:
           - $ref: '#/components/schemas/ContextWords'
           - description: A list of context words if specified when you created the custom pattern. If none of these context words are found within the vicinity of the regular expression the data will not be detected as sensitive data.
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    ContextWords:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameString'
+      minItems: 1
+      maxItems: 20
+    InternalServiceException: {}
+    InvalidInputException: {}
+    AccessDeniedException: {}
+    EntityNotFoundException: {}
+    GetCustomEntityTypeRequest:
+      type: object
+      required:
+      - Name
+      title: GetCustomEntityTypeRequest
+      properties:
+        Name:
+          allOf:
+          - $ref: '#/components/schemas/NameString'
+          - description: The name of the custom pattern that you want to retrieve.
+    OperationTimeoutException: {}
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -289,26 +289,26 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Credential:
-      name: X-Amz-Credential
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Credential:
+      name: X-Amz-Credential
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
+      in: header
+      schema:
+        type: string
+      required: false
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string

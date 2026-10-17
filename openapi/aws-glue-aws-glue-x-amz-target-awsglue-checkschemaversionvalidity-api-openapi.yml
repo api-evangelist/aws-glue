@@ -203,21 +203,20 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.CheckSchemaVersionValidity…'
 components:
   schemas:
-    CheckSchemaVersionValidityInput:
-      type: object
-      required:
-      - DataFormat
-      - SchemaDefinition
-      title: CheckSchemaVersionValidityInput
-      properties:
-        DataFormat:
-          allOf:
-          - $ref: '#/components/schemas/DataFormat'
-          - description: The data format of the schema definition. Currently <code>AVRO</code>, <code>JSON</code> and <code>PROTOBUF</code> are supported.
-        SchemaDefinition:
-          allOf:
-          - $ref: '#/components/schemas/SchemaDefinitionString'
-          - description: The definition of the schema that has to be validated.
+    IsVersionValid:
+      type: boolean
+    DataFormat:
+      type: string
+      enum:
+      - AVRO
+      - JSON
+      - PROTOBUF
+    SchemaDefinitionString:
+      type: string
+      pattern: .*\S.*
+      minLength: 1
+      maxLength: 170000
+    AccessDeniedException: {}
     InvalidInputException: {}
     SchemaValidationError:
       type: string
@@ -234,24 +233,25 @@ components:
           allOf:
           - $ref: '#/components/schemas/SchemaValidationError'
           - description: A validation failure error message.
+    CheckSchemaVersionValidityInput:
+      type: object
+      required:
+      - DataFormat
+      - SchemaDefinition
+      title: CheckSchemaVersionValidityInput
+      properties:
+        DataFormat:
+          allOf:
+          - $ref: '#/components/schemas/DataFormat'
+          - description: The data format of the schema definition. Currently <code>AVRO</code>, <code>JSON</code> and <code>PROTOBUF</code> are supported.
+        SchemaDefinition:
+          allOf:
+          - $ref: '#/components/schemas/SchemaDefinitionString'
+          - description: The definition of the schema that has to be validated.
     InternalServiceException: {}
-    IsVersionValid:
-      type: boolean
-    DataFormat:
-      type: string
-      enum:
-      - AVRO
-      - JSON
-      - PROTOBUF
-    AccessDeniedException: {}
-    SchemaDefinitionString:
-      type: string
-      pattern: .*\S.*
-      minLength: 1
-      maxLength: 170000
   parameters:
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -274,8 +274,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Signature:
-      name: X-Amz-Signature
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
@@ -286,8 +286,8 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Signature:
+      name: X-Amz-Signature
       in: header
       schema:
         type: string

@@ -217,27 +217,6 @@ paths:
 components:
   schemas:
     InvalidInputException: {}
-    DevEndpointNames:
-      type: array
-      items:
-        $ref: '#/components/schemas/GenericString'
-      minItems: 1
-      maxItems: 25
-    InternalServiceException: {}
-    TimestampValue:
-      type: string
-      format: date-time
-    RoleArn:
-      type: string
-      pattern: arn:aws:iam::\d{12}:role/.*
-    NullableInteger:
-      type: integer
-    DevEndpointList:
-      type: array
-      items:
-        $ref: '#/components/schemas/DevEndpoint'
-    IntegerValue:
-      type: integer
     BatchGetDevEndpointsResponse:
       type: object
       properties:
@@ -249,37 +228,33 @@ components:
           allOf:
           - $ref: '#/components/schemas/DevEndpointNames'
           - description: A list of <code>DevEndpoints</code> not found.
+    GlueVersionString:
+      type: string
+      pattern: ^\w+\.\w+$
+      minLength: 1
+      maxLength: 255
+    RoleArn:
+      type: string
+      pattern: arn:aws:iam::\d{12}:role/.*
     StringList:
       type: array
       items:
         $ref: '#/components/schemas/GenericString'
-    PublicKeysList:
+    NullableInteger:
+      type: integer
+    AccessDeniedException: {}
+    DevEndpointNames:
       type: array
       items:
         $ref: '#/components/schemas/GenericString'
-      maxItems: 5
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+      minItems: 1
+      maxItems: 25
+    DevEndpointList:
+      type: array
+      items:
+        $ref: '#/components/schemas/DevEndpoint'
     GenericString:
       type: string
-    MapValue:
-      type: object
-      minProperties: 0
-      maxProperties: 100
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
-    OperationTimeoutException: {}
-    WorkerType:
-      type: string
-      enum:
-      - Standard
-      - G.1X
-      - G.2X
-      - G.025X
-    AccessDeniedException: {}
     BatchGetDevEndpointsRequest:
       type: object
       required:
@@ -290,6 +265,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/DevEndpointNames'
           - description: The list of <code>DevEndpoint</code> names, which might be the names returned from the <code>ListDevEndpoint</code> operation.
+    TimestampValue:
+      type: string
+      format: date-time
+    PublicKeysList:
+      type: array
+      items:
+        $ref: '#/components/schemas/GenericString'
+      maxItems: 5
+    IntegerValue:
+      type: integer
     DevEndpoint:
       type: object
       properties:
@@ -394,20 +379,41 @@ components:
           - $ref: '#/components/schemas/MapValue'
           - description: '<p>A map of arguments used to configure the <code>DevEndpoint</code>.</p> <p>Valid arguments are:</p> <ul> <li> <p> <code>"--enable-glue-datacatalog": ""</code> </p> </li> </ul> <p>You can specify a version of Python support for development endpoints by using the <code>Arguments</code> parameter in the <code>CreateDevEndpoint</code> or <code>UpdateDevEndpoint</code> APIs. If no arguments are provided, the version defaults to Python 2.</p>'
       description: A development endpoint where a developer can remotely debug extract, transform, and load (ETL) scripts.
-    GlueVersionString:
+    OperationTimeoutException: {}
+    NameString:
       type: string
-      pattern: ^\w+\.\w+$
       minLength: 1
       maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    WorkerType:
+      type: string
+      enum:
+      - Standard
+      - G.1X
+      - G.2X
+      - G.025X
+    MapValue:
+      type: object
+      minProperties: 0
+      maxProperties: 100
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
+    InternalServiceException: {}
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -424,20 +430,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string

@@ -216,23 +216,7 @@ paths:
       - 'AWS Glue #X Amz Target=AWSGlue.GetJobRun API'
 components:
   schemas:
-    InvalidInputException: {}
-    EntityNotFoundException: {}
-    ExecutionClass:
-      type: string
-      enum:
-      - FLEX
-      - STANDARD
-      maxLength: 16
     InternalServiceException: {}
-    TimestampValue:
-      type: string
-      format: date-time
-    Timeout:
-      type: integer
-      minimum: 1
-    NullableInteger:
-      type: integer
     GetJobRunRequest:
       type: object
       required:
@@ -252,6 +236,47 @@ components:
           allOf:
           - $ref: '#/components/schemas/BooleanValue'
           - description: True if a list of predecessor runs should be returned.
+    InvalidInputException: {}
+    NullableDouble:
+      type: number
+      format: double
+    BooleanValue:
+      type: boolean
+    JobRunState:
+      type: string
+      enum:
+      - STARTING
+      - RUNNING
+      - STOPPING
+      - STOPPED
+      - SUCCEEDED
+      - FAILED
+      - TIMEOUT
+      - ERROR
+      - WAITING
+    IdString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
+    GlueVersionString:
+      type: string
+      pattern: ^\w+\.\w+$
+      minLength: 1
+      maxLength: 255
+    NullableInteger:
+      type: integer
+    AttemptCount:
+      type: integer
+    PredecessorList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Predecessor'
+    NotifyDelayAfter:
+      type: integer
+      minimum: 1
+    GenericString:
+      type: string
     JobRun:
       type: object
       properties:
@@ -353,6 +378,17 @@ components:
           - $ref: '#/components/schemas/ExecutionClass'
           - description: <p>Indicates whether the job is run with a standard or flexible execution class. The standard execution-class is ideal for time-sensitive workloads that require fast job startup and dedicated resources.</p> <p>The flexible execution class is appropriate for time-insensitive jobs whose start and completion times may vary. </p> <p>Only jobs with Glue version 3.0 and above and command type <code>glueetl</code> will be allowed to set <code>ExecutionClass</code> to <code>FLEX</code>. The flexible execution class is available for Spark jobs.</p>
       description: Contains information about a job run.
+    ExecutionTime:
+      type: integer
+    EntityNotFoundException: {}
+    TimestampValue:
+      type: string
+      format: date-time
+    IntegerValue:
+      type: integer
+    OperationTimeoutException: {}
+    ErrorString:
+      type: string
     NotificationProperty:
       type: object
       properties:
@@ -361,16 +397,17 @@ components:
           - $ref: '#/components/schemas/NotifyDelayAfter'
           - description: After a job run starts, the number of minutes to wait before sending a job run delay notification.
       description: Specifies configuration properties of a notification.
-    PredecessorList:
-      type: array
-      items:
-        $ref: '#/components/schemas/Predecessor'
-    IntegerValue:
-      type: integer
-    GenericMap:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/GenericString'
+    ExecutionClass:
+      type: string
+      enum:
+      - FLEX
+      - STANDARD
+      maxLength: 16
+    NameString:
+      type: string
+      minLength: 1
+      maxLength: 255
+      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
     Predecessor:
       type: object
       properties:
@@ -383,40 +420,6 @@ components:
           - $ref: '#/components/schemas/IdString'
           - description: The job-run ID of the predecessor job run.
       description: A job run that was used in the predicate of a conditional trigger that triggered this job run.
-    JobRunState:
-      type: string
-      enum:
-      - STARTING
-      - RUNNING
-      - STOPPING
-      - STOPPED
-      - SUCCEEDED
-      - FAILED
-      - TIMEOUT
-      - ERROR
-      - WAITING
-    NullableDouble:
-      type: number
-      format: double
-    ExecutionTime:
-      type: integer
-    NameString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    GenericString:
-      type: string
-    IdString:
-      type: string
-      minLength: 1
-      maxLength: 255
-      x-pattern: '[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\t]*'
-    ErrorString:
-      type: string
-    OperationTimeoutException: {}
-    AttemptCount:
-      type: integer
     WorkerType:
       type: string
       enum:
@@ -424,9 +427,7 @@ components:
       - G.1X
       - G.2X
       - G.025X
-    BooleanValue:
-      type: boolean
-    NotifyDelayAfter:
+    Timeout:
       type: integer
       minimum: 1
     GetJobRunResponse:
@@ -436,20 +437,25 @@ components:
           allOf:
           - $ref: '#/components/schemas/JobRun'
           - description: The requested job-run metadata.
-    GlueVersionString:
-      type: string
-      pattern: ^\w+\.\w+$
-      minLength: 1
-      maxLength: 255
+    GenericMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/GenericString'
   parameters:
+    X-Amz-SignedHeaders:
+      name: X-Amz-SignedHeaders
+      in: header
+      schema:
+        type: string
+      required: false
     X-Amz-Security-Token:
       name: X-Amz-Security-Token
       in: header
       schema:
         type: string
       required: false
-    X-Amz-Algorithm:
-      name: X-Amz-Algorithm
+    X-Amz-Content-Sha256:
+      name: X-Amz-Content-Sha256
       in: header
       schema:
         type: string
@@ -466,20 +472,14 @@ components:
       schema:
         type: string
       required: false
-    X-Amz-Content-Sha256:
-      name: X-Amz-Content-Sha256
+    X-Amz-Algorithm:
+      name: X-Amz-Algorithm
       in: header
       schema:
         type: string
       required: false
     X-Amz-Signature:
       name: X-Amz-Signature
-      in: header
-      schema:
-        type: string
-      required: false
-    X-Amz-SignedHeaders:
-      name: X-Amz-SignedHeaders
       in: header
       schema:
         type: string
